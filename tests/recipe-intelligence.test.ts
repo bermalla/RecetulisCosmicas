@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
+  filterRecipesByIngredientMatches,
   inferRecipeCategory,
   inferNutrients,
   ingredientBaseSuggestions,
@@ -11,6 +12,16 @@ import {
   mergeNutrients,
   reviewRecipeDuplicates,
 } from "../lib/recipe-intelligence.ts";
+
+test("hides recipes without ingredient matches only while filtering", () => {
+  const recipes = [
+    { name: "Coincide", matched: [{ name: "banana" }] },
+    { name: "No coincide", matched: [] },
+  ];
+
+  assert.deepEqual(filterRecipesByIngredientMatches(recipes, true), [recipes[0]]);
+  assert.deepEqual(filterRecipesByIngredientMatches(recipes, false), recipes);
+});
 
 test("normalizes common Spanish singular and plural forms", () => {
   assert.equal(normalizeIngredientSearch("banana"), "banana");

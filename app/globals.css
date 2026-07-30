@@ -302,6 +302,15 @@ h1::after {
 }
 .empty-recipes p { margin: 0; color: var(--muted); max-width: 640px; }
 .empty-recipes-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+.filter-empty {
+  padding: 42px 28px;
+  text-align: center;
+  background: rgba(255,253,248,.56);
+  border: 1px dashed var(--line);
+  border-radius: 16px;
+}
+.filter-empty strong { font: 700 24px Georgia, serif; }
+.filter-empty p { margin: 8px 0 0; color: var(--muted); }
 .recipe-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -504,7 +513,6 @@ h1::after {
   background: var(--herb-soft);
   border-radius: 13px;
 }
-.nutrient-block small { color: var(--muted); line-height: 1.45; }
 .nutrient-tags { display: flex; flex-wrap: wrap; gap: 7px; }
 .nutrient-tags span {
   padding: 6px 10px;

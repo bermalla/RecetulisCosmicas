@@ -58,6 +58,9 @@ recetas y se completa desde la interfaz.
 La carpeta `recetas-json/` funciona únicamente como archivo personal de lotes
 JSON. La aplicación no la lee ni importa su contenido automáticamente.
 
+La carpeta `Recursos recetas/` está destinada a PDFs y otros materiales fuente
+que se quieran convertir posteriormente al formato JSON de la aplicación.
+
 El botón **Exportar base** descarga un respaldo portable con toda la colección.
 La importación acepta ese mismo respaldo o un objeto con esta estructura:
 

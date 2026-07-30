@@ -4,6 +4,7 @@ import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
+  filterRecipesByIngredientMatches,
   inferNutrients,
   ingredientBaseSuggestions,
   ingredientMatchesQuery,
@@ -173,6 +174,11 @@ export default function Home() {
       });
   }, [recipes, pantry]);
 
+  const visibleScoredRecipes = useMemo(
+    () => filterRecipesByIngredientMatches(scoredRecipes, pantry.length > 0),
+    [pantry.length, scoredRecipes],
+  );
+
   async function exportDatabase() {
     try {
       const response = await fetch("/api/recipes/export");
@@ -327,12 +333,14 @@ export default function Home() {
                   ? "Buscando recetas…"
                   : recipes.length === 0
                     ? "Tu recetario está listo"
-                    : `${recipes.length} recetas encontradas`}
+                    : pantry.length > 0 && visibleScoredRecipes.length === 0
+                      ? "No encontramos coincidencias"
+                      : `${visibleScoredRecipes.length} recetas encontradas`}
               </h2>
             </div>
             {recipes.length > 0 && pantry.length > 0 && !loading && (
               <p>
-                <strong>{scoredRecipes.filter(
+                <strong>{visibleScoredRecipes.filter(
                   (recipe) =>
                     recipe.hasRequiredIngredients && recipe.missing.length === 0,
                 ).length}</strong> completas con tu selección
@@ -362,9 +370,19 @@ export default function Home() {
               </div>
             </div>
           )}
-          {!loading && !error && recipes.length > 0 && (
+          {!loading &&
+            !error &&
+            recipes.length > 0 &&
+            pantry.length > 0 &&
+            visibleScoredRecipes.length === 0 && (
+              <div className="filter-empty">
+                <strong>No hay recetas con esos ingredientes.</strong>
+                <p>Probá quitando alguno o agregando otro ingrediente disponible.</p>
+              </div>
+            )}
+          {!loading && !error && visibleScoredRecipes.length > 0 && (
             <div className="recipe-grid">
-              {scoredRecipes.map((recipe, index) => {
+              {visibleScoredRecipes.map((recipe, index) => {
                 const complete =
                   pantry.length > 0 &&
                   recipe.hasRequiredIngredients &&
@@ -670,7 +688,6 @@ function RecipeDetail({
               <div className="nutrient-tags">
                 {recipe.nutrients.map((nutrient) => <span key={nutrient}>{nutrient}</span>)}
               </div>
-              <small>Estimados por los ingredientes de la receta; no representan una dosis ni reemplazan asesoramiento profesional.</small>
             </div>
           )}
         </div>

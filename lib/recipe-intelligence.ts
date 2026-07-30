@@ -472,6 +472,14 @@ export function isAssumedPantryIngredient(ingredient: IngredientReference) {
   });
 }
 
+export function filterRecipesByIngredientMatches<
+  RecipeWithMatches extends { matched: unknown[] },
+>(recipes: RecipeWithMatches[], hasActiveFilter: boolean) {
+  return hasActiveFilter
+    ? recipes.filter((recipe) => recipe.matched.length > 0)
+    : recipes;
+}
+
 function containsTerm(value: string, term: string) {
   const normalizedValue = ` ${normalizeReference(value)} `;
   const normalizedTerm = ` ${normalizeReference(term)} `;
