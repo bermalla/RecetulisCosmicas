@@ -5,7 +5,9 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   inferNutrients,
+  ingredientBaseSuggestions,
   ingredientMatchesQuery,
+  normalizeIngredientSearch,
   recipeNameKey,
 } from "../lib/recipe-intelligence";
 
@@ -37,26 +39,8 @@ type ScoredRecipe = Recipe & {
   score: number;
 };
 
-const aliases: Record<string, string> = {
-  papas: "papa",
-  patata: "papa",
-  patatas: "papa",
-  huevos: "huevo",
-  tomates: "tomate",
-  cebollas: "cebolla",
-  ajos: "ajo",
-  quesos: "queso",
-};
-
 function normalize(value: string) {
-  const cleaned = value
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .replace(/[^\p{L}\p{N}\s]/gu, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-  return aliases[cleaned] ?? cleaned;
+  return normalizeIngredientSearch(value);
 }
 
 function parseIngredientLine(line: string) {
@@ -129,7 +113,9 @@ export default function Home() {
   const suggestions = useMemo(() => {
     const unique = new Map<string, string>();
     recipes.flatMap((recipe) => recipe.ingredients).forEach((ingredient) => {
-      unique.set(normalize(ingredient.name), ingredient.name);
+      ingredientBaseSuggestions(ingredient).forEach((base) => {
+        unique.set(normalize(base), base);
+      });
     });
     return [...unique.values()]
       .filter(

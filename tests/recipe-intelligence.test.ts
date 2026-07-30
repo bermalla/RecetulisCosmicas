@@ -2,10 +2,52 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   inferNutrients,
+  ingredientBaseSuggestions,
   ingredientMatchesQuery,
+  normalizeIngredientSearch,
   mergeNutrients,
   reviewRecipeDuplicates,
 } from "../lib/recipe-intelligence.ts";
+
+test("normalizes common Spanish singular and plural forms", () => {
+  assert.equal(normalizeIngredientSearch("banana"), "banana");
+  assert.equal(normalizeIngredientSearch("bananas"), "banana");
+  assert.equal(normalizeIngredientSearch("tomates"), "tomate");
+  assert.equal(normalizeIngredientSearch("nueces"), "nuez");
+  assert.equal(normalizeIngredientSearch("garbanzos"), "garbanzo");
+  assert.equal(normalizeIngredientSearch("maníes"), "mani");
+  assert.equal(
+    ingredientMatchesQuery({ name: "bananas maduras" }, "banana"),
+    true,
+  );
+  assert.equal(
+    ingredientMatchesQuery({ name: "banana madura" }, "bananas"),
+    true,
+  );
+});
+
+test("derives singular base ingredients for autocomplete", () => {
+  assert.deepEqual(
+    ingredientBaseSuggestions({ name: "una banana chica" }),
+    ["banana"],
+  );
+  assert.deepEqual(
+    ingredientBaseSuggestions({ name: "bananas pisadas" }),
+    ["banana"],
+  );
+  assert.deepEqual(
+    ingredientBaseSuggestions({ name: "harina integral" }),
+    ["harina"],
+  );
+  assert.deepEqual(
+    ingredientBaseSuggestions({ name: "2 dientes de ajo" }),
+    ["ajo"],
+  );
+  assert.deepEqual(
+    ingredientBaseSuggestions({ name: "sal y pimienta" }),
+    ["sal", "pimienta"],
+  );
+});
 
 test("matches a base ingredient despite quantities and preparation details", () => {
   assert.equal(

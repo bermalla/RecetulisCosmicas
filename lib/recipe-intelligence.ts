@@ -148,46 +148,75 @@ export function normalizeReference(value: string) {
 }
 
 const INGREDIENT_TOKEN_ALIASES: Record<string, string> = {
-  ajos: "ajo",
-  cebollas: "cebolla",
-  huevos: "huevo",
-  papas: "papa",
+  ajies: "aji",
+  manies: "mani",
   patata: "papa",
   patatas: "papa",
-  quesos: "queso",
-  tomates: "tomate",
 };
+
+const INVARIANT_SINGULAR_TOKENS = new Set([
+  "anis",
+  "couscous",
+  "gris",
+  "hummus",
+  "seis",
+  "tres",
+]);
 
 const LEADING_MEASUREMENT_TOKENS = new Set([
   "a",
+  "aproximadamente",
   "cc",
   "cucharada",
-  "cucharadas",
   "cucharadita",
-  "cucharaditas",
   "de",
   "del",
   "diente",
-  "dientes",
   "g",
+  "gramo",
   "gr",
+  "hoja",
   "kg",
+  "kilo",
   "l",
+  "lata",
+  "litro",
+  "medio",
+  "media",
   "mg",
   "ml",
+  "paquete",
   "punado",
-  "punados",
+  "rama",
+  "rodaja",
   "taza",
-  "tazas",
+  "un",
+  "una",
+  "uno",
   "unidad",
-  "unidades",
 ]);
+
+function singularizeIngredientToken(token: string) {
+  const alias = INGREDIENT_TOKEN_ALIASES[token];
+  if (alias) return alias;
+  if (INVARIANT_SINGULAR_TOKENS.has(token)) return token;
+  if (token.length > 4 && token.endsWith("ces")) {
+    return `${token.slice(0, -3)}z`;
+  }
+  if (token.length > 3 && /[aeiou]s$/.test(token)) {
+    return token.slice(0, -1);
+  }
+  if (token.length > 4 && /[^aeiou]es$/.test(token)) {
+    return token.slice(0, -2);
+  }
+  return token;
+}
 
 function ingredientTokens(value: string) {
   return normalizeReference(value)
     .split(" ")
     .filter(Boolean)
-    .map((token) => INGREDIENT_TOKEN_ALIASES[token] ?? token);
+    .map(singularizeIngredientToken);
 }
 
 function stripLeadingMeasurements(tokens: string[]) {
@@ -199,6 +228,10 @@ function stripLeadingMeasurements(tokens: string[]) {
     index += 1;
   }
   return tokens.slice(index);
+}
+
+export function normalizeIngredientSearch(value: string) {
+  return ingredientTokens(value).join(" ");
 }
 
 function startsWithTokens(candidate: string[], query: string[]) {
@@ -238,6 +271,39 @@ export function ingredientMatchesQuery(
     }
     return segments.some((segment) => startsWithTokens(segment, queryTokens));
   });
+}
+
+const BASE_INGREDIENT_LABELS: Record<string, string> = {
+  aji: "ají",
+  brocoli: "brócoli",
+  limon: "limón",
+  maiz: "maíz",
+  mani: "maní",
+  melon: "melón",
+  platano: "plátano",
+};
+
+function baseIngredientFromPhrase(value: string) {
+  const tokens = stripLeadingMeasurements(ingredientTokens(value));
+  const base = tokens[0];
+  return base ? BASE_INGREDIENT_LABELS[base] ?? base : "";
+}
+
+/**
+ * Produce sugerencias breves y singulares desde textos libres. Por ejemplo,
+ * "una banana chica", "bananas pisadas" y "banana madura" sugieren "banana".
+ */
+export function ingredientBaseSuggestions(ingredient: IngredientReference) {
+  const sources = [ingredient.normalizedName, ingredient.name].filter(
+    (value): value is string => Boolean(value),
+  );
+  const bases = sources.flatMap((source) =>
+    source
+      .split(/\s*(?:,|;|\s+y\s+|\s+o\s+)\s*/iu)
+      .map(baseIngredientFromPhrase)
+      .filter(Boolean),
+  );
+  return [...new Map(bases.map((base) => [normalizeReference(base), base])).values()];
 }
 
 function containsTerm(value: string, term: string) {
