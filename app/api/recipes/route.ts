@@ -1,6 +1,10 @@
 import { asc, desc, eq } from "drizzle-orm";
 import { ensureSchema, getDb } from "../../../db";
 import { appMeta, recipeIngredients, recipes } from "../../../db/schema";
+import {
+  mergeNutrients,
+  reviewRecipeDuplicates,
+} from "../../../lib/recipe-intelligence";
 
 type IngredientInput = {
   name?: string;
@@ -117,7 +121,7 @@ function cleanRecipe(input: RecipeInput, preserveId = false) {
     name,
     description: String(input.description ?? "").trim(),
     instructions: instructionsToArray(input.instructions),
-    nutrients: nutrientsToArray(input.nutrients ?? []),
+    nutrients: mergeNutrients(nutrientsToArray(input.nutrients ?? []), ingredientsList),
     durationMinutes:
       typeof input.durationMinutes === "number" && input.durationMinutes > 0
         ? Math.round(input.durationMinutes)
@@ -137,6 +141,8 @@ function cleanRecipe(input: RecipeInput, preserveId = false) {
     }>,
   };
 }
+
+type CleanRecipe = ReturnType<typeof cleanRecipe>;
 
 async function ensureEmptyBaselineOnce() {
   await ensureSchema();
@@ -159,9 +165,7 @@ async function ensureEmptyBaselineOnce() {
     .onConflictDoNothing();
 }
 
-async function saveRecipe(input: RecipeInput, preserveId = false) {
-  const recipe = cleanRecipe(input, preserveId);
-  await ensureEmptyBaselineOnce();
+async function saveRecipe(recipe: CleanRecipe) {
   const db = await getDb();
   const now = new Date().toISOString();
 
@@ -224,11 +228,8 @@ async function readAllRecipes() {
     grouped.set(ingredient.recipeId, current);
   }
 
-  return recipeRows.map((recipe) => ({
-    ...recipe,
-    instructions: instructionsToArray(recipe.instructions),
-    nutrients: nutrientsToArray(recipe.nutrients),
-    ingredients: (grouped.get(recipe.id) ?? []).map((ingredient) => ({
+  return recipeRows.map((recipe) => {
+    const ingredients = (grouped.get(recipe.id) ?? []).map((ingredient) => ({
       id: ingredient.id,
       name: ingredient.name,
       normalizedName: ingredient.normalizedName,
@@ -236,8 +237,14 @@ async function readAllRecipes() {
       unit: ingredient.unit,
       optional: ingredient.optional,
       sortOrder: ingredient.sortOrder,
-    })),
-  }));
+    }));
+    return {
+      ...recipe,
+      instructions: instructionsToArray(recipe.instructions),
+      nutrients: mergeNutrients(nutrientsToArray(recipe.nutrients), ingredients),
+      ingredients,
+    };
+  });
 }
 
 function errorResponse(error: unknown) {
@@ -274,9 +281,43 @@ export async function POST(request: Request) {
       return Response.json({ error: "El archivo supera el máximo de 500 recetas." }, { status: 400 });
     }
 
+    await ensureEmptyBaselineOnce();
+    const cleanedRecipes = list.map((recipe) =>
+      cleanRecipe(recipe, Boolean(payload.preserveIds)),
+    );
+    const duplicates = reviewRecipeDuplicates(
+      cleanedRecipes,
+      await readAllRecipes(),
+    );
+    if (duplicates.length > 0) {
+      const names = [...new Set(duplicates.map((duplicate) => duplicate.incomingName))];
+      const summary =
+        names.length === 1
+          ? `“${names[0]}” ya existe o está repetida en el archivo.`
+          : `${names.length} recetas ya existen o están repetidas en el archivo: ${names.join(", ")}.`;
+      return Response.json(
+        {
+          error: `No se guardó ninguna receta. ${summary}`,
+          code: "DUPLICATE_RECIPES",
+          duplicates,
+        },
+        { status: 409 },
+      );
+    }
+
     const ids: string[] = [];
-    for (const recipe of list) ids.push(await saveRecipe(recipe, Boolean(payload.preserveIds)));
-    return Response.json({ imported: ids.length, ids }, { status: 201 });
+    for (const recipe of cleanedRecipes) ids.push(await saveRecipe(recipe));
+    return Response.json(
+      {
+        imported: ids.length,
+        ids,
+        review: cleanedRecipes.map((recipe) => ({
+          name: recipe.name,
+          nutrients: recipe.nutrients,
+        })),
+      },
+      { status: 201 },
+    );
   } catch (error) {
     return errorResponse(error);
   }

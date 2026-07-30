@@ -7,9 +7,10 @@ ejemplo ni datos precargados en el repositorio.
 ## Funcionalidades
 
 - Carga manual de recetas con ingredientes, instrucciones y datos opcionales.
-- Importación de una o varias recetas desde JSON.
+- Importación de una o varias recetas desde JSON, con revisión previa de duplicados.
 - Exportación íntegra de la colección como respaldo JSON.
 - Filtro por ingredientes disponibles, priorizando las coincidencias completas.
+- Referencias automáticas de nutrientes a partir de los ingredientes obligatorios.
 - Área **Mis recetas** con búsqueda por nombre y eliminación de recetas.
 - Persistencia en Cloudflare D1.
 
@@ -65,13 +66,31 @@ type RecipeImport = {
     nutrients?: string[];
     ingredients: Array<{
       name: string;
-      quantity?: number;
-      unit?: string;
-      notes?: string;
+      quantity?: string | number | null;
+      unit?: string | null;
+      optional?: boolean;
     }>;
   }>;
 };
 ```
+
+Antes de escribir en la base, la API revisa el lote completo. Bloquea nombres
+repetidos sin distinguir mayúsculas o acentos, identificadores ya existentes y
+recetas con los mismos ingredientes e instrucciones. Si encuentra una
+coincidencia, no guarda ninguna receta del lote.
+
+## Referencias nutricionales
+
+Al guardar o leer una receta, la app relaciona sus ingredientes obligatorios
+con estas referencias: zinc, selenio, ácido fólico, vitaminas C, E y D,
+coenzima Q10, yodo, hierro y Omega 3. Las etiquetas señalan presencia habitual;
+no calculan cantidades, biodisponibilidad ni necesidades individuales.
+
+Las reglas se basan en fuentes generales como
+[USDA FoodData Central](https://fdc.nal.usda.gov/), las
+[fichas del Office of Dietary Supplements de NIH](https://ods.od.nih.gov/factsheets/list-VitaminsMinerals/)
+y la revisión sobre
+[contenido alimentario de coenzima Q10](https://pubmed.ncbi.nlm.nih.gov/20301015/).
 
 ## Publicación
 

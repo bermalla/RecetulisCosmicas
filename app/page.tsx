@@ -3,6 +3,7 @@
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { inferNutrients, recipeNameKey } from "../lib/recipe-intelligence";
 
 type Ingredient = {
   id?: number;
@@ -192,7 +193,9 @@ export default function Home() {
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "No se pudo importar el archivo.");
       await loadRecipes();
-      notify(`${data.imported} ${data.imported === 1 ? "receta importada" : "recetas importadas"}.`);
+      notify(
+        `${data.imported} ${data.imported === 1 ? "receta importada" : "recetas importadas"}. Sin duplicados y con nutrientes revisados.`,
+      );
     } catch (requestError) {
       notify(requestError instanceof Error ? requestError.message : "El JSON no es válido.");
     } finally {
@@ -402,11 +405,12 @@ export default function Home() {
 
       {showAdd && (
         <RecipeForm
+          existingRecipes={recipes}
           onClose={() => setShowAdd(false)}
           onSaved={async () => {
             setShowAdd(false);
             await loadRecipes();
-            notify("Receta guardada.");
+            notify("Receta guardada. Sin duplicados y con nutrientes revisados.");
           }}
         />
       )}
@@ -424,9 +428,11 @@ export default function Home() {
 }
 
 function RecipeForm({
+  existingRecipes,
   onClose,
   onSaved,
 }: {
+  existingRecipes: Array<{ id: string; name: string }>;
   onClose: () => void;
   onSaved: () => Promise<void>;
 }) {
@@ -444,6 +450,18 @@ function RecipeForm({
     () => ingredientsText.split(/\r?\n/).map(parseIngredientLine).filter(Boolean),
     [ingredientsText],
   );
+  const inferredNutrients = useMemo(
+    () =>
+      inferNutrients(
+        parsedIngredients.flatMap((ingredient) => (ingredient ? [ingredient] : [])),
+      ),
+    [parsedIngredients],
+  );
+  const duplicateRecipe = useMemo(() => {
+    const key = recipeNameKey(name);
+    if (!key) return null;
+    return existingRecipes.find((recipe) => recipeNameKey(recipe.name) === key) ?? null;
+  }, [existingRecipes, name]);
 
   async function submit(event: FormEvent) {
     event.preventDefault();
@@ -488,6 +506,11 @@ function RecipeForm({
           <label>
             Nombre
             <input required value={name} onChange={(event) => setName(event.target.value)} placeholder="Ej. Guiso de lentejas" />
+            {duplicateRecipe && (
+              <small className="duplicate-warning">
+                Ya existe una receta llamada “{duplicateRecipe.name}”. Cambiá el nombre solo si realmente es otra preparación.
+              </small>
+            )}
           </label>
           <label>
             Descripción breve
@@ -504,13 +527,15 @@ function RecipeForm({
             </label>
           </div>
           <label>
-            Nutrientes destacados
+            Nutrientes adicionales (opcional)
             <input
               value={nutrients}
               onChange={(event) => setNutrients(event.target.value)}
               placeholder="Ej. Hierro, Vitamina C, Omega 3"
             />
-            <small className="field-help">Separalos con comas. Es una referencia informativa, no un cálculo nutricional.</small>
+            <small className="field-help">
+              Detectamos los nutrientes de referencia automáticamente. Usá este campo solo para sumar alguno que conozcas.
+            </small>
           </label>
           <label>
             Ingredientes
@@ -530,6 +555,22 @@ function RecipeForm({
               ))}
             </div>
           )}
+          {inferredNutrients.length > 0 && (
+            <div className="nutrient-reference" aria-live="polite">
+              <div>
+                <span className="tiny-label">Referencia automática</span>
+                <small>Según los ingredientes obligatorios cargados</small>
+              </div>
+              <div className="nutrient-tags">
+                {inferredNutrients.map((nutrient) => (
+                  <span key={nutrient}>{nutrient}</span>
+                ))}
+              </div>
+              <small>
+                Indica presencia habitual, no cantidad ni biodisponibilidad. No reemplaza asesoramiento profesional.
+              </small>
+            </div>
+          )}
           <label>
             Instrucciones
             <textarea
@@ -543,8 +584,11 @@ function RecipeForm({
           {error && <p className="form-error">{error}</p>}
           <div className="modal-actions">
             <button type="button" className="secondary-action" onClick={onClose}>Cancelar</button>
-            <button className="primary-action" disabled={saving || parsedIngredients.length === 0}>
-              {saving ? "Guardando…" : "Guardar receta"}
+            <button
+              className="primary-action"
+              disabled={saving || parsedIngredients.length === 0 || Boolean(duplicateRecipe)}
+            >
+              {saving ? "Revisando y guardando…" : "Revisar y guardar"}
             </button>
           </div>
         </form>
