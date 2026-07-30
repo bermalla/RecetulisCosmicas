@@ -39,6 +39,7 @@ type Recipe = {
 type ScoredRecipe = Recipe & {
   matched: Ingredient[];
   missing: Ingredient[];
+  hasRequiredIngredients: boolean;
   score: number;
 };
 
@@ -142,9 +143,12 @@ export default function Home() {
       pantry.some((pantryItem) => ingredientMatchesQuery(ingredient, pantryItem));
     return recipes
       .map((recipe) => {
-        const required = recipe.ingredients.filter(
+        const requiredIngredients = recipe.ingredients.filter(
+          (ingredient) => !ingredient.optional,
+        );
+        const required = requiredIngredients.filter(
           (ingredient) =>
-            !ingredient.optional && !isAssumedPantryIngredient(ingredient),
+            !isAssumedPantryIngredient(ingredient),
         );
         const matched = required.filter(hasIngredient);
         const missing = required.filter((ingredient) => !hasIngredient(ingredient));
@@ -152,13 +156,14 @@ export default function Home() {
           ...recipe,
           matched,
           missing,
+          hasRequiredIngredients: requiredIngredients.length > 0,
           score: required.length ? matched.length / required.length : 0,
         };
       })
       .sort((a, b) => {
         if (pantry.length === 0) return a.name.localeCompare(b.name, "es");
-        const aComplete = a.missing.length === 0 ? 1 : 0;
-        const bComplete = b.missing.length === 0 ? 1 : 0;
+        const aComplete = a.hasRequiredIngredients && a.missing.length === 0 ? 1 : 0;
+        const bComplete = b.hasRequiredIngredients && b.missing.length === 0 ? 1 : 0;
         return (
           bComplete - aComplete ||
           b.score - a.score ||
@@ -327,7 +332,10 @@ export default function Home() {
             </div>
             {recipes.length > 0 && pantry.length > 0 && !loading && (
               <p>
-                <strong>{scoredRecipes.filter((recipe) => recipe.missing.length === 0).length}</strong> completas con tu selección
+                <strong>{scoredRecipes.filter(
+                  (recipe) =>
+                    recipe.hasRequiredIngredients && recipe.missing.length === 0,
+                ).length}</strong> completas con tu selección
               </p>
             )}
           </div>
@@ -357,7 +365,10 @@ export default function Home() {
           {!loading && !error && recipes.length > 0 && (
             <div className="recipe-grid">
               {scoredRecipes.map((recipe, index) => {
-                const complete = pantry.length > 0 && recipe.missing.length === 0;
+                const complete =
+                  pantry.length > 0 &&
+                  recipe.hasRequiredIngredients &&
+                  recipe.missing.length === 0;
                 const hasMatches = recipe.matched.length > 0;
                 const percent = pantry.length > 0 ? Math.round(recipe.score * 100) : 0;
                 return (
@@ -626,6 +637,10 @@ function RecipeDetail({
       !isAssumedPantryIngredient(ingredient) &&
       !hasIngredient(ingredient),
   );
+  const canMake =
+    pantry.length > 0 &&
+    recipe.ingredients.some((ingredient) => !ingredient.optional) &&
+    missing.length === 0;
 
   return (
     <div className="modal-backdrop" role="presentation" onMouseDown={(event) => {
@@ -645,7 +660,7 @@ function RecipeDetail({
         )}
         <div className="detail-heading">
           <p className="eyebrow">
-            {recipe.category} · {missing.length === 0 && pantry.length > 0 ? "Podés hacerla ahora" : "Receta guardada"}
+            {recipe.category} · {canMake ? "Podés hacerla ahora" : "Receta guardada"}
           </p>
           <h2 id="detail-title">{recipe.name}</h2>
           <p>{recipe.description}</p>
