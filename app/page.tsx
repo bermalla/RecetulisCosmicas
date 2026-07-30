@@ -3,7 +3,11 @@
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { inferNutrients, recipeNameKey } from "../lib/recipe-intelligence";
+import {
+  inferNutrients,
+  ingredientMatchesQuery,
+  recipeNameKey,
+} from "../lib/recipe-intelligence";
 
 type Ingredient = {
   id?: number;
@@ -137,12 +141,13 @@ export default function Home() {
   }, [recipes, ingredientInput, pantry]);
 
   const scoredRecipes = useMemo<ScoredRecipe[]>(() => {
-    const selected = new Set(pantry.map(normalize));
+    const hasIngredient = (ingredient: Ingredient) =>
+      pantry.some((pantryItem) => ingredientMatchesQuery(ingredient, pantryItem));
     return recipes
       .map((recipe) => {
         const required = recipe.ingredients.filter((ingredient) => !ingredient.optional);
-        const matched = required.filter((ingredient) => selected.has(normalize(ingredient.name)));
-        const missing = required.filter((ingredient) => !selected.has(normalize(ingredient.name)));
+        const matched = required.filter(hasIngredient);
+        const missing = required.filter((ingredient) => !hasIngredient(ingredient));
         return {
           ...recipe,
           matched,
@@ -606,9 +611,10 @@ function RecipeDetail({
   pantry: string[];
   onClose: () => void;
 }) {
-  const selected = new Set(pantry.map(normalize));
+  const hasIngredient = (ingredient: Ingredient) =>
+    pantry.some((pantryItem) => ingredientMatchesQuery(ingredient, pantryItem));
   const missing = recipe.ingredients.filter(
-    (ingredient) => !ingredient.optional && !selected.has(normalize(ingredient.name)),
+    (ingredient) => !ingredient.optional && !hasIngredient(ingredient),
   );
 
   return (
@@ -646,7 +652,7 @@ function RecipeDetail({
             <h3>Ingredientes</h3>
             <ul className="ingredient-list">
               {recipe.ingredients.map((ingredient) => {
-                const available = selected.has(normalize(ingredient.name));
+                const available = hasIngredient(ingredient);
                 return (
                   <li key={`${ingredient.id}-${ingredient.name}`} className={available ? "available" : ""}>
                     <span>{available ? "✓" : "○"}</span>

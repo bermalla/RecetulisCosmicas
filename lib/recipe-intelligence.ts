@@ -147,6 +147,99 @@ export function normalizeReference(value: string) {
     .trim();
 }
 
+const INGREDIENT_TOKEN_ALIASES: Record<string, string> = {
+  ajos: "ajo",
+  cebollas: "cebolla",
+  huevos: "huevo",
+  papas: "papa",
+  patata: "papa",
+  patatas: "papa",
+  quesos: "queso",
+  tomates: "tomate",
+};
+
+const LEADING_MEASUREMENT_TOKENS = new Set([
+  "a",
+  "cc",
+  "cucharada",
+  "cucharadas",
+  "cucharadita",
+  "cucharaditas",
+  "de",
+  "del",
+  "diente",
+  "dientes",
+  "g",
+  "gr",
+  "kg",
+  "l",
+  "mg",
+  "ml",
+  "punado",
+  "punados",
+  "taza",
+  "tazas",
+  "unidad",
+  "unidades",
+]);
+
+function ingredientTokens(value: string) {
+  return normalizeReference(value)
+    .split(" ")
+    .filter(Boolean)
+    .map((token) => INGREDIENT_TOKEN_ALIASES[token] ?? token);
+}
+
+function stripLeadingMeasurements(tokens: string[]) {
+  let index = 0;
+  while (
+    index < tokens.length &&
+    (/^\d+$/.test(tokens[index]) || LEADING_MEASUREMENT_TOKENS.has(tokens[index]))
+  ) {
+    index += 1;
+  }
+  return tokens.slice(index);
+}
+
+function startsWithTokens(candidate: string[], query: string[]) {
+  return (
+    query.length > 0 &&
+    query.length <= candidate.length &&
+    query.every((token, index) => candidate[index] === token)
+  );
+}
+
+/**
+ * Deriva claves de búsqueda desde el nombre visible del ingrediente. Así,
+ * "1/2 taza de coco rallado" responde a "coco" sin confundir palabras
+ * parciales ni tratar "aceite de coco" como si fuera coco rallado.
+ */
+export function ingredientMatchesQuery(
+  ingredient: IngredientReference,
+  query: string,
+) {
+  const queryTokens = stripLeadingMeasurements(ingredientTokens(query));
+  if (queryTokens.length === 0) return false;
+
+  const candidates = [ingredient.normalizedName, ingredient.name]
+    .filter((value): value is string => Boolean(value))
+    .map((value) => stripLeadingMeasurements(ingredientTokens(value)));
+
+  return candidates.some((candidate) => {
+    if (startsWithTokens(candidate, queryTokens)) return true;
+
+    const segments: string[][] = [[]];
+    for (const token of candidate) {
+      if (token === "y" || token === "o") {
+        segments.push([]);
+      } else {
+        segments[segments.length - 1].push(token);
+      }
+    }
+    return segments.some((segment) => startsWithTokens(segment, queryTokens));
+  });
+}
+
 function containsTerm(value: string, term: string) {
   const normalizedValue = ` ${normalizeReference(value)} `;
   const normalizedTerm = ` ${normalizeReference(term)} `;

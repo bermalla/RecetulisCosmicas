@@ -2,9 +2,39 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   inferNutrients,
+  ingredientMatchesQuery,
   mergeNutrients,
   reviewRecipeDuplicates,
 } from "../lib/recipe-intelligence.ts";
+
+test("matches a base ingredient despite quantities and preparation details", () => {
+  assert.equal(
+    ingredientMatchesQuery(
+      { name: "1/2 taza de coco rallado", normalizedName: "coco rallado" },
+      "coco",
+    ),
+    true,
+  );
+  assert.equal(
+    ingredientMatchesQuery({ name: "tomates picados" }, "tomate"),
+    true,
+  );
+});
+
+test("matches whole ingredient words without broad compound false positives", () => {
+  assert.equal(
+    ingredientMatchesQuery({ name: "aceite de coco" }, "coco"),
+    false,
+  );
+  assert.equal(
+    ingredientMatchesQuery({ name: "cocodrilo vegano" }, "coco"),
+    false,
+  );
+  assert.equal(
+    ingredientMatchesQuery({ name: "sal y pimienta" }, "pimienta"),
+    true,
+  );
+});
 
 test("infers reference nutrients from required ingredients", () => {
   const nutrients = inferNutrients([
