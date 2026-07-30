@@ -13,6 +13,147 @@ export type RecipeIdentity = {
   ingredients: IngredientReference[];
 };
 
+export const RECIPE_CATEGORIES = [
+  "Buñuelos",
+  "Tortilla",
+  "Ensalada",
+  "Galletas",
+  "Torta",
+  "Tarta",
+  "Pan",
+  "Pizza",
+  "Croquetas",
+  "Medallones",
+  "Milanesa",
+  "Pasta",
+  "Sopa",
+  "Postre",
+  "Untable",
+  "Bebida",
+  "Desayuno",
+  "Panqueques",
+  "Snack",
+  "Conserva",
+  "Preparación base",
+  "Salteado",
+  "Plato principal",
+] as const;
+
+export type RecipeCategory = (typeof RECIPE_CATEGORIES)[number];
+
+const CATEGORY_RULES: Array<{
+  category: RecipeCategory;
+  terms: string[];
+}> = [
+  { category: "Buñuelos", terms: ["bunuelo", "bunuelos"] },
+  { category: "Tortilla", terms: ["tortilla", "notortilla", "faina", "dosa"] },
+  { category: "Ensalada", terms: ["ensalada"] },
+  { category: "Galletas", terms: ["galleta", "galletita", "pepa", "coquito"] },
+  {
+    category: "Torta",
+    terms: [
+      "torta", "bizcochuelo", "brownie", "budin", "muffin", "muffins", "carrot cake",
+      "white nie", "white-nie",
+    ],
+  },
+  { category: "Tarta", terms: ["tarta", "pie", "pasta frola", "crumble"] },
+  {
+    category: "Pan",
+    terms: [
+      "pan ", "pan de", "pan integral", "pancito", "scone", "noscones", "roll",
+      "rolls",
+    ],
+  },
+  { category: "Pizza", terms: ["pizza", "calzone"] },
+  { category: "Croquetas", terms: ["croqueta", "croquetas"] },
+  { category: "Medallones", terms: ["medallon", "medallones", "hamburguesa"] },
+  { category: "Milanesa", terms: ["milanesa", "milanesas"] },
+  { category: "Pasta", terms: ["noqui", "noquis", "pasta", "fideo"] },
+  { category: "Sopa", terms: ["sopa", "crema de"] },
+  {
+    category: "Postre",
+    terms: [
+      "postre", "helado", "trufa", "turron", "alfajor", "alfajorcito",
+      "gomita", "flan", "mantecol", "trifle", "alfarogel", "gulita",
+    ],
+  },
+  {
+    category: "Untable",
+    terms: [
+      "untable", "queso", "yogur", "tofudelfia", "mandiocadelphia",
+      "mantenocol", "picadillo",
+    ],
+  },
+  { category: "Bebida", terms: ["licuado", "batido", "smoothie", "jugo"] },
+  {
+    category: "Desayuno",
+    terms: ["granola", "barra de cereal", "barras de cereal", "mezcla horneada"],
+  },
+  { category: "Panqueques", terms: ["panqueque"] },
+  { category: "Snack", terms: ["snack", "snacks", "bocadito", "bombita"] },
+  { category: "Conserva", terms: ["encurtido", "conserva"] },
+  {
+    category: "Preparación base",
+    terms: ["masa de", "mezcla para", "base de", "ralladito"],
+  },
+  {
+    category: "Salteado",
+    terms: ["salteado", "a la plancha", "tofu revuelto", "hongo"],
+  },
+];
+
+export function inferRecipeCategory(name: string): RecipeCategory {
+  const normalizedName = normalizeIngredientSearch(name);
+  return (
+    CATEGORY_RULES.find((rule) =>
+      rule.terms.some((term) => {
+        const normalizedTerm = normalizeIngredientSearch(term);
+        return ` ${normalizedName} `.includes(` ${normalizedTerm} `);
+      }),
+    )?.category ?? "Plato principal"
+  );
+}
+
+export function normalizeRecipeCategory(
+  category: string | null | undefined,
+  recipeName: string,
+): RecipeCategory {
+  const normalizedCategory = normalizeReference(String(category ?? ""));
+  const existing = RECIPE_CATEGORIES.find(
+    (item) => normalizeReference(item) === normalizedCategory,
+  );
+  return existing ?? inferRecipeCategory(recipeName);
+}
+
+export function recipeCategoryIcon(category: string) {
+  const icons: Record<RecipeCategory, string> = {
+    "Buñuelos": "🫓",
+    "Tortilla": "🍳",
+    "Ensalada": "🥗",
+    "Galletas": "🍪",
+    "Torta": "🍰",
+    "Tarta": "🥧",
+    "Pan": "🥖",
+    "Pizza": "🍕",
+    "Croquetas": "🟤",
+    "Medallones": "🥙",
+    "Milanesa": "🍽️",
+    "Pasta": "🍝",
+    "Sopa": "🍲",
+    "Postre": "🍨",
+    "Untable": "🥣",
+    "Bebida": "🥤",
+    "Desayuno": "🌾",
+    "Panqueques": "🥞",
+    "Snack": "🥜",
+    "Conserva": "🫙",
+    "Preparación base": "🧺",
+    "Salteado": "🍳",
+    "Plato principal": "🍽️",
+  };
+  return icons[normalizeRecipeCategory(category, "")];
+}
+
 export const REFERENCE_NUTRIENTS = [
   "Zinc",
   "Selenio",
@@ -304,6 +445,31 @@ export function ingredientBaseSuggestions(ingredient: IngredientReference) {
       .filter(Boolean),
   );
   return [...new Map(bases.map((base) => [normalizeReference(base), base])).values()];
+}
+
+export const ASSUMED_PANTRY_STAPLES = [
+  "Agua",
+  "Sal",
+  "Azúcar",
+  "Pimienta",
+  "Aceite neutro",
+] as const;
+
+export function isAssumedPantryIngredient(ingredient: IngredientReference) {
+  const candidates = [ingredient.normalizedName, ingredient.name]
+    .filter((value): value is string => Boolean(value))
+    .map((value) => stripLeadingMeasurements(ingredientTokens(value)));
+
+  return candidates.some((tokens) => {
+    const [base, modifier] = tokens;
+    if (base === "agua" || base === "sal" || base === "azucar" || base === "pimienta") {
+      return true;
+    }
+    return (
+      base === "aceite" &&
+      (!modifier || modifier === "neutro" || modifier === "vegetal")
+    );
+  });
 }
 
 function containsTerm(value: string, term: string) {

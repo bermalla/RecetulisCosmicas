@@ -1,10 +1,13 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
+  inferRecipeCategory,
   inferNutrients,
   ingredientBaseSuggestions,
   ingredientMatchesQuery,
+  isAssumedPantryIngredient,
   normalizeIngredientSearch,
+  normalizeRecipeCategory,
   mergeNutrients,
   reviewRecipeDuplicates,
 } from "../lib/recipe-intelligence.ts";
@@ -76,6 +79,35 @@ test("matches whole ingredient words without broad compound false positives", ()
     ingredientMatchesQuery({ name: "sal y pimienta" }, "pimienta"),
     true,
   );
+});
+
+test("infers useful recipe categories from names", () => {
+  assert.equal(inferRecipeCategory("Buñuelos de espinaca"), "Buñuelos");
+  assert.equal(inferRecipeCategory("Tortilla de papa"), "Tortilla");
+  assert.equal(inferRecipeCategory("Ensalada tibia de lentejas"), "Ensalada");
+  assert.equal(inferRecipeCategory("Galletas de avena"), "Galletas");
+  assert.equal(inferRecipeCategory("Pasta frola integral"), "Tarta");
+  assert.equal(inferRecipeCategory("Pan de lentejas"), "Pan");
+  assert.equal(inferRecipeCategory("Zapallitos rellenos"), "Plato principal");
+  assert.equal(normalizeRecipeCategory("ensalada", "Otro nombre"), "Ensalada");
+});
+
+test("treats only everyday pantry staples as assumed available", () => {
+  for (const name of [
+    "agua tibia",
+    "sal marina",
+    "azúcar mascabo",
+    "pimienta negra",
+    "aceite",
+    "aceite neutro",
+    "aceite vegetal",
+  ]) {
+    assert.equal(isAssumedPantryIngredient({ name }), true, name);
+  }
+
+  for (const name of ["aceite de coco", "aceite de oliva", "harina", "ajo"]) {
+    assert.equal(isAssumedPantryIngredient({ name }), false, name);
+  }
 });
 
 test("infers reference nutrients from required ingredients", () => {

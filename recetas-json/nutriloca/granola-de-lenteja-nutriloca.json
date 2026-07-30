@@ -1,0 +1,72 @@
+{
+  "recipes": [
+    {
+      "name": "Granola de lenteja",
+      "description": "Granola crocante a base de lentejas cocidas, con frutos secos, semillas y otros agregados a elección. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca.",
+      "instructions": [
+        "Colocar las lentejas cocidas en una placa para horno con un poco de aceite de coco, si se desea.",
+        "Hornear a temperatura moderada-baja durante 15 a 20 minutos, controlando periódicamente, hasta que las lentejas se sequen.",
+        "Retirar del horno, agregar el azúcar mascabo o el endulzante elegido y volver a hornear unos minutos más.",
+        "Agregar los frutos secos, el maní, las semillas, las pasas de uva y el coco en escamas que se deseen.",
+        "Conservar en un recipiente hermético durante un máximo de una semana."
+      ],
+      "ingredients": [
+        {
+          "name": "lentejas cocidas",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "azúcar mascabo",
+          "quantity": "2",
+          "unit": "cucharaditas",
+          "optional": true
+        },
+        {
+          "name": "aceite de coco",
+          "quantity": "un poco",
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "frutos secos a elección",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "maní",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "semillas de calabaza",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "semillas de girasol",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "pasas de uva",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "coco en escamas",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": []
+    }
+  ]
+}

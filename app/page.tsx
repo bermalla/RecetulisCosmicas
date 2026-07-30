@@ -7,7 +7,9 @@ import {
   inferNutrients,
   ingredientBaseSuggestions,
   ingredientMatchesQuery,
+  isAssumedPantryIngredient,
   normalizeIngredientSearch,
+  recipeCategoryIcon,
   recipeNameKey,
 } from "../lib/recipe-intelligence";
 
@@ -24,6 +26,7 @@ type Recipe = {
   id: string;
   name: string;
   description: string;
+  category: string;
   instructions: string[];
   durationMinutes?: number | null;
   servings?: number | null;
@@ -66,7 +69,7 @@ export default function Home() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [pantry, setPantry] = useState<string[]>(["huevo", "queso", "tomate"]);
+  const [pantry, setPantry] = useState<string[]>([]);
   const [ingredientInput, setIngredientInput] = useState("");
   const [showAdd, setShowAdd] = useState(false);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
@@ -106,6 +109,11 @@ export default function Home() {
   function addPantryIngredient(value = ingredientInput) {
     const clean = normalize(value);
     if (!clean || pantry.some((item) => normalize(item) === clean)) return;
+    if (isAssumedPantryIngredient({ name: value })) {
+      setIngredientInput("");
+      notify("Ese ingrediente ya se considera disponible como básico.");
+      return;
+    }
     setPantry((current) => [...current, value.trim().toLowerCase()]);
     setIngredientInput("");
   }
@@ -114,7 +122,9 @@ export default function Home() {
     const unique = new Map<string, string>();
     recipes.flatMap((recipe) => recipe.ingredients).forEach((ingredient) => {
       ingredientBaseSuggestions(ingredient).forEach((base) => {
-        unique.set(normalize(base), base);
+        if (!isAssumedPantryIngredient({ name: base })) {
+          unique.set(normalize(base), base);
+        }
       });
     });
     return [...unique.values()]
@@ -128,10 +138,14 @@ export default function Home() {
 
   const scoredRecipes = useMemo<ScoredRecipe[]>(() => {
     const hasIngredient = (ingredient: Ingredient) =>
+      isAssumedPantryIngredient(ingredient) ||
       pantry.some((pantryItem) => ingredientMatchesQuery(ingredient, pantryItem));
     return recipes
       .map((recipe) => {
-        const required = recipe.ingredients.filter((ingredient) => !ingredient.optional);
+        const required = recipe.ingredients.filter(
+          (ingredient) =>
+            !ingredient.optional && !isAssumedPantryIngredient(ingredient),
+        );
         const matched = required.filter(hasIngredient);
         const missing = required.filter((ingredient) => !hasIngredient(ingredient));
         return {
@@ -267,6 +281,9 @@ export default function Home() {
                 </button>
               )}
             </div>
+            <p className="pantry-help">
+              Agua, sal, azúcar, pimienta y aceite neutro ya se consideran disponibles.
+            </p>
           </div>
 
           <aside className="action-panel" aria-label="Gestionar recetas">
@@ -359,7 +376,10 @@ export default function Home() {
                           sizes="(max-width: 680px) 100vw, (max-width: 1050px) 42vw, 21vw"
                         />
                       ) : (
-                        <span aria-hidden="true">{recipe.name.slice(0, 1)}</span>
+                        <div className="category-preview">
+                          <span aria-hidden="true">{recipeCategoryIcon(recipe.category)}</span>
+                          <small>{recipe.category}</small>
+                        </div>
                       )}
                     </div>
                     <div className="recipe-content">
@@ -598,9 +618,13 @@ function RecipeDetail({
   onClose: () => void;
 }) {
   const hasIngredient = (ingredient: Ingredient) =>
+    isAssumedPantryIngredient(ingredient) ||
     pantry.some((pantryItem) => ingredientMatchesQuery(ingredient, pantryItem));
   const missing = recipe.ingredients.filter(
-    (ingredient) => !ingredient.optional && !hasIngredient(ingredient),
+    (ingredient) =>
+      !ingredient.optional &&
+      !isAssumedPantryIngredient(ingredient) &&
+      !hasIngredient(ingredient),
   );
 
   return (
@@ -620,7 +644,9 @@ function RecipeDetail({
           />
         )}
         <div className="detail-heading">
-          <p className="eyebrow">{missing.length === 0 && pantry.length > 0 ? "Podés hacerla ahora" : "Receta guardada"}</p>
+          <p className="eyebrow">
+            {recipe.category} · {missing.length === 0 && pantry.length > 0 ? "Podés hacerla ahora" : "Receta guardada"}
+          </p>
           <h2 id="detail-title">{recipe.name}</h2>
           <p>{recipe.description}</p>
           {recipe.nutrients.length > 0 && (
@@ -639,10 +665,12 @@ function RecipeDetail({
             <ul className="ingredient-list">
               {recipe.ingredients.map((ingredient) => {
                 const available = hasIngredient(ingredient);
+                const assumed = isAssumedPantryIngredient(ingredient);
                 return (
                   <li key={`${ingredient.id}-${ingredient.name}`} className={available ? "available" : ""}>
                     <span>{available ? "✓" : "○"}</span>
                     {ingredientLabel(ingredient)}
+                    {assumed && <small className="staple-note">básico</small>}
                   </li>
                 );
               })}

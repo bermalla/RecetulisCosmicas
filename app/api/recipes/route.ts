@@ -3,6 +3,7 @@ import { ensureSchema, getDb } from "../../../db";
 import { appMeta, recipeIngredients, recipes } from "../../../db/schema";
 import {
   mergeNutrients,
+  normalizeRecipeCategory,
   reviewRecipeDuplicates,
 } from "../../../lib/recipe-intelligence";
 
@@ -18,6 +19,7 @@ type RecipeInput = {
   id?: string;
   name?: string;
   description?: string;
+  category?: string | null;
   instructions?: string[] | string;
   durationMinutes?: number | null;
   servings?: number | null;
@@ -120,6 +122,7 @@ function cleanRecipe(input: RecipeInput, preserveId = false) {
     id: preserveId && input.id ? String(input.id) : crypto.randomUUID(),
     name,
     description: String(input.description ?? "").trim(),
+    category: normalizeRecipeCategory(input.category, name),
     instructions: instructionsToArray(input.instructions),
     nutrients: mergeNutrients(nutrientsToArray(input.nutrients ?? []), ingredientsList),
     durationMinutes:
@@ -175,6 +178,7 @@ async function saveRecipe(recipe: CleanRecipe) {
       id: recipe.id,
       name: recipe.name,
       description: recipe.description,
+      category: recipe.category,
       instructions: JSON.stringify(recipe.instructions),
       nutrients: JSON.stringify(recipe.nutrients),
       durationMinutes: recipe.durationMinutes,
@@ -188,6 +192,7 @@ async function saveRecipe(recipe: CleanRecipe) {
       set: {
         name: recipe.name,
         description: recipe.description,
+        category: recipe.category,
         instructions: JSON.stringify(recipe.instructions),
         nutrients: JSON.stringify(recipe.nutrients),
         durationMinutes: recipe.durationMinutes,
@@ -240,6 +245,7 @@ async function readAllRecipes() {
     }));
     return {
       ...recipe,
+      category: normalizeRecipeCategory(recipe.category, recipe.name),
       instructions: instructionsToArray(recipe.instructions),
       nutrients: mergeNutrients(nutrientsToArray(recipe.nutrients), ingredients),
       ingredients,
@@ -313,6 +319,7 @@ export async function POST(request: Request) {
         ids,
         review: cleanedRecipes.map((recipe) => ({
           name: recipe.name,
+          category: recipe.category,
           nutrients: recipe.nutrients,
         })),
       },

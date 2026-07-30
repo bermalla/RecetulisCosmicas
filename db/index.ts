@@ -24,6 +24,7 @@ export async function ensureSchema() {
         id text PRIMARY KEY NOT NULL,
         name text NOT NULL,
         description text DEFAULT '' NOT NULL,
+        category text DEFAULT '' NOT NULL,
         instructions text DEFAULT '[]' NOT NULL,
         nutrients text DEFAULT '[]' NOT NULL,
         duration_minutes integer,
@@ -62,6 +63,15 @@ export async function ensureSchema() {
   try {
     await d1
       .prepare("ALTER TABLE recipes ADD COLUMN nutrients text DEFAULT '[]' NOT NULL")
+      .run();
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    if (!message.toLowerCase().includes("duplicate column")) throw error;
+  }
+
+  try {
+    await d1
+      .prepare("ALTER TABLE recipes ADD COLUMN category text DEFAULT '' NOT NULL")
       .run();
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);

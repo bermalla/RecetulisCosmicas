@@ -1,0 +1,6608 @@
+{
+  "recipes": [
+    {
+      "name": "Pan de lenteja",
+      "description": "Pan de lenteja. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 11.",
+      "instructions": [
+        "Procesar las lentejas activadas y mezclarlas con el resto de los ingredientes.",
+        "Colocar en un molde aceitado y enharinado o cubierto con papel manteca.",
+        "Hornear a temperatura moderada durante 30 a 40 minutos, o hasta que esté cocido."
+      ],
+      "ingredients": [
+        {
+          "name": "lentejas activadas",
+          "quantity": "2",
+          "unit": "tazas",
+          "optional": false
+        },
+        {
+          "name": "harina integral",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "linaza o semillas de lino molidas",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "sal y especias",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "aceite de girasol alto oleico",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro",
+        "Omega 3"
+      ]
+    },
+    {
+      "name": "Pizza de arroz con dos ingredientes",
+      "description": "Pizza de arroz con dos ingredientes. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 12.",
+      "instructions": [
+        "Mezclar el arroz, la harina de garbanzo y agua agregada de a poco hasta obtener una preparación semilíquida.",
+        "Extender en una placa aceitada, molde de silicona o papel manteca.",
+        "Hornear entre 20 y 30 minutos, hasta que la base quede crocante.",
+        "Agregar salsa, queso vegetal y orégano u otras cubiertas a gusto."
+      ],
+      "ingredients": [
+        {
+          "name": "arroz yamaní cocido",
+          "quantity": "300",
+          "unit": "g",
+          "optional": false
+        },
+        {
+          "name": "harina de garbanzo",
+          "quantity": "1",
+          "unit": "cucharada generosa",
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "cantidad necesaria",
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "salsa de tomate",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "queso vegetal",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "orégano fresco",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina C",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Trufas de alubias y maní",
+      "description": "Trufas de alubias y maní. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 13.",
+      "instructions": [
+        "Procesar las alubias con un poco de agua y sumar la mantequilla de maní y los demás ingredientes.",
+        "Formar bolitas y pasarlas por maní y nueces procesadas, coco rallado o cacao.",
+        "Conservar en frío; también pueden congelarse hasta un mes."
+      ],
+      "ingredients": [
+        {
+          "name": "porotos alubias cocidos",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "mantequilla de maní",
+          "quantity": "1",
+          "unit": "cucharada generosa",
+          "optional": false
+        },
+        {
+          "name": "coco rallado",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "azúcar o endulzante",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "ralladura de limón",
+          "quantity": "1",
+          "unit": "limón",
+          "optional": false
+        },
+        {
+          "name": "extracto de vainilla",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "sal",
+          "quantity": "1",
+          "unit": "pizca",
+          "optional": false
+        },
+        {
+          "name": "maní y nueces procesadas",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "cacao amargo",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina C",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Brownie de porotos negros y dátiles",
+      "description": "Brownie de porotos negros y dátiles. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 14.",
+      "instructions": [
+        "Unir todos los ingredientes hasta obtener una pasta espesa, no líquida.",
+        "Distribuir en un molde y hornear a temperatura media durante 20 minutos.",
+        "Retirar cuando esté cocido pero todavía tierno por dentro."
+      ],
+      "ingredients": [
+        {
+          "name": "porotos negros cocidos y procesados",
+          "quantity": "2",
+          "unit": "tazas",
+          "optional": false
+        },
+        {
+          "name": "harina de avena",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "coco rallado",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "cacao amargo",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "dátiles remojados y procesados",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "agua, bebida vegetal o café",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "extracto de vainilla",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "polvo para hornear",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "sal",
+          "quantity": "1",
+          "unit": "pizca",
+          "optional": false
+        },
+        {
+          "name": "chips de chocolate amargo",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "nueces",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Ralladito vegetal de semillas",
+      "description": "Ralladito vegetal de semillas. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 15.",
+      "instructions": [
+        "Procesar previamente las semillas.",
+        "Mezclar las semillas molidas con la levadura nutricional.",
+        "Guardar en un recipiente cerrado en la heladera por un máximo de una semana."
+      ],
+      "ingredients": [
+        {
+          "name": "semillas de sésamo molidas",
+          "quantity": "50",
+          "unit": "g",
+          "optional": false
+        },
+        {
+          "name": "semillas de calabaza procesadas",
+          "quantity": "50",
+          "unit": "g",
+          "optional": false
+        },
+        {
+          "name": "levadura nutricional",
+          "quantity": "100",
+          "unit": "g",
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Tofudelfia",
+      "description": "Tofudelfia. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 16.",
+      "instructions": [
+        "Hervir el tofu entre 2 y 5 minutos.",
+        "Colocarlo en un recipiente con sal, levadura nutricional, condimentos, un chorrito de agua y el aceite.",
+        "Procesar hasta obtener una crema homogénea."
+      ],
+      "ingredients": [
+        {
+          "name": "tofu",
+          "quantity": "150",
+          "unit": "g",
+          "optional": false
+        },
+        {
+          "name": "levadura nutricional",
+          "quantity": "2",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "sal",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "pimienta",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "condimentos a gusto",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "1",
+          "unit": "chorrito",
+          "optional": false
+        },
+        {
+          "name": "aceite",
+          "quantity": "2 a 3",
+          "unit": "cucharadas",
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Bizcochuelo húmedo de cacao",
+      "description": "Bizcochuelo húmedo de cacao. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 18.",
+      "instructions": [
+        "Mezclar los ingredientes secos.",
+        "Agregar los líquidos y homogeneizar sin batir; sumar agua si fuera necesario.",
+        "Colocar en un molde aceitado y hornear a temperatura moderada unos 20 minutos, o hasta que esté cocido."
+      ],
+      "ingredients": [
+        {
+          "name": "harina integral",
+          "quantity": "2",
+          "unit": "tazas",
+          "optional": false
+        },
+        {
+          "name": "harina de garbanzo",
+          "quantity": "1/4",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "azúcar integral",
+          "quantity": "3/4",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "cacao amargo",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "polvo para hornear",
+          "quantity": "1",
+          "unit": "cucharadita",
+          "optional": false
+        },
+        {
+          "name": "bicarbonato de sodio",
+          "quantity": "1",
+          "unit": "cucharadita",
+          "optional": false
+        },
+        {
+          "name": "sal",
+          "quantity": "1",
+          "unit": "pizca",
+          "optional": false
+        },
+        {
+          "name": "aceite de girasol",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "café, agua o bebida vegetal",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "agua adicional",
+          "quantity": "cantidad necesaria",
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Torta invertida de manzana",
+      "description": "Torta invertida de manzana. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 19.",
+      "instructions": [
+        "Aceitar una fuente, espolvorear una pequeña cantidad de azúcar y cubrir la base con dos manzanas cortadas.",
+        "Rallar la tercera manzana y mezclarla con el resto de los ingredientes hasta obtener una preparación húmeda.",
+        "Volcar sobre las manzanas y hornear a temperatura media durante 30 minutos.",
+        "Desmoldar mientras todavía está tibia o caliente."
+      ],
+      "ingredients": [
+        {
+          "name": "manzanas grandes",
+          "quantity": "3",
+          "unit": "unidades",
+          "optional": false
+        },
+        {
+          "name": "harina integral de trigo",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "harina de garbanzo",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "azúcar integral de caña",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "polvo para hornear",
+          "quantity": "1",
+          "unit": "cucharadita",
+          "optional": false
+        },
+        {
+          "name": "sal",
+          "quantity": "1",
+          "unit": "pizca",
+          "optional": false
+        },
+        {
+          "name": "aceite de girasol",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "jugo y ralladura de naranja",
+          "quantity": "2",
+          "unit": "naranjas",
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "canela",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "coco rallado",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "pasas de uva",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "nueces",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina C",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Bocaditos de avena, banana y cacao",
+      "description": "Bocaditos de avena, banana y cacao. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 20.",
+      "instructions": [
+        "Unir todos los ingredientes y homogeneizar sin batir.",
+        "Distribuir porciones en una placa o moldes.",
+        "Hornear a temperatura moderada durante 15 minutos."
+      ],
+      "ingredients": [
+        {
+          "name": "avena instantánea remojada",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "harina de garbanzo",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": true
+        },
+        {
+          "name": "cacao amargo",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "polvo para hornear",
+          "quantity": "1",
+          "unit": "cucharadita",
+          "optional": false
+        },
+        {
+          "name": "banana madura pisada",
+          "quantity": "1",
+          "unit": "unidad",
+          "optional": false
+        },
+        {
+          "name": "azúcar integral",
+          "quantity": "2",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Pan integral proteico",
+      "description": "Pan integral proteico. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 21.",
+      "instructions": [
+        "Tamizar las harinas y mezclarlas con los demás ingredientes secos.",
+        "Agregar el aceite y el agua, homogeneizar y amasar durante 15 minutos.",
+        "Dejar leudar 20 minutos.",
+        "Hornear a temperatura moderada-baja durante unos 30 minutos, o hasta que esté cocido."
+      ],
+      "ingredients": [
+        {
+          "name": "harina integral de trigo",
+          "quantity": "400",
+          "unit": "g",
+          "optional": false
+        },
+        {
+          "name": "harina de quinoa",
+          "quantity": "200",
+          "unit": "g",
+          "optional": false
+        },
+        {
+          "name": "harina de garbanzo",
+          "quantity": "100",
+          "unit": "g",
+          "optional": false
+        },
+        {
+          "name": "levadura seca",
+          "quantity": "1/2",
+          "unit": "sobre",
+          "optional": false
+        },
+        {
+          "name": "semillas de lino, chía y amapola",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "sal",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "cúrcuma y masala",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "aceite de girasol",
+          "quantity": "100",
+          "unit": "cc",
+          "optional": false
+        },
+        {
+          "name": "agua tibia",
+          "quantity": "250",
+          "unit": "cc",
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro",
+        "Omega 3"
+      ]
+    },
+    {
+      "name": "Masa de tarta integral",
+      "description": "Masa de tarta integral. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 22.",
+      "instructions": [
+        "Unir los ingredientes secos y agregar el aceite y el agua de a poco.",
+        "Homogeneizar sin amasar en exceso.",
+        "Estirar, colocar en el molde y evitar una cocción excesiva para que no se reseque."
+      ],
+      "ingredients": [
+        {
+          "name": "harina integral de trigo o arroz",
+          "quantity": "150",
+          "unit": "g",
+          "optional": false
+        },
+        {
+          "name": "harina de trigo sarraceno",
+          "quantity": "100",
+          "unit": "g",
+          "optional": false
+        },
+        {
+          "name": "avena instantánea",
+          "quantity": "50",
+          "unit": "g",
+          "optional": false
+        },
+        {
+          "name": "harina de chía, lino o garbanzo",
+          "quantity": "20",
+          "unit": "g",
+          "optional": false
+        },
+        {
+          "name": "polvo para hornear",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "sal y condimentos",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "aceite",
+          "quantity": "50",
+          "unit": "cc",
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "150",
+          "unit": "cc",
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro",
+        "Omega 3"
+      ]
+    },
+    {
+      "name": "Galletas de porotos adzuki y cacao",
+      "description": "Galletas de porotos adzuki y cacao. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 23.",
+      "instructions": [
+        "Procesar todos los ingredientes hasta obtener una pasta.",
+        "Formar y aplastar las galletas; agregar chocolate o nueces si se desea.",
+        "Hornear a temperatura moderada durante unos 20 minutos, o hasta que estén cocidas."
+      ],
+      "ingredients": [
+        {
+          "name": "porotos adzuki cocidos y procesados",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "cacao amargo",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "azúcar integral",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "banana chica madura",
+          "quantity": "1",
+          "unit": "unidad",
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "cantidad necesaria",
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "chocolate amargo",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "nueces",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Brownie de harina de lentejas",
+      "description": "Brownie de harina de lentejas. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 24.",
+      "instructions": [
+        "Mezclar los ingredientes secos.",
+        "Preparar una crema procesando el coco con el agua y agregarla a la mezcla; sumar un poco más de agua si hace falta.",
+        "Distribuir en una fuente y añadir mantequilla de maní y chocolate de forma opcional.",
+        "Hornear a temperatura moderada durante 15 a 20 minutos y servir tibio."
+      ],
+      "ingredients": [
+        {
+          "name": "harina de lentejas",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "harina de arroz integral",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "harina de garbanzo",
+          "quantity": "1",
+          "unit": "cucharada grande",
+          "optional": false
+        },
+        {
+          "name": "polvo para hornear o bicarbonato",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "cacao amargo",
+          "quantity": "2",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "azúcar",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "sal",
+          "quantity": "1",
+          "unit": "pizca",
+          "optional": false
+        },
+        {
+          "name": "extracto de vainilla",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "coco rallado",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "mantequilla de maní",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "chocolate amargo",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Budín de naranja y harinas integrales",
+      "description": "Budín de naranja y harinas integrales. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 25.",
+      "instructions": [
+        "Unir todos los ingredientes y homogeneizar sin batir.",
+        "Colocar en una budinera.",
+        "Hornear a temperatura moderada durante 20 a 30 minutos, o hasta que esté cocido.",
+        "Decorar opcionalmente con glasé de limón o cascaritas de naranja."
+      ],
+      "ingredients": [
+        {
+          "name": "harina integral de arroz",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "harina de quinoa",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "harina de garbanzo",
+          "quantity": "1/3",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "azúcar integral",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "bicarbonato de sodio",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "sal",
+          "quantity": "1",
+          "unit": "pizca",
+          "optional": false
+        },
+        {
+          "name": "aceite de girasol",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "jugo de naranja",
+          "quantity": "2",
+          "unit": "naranjas",
+          "optional": false
+        },
+        {
+          "name": "ralladura de naranja o limón",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "cantidad necesaria",
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina C",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Galletas de lentejas, centeno y limón",
+      "description": "Galletas de lentejas, centeno y limón. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 26.",
+      "instructions": [
+        "Procesar todos los ingredientes hasta formar una pasta.",
+        "Distribuir la preparación en una placa aceitada y dar forma a las galletas.",
+        "Hornear a temperatura moderada durante 20 minutos, o hasta que estén cocidas."
+      ],
+      "ingredients": [
+        {
+          "name": "lentejas cocidas",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "harina de centeno",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "harina de garbanzo",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "azúcar integral",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "aceite de coco o girasol",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "bicarbonato de sodio",
+          "quantity": "1",
+          "unit": "cucharadita",
+          "optional": false
+        },
+        {
+          "name": "sal",
+          "quantity": "1",
+          "unit": "pizca",
+          "optional": false
+        },
+        {
+          "name": "jugo y ralladura de limón",
+          "quantity": "1",
+          "unit": "limón",
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "cantidad necesaria",
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina C",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Trufas de porotos blancos y coco",
+      "description": "Trufas de porotos blancos y coco. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 27.",
+      "instructions": [
+        "Procesar todos los ingredientes hasta obtener una pasta uniforme.",
+        "Formar bolitas.",
+        "Pasarlas por coco rallado o maní crocante si se desea."
+      ],
+      "ingredients": [
+        {
+          "name": "porotos blancos cocidos",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "coco rallado",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "azúcar integral o de coco",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "mantequilla de maní",
+          "quantity": "1",
+          "unit": "cucharada generosa",
+          "optional": false
+        },
+        {
+          "name": "extracto de vainilla",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "canela",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "ralladura de limón",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "coco rallado extra",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "maní crocante",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina C",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Untable de tofu",
+      "description": "Untable de tofu. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 28.",
+      "instructions": [
+        "Colocar todos los ingredientes en un recipiente.",
+        "Procesar hasta obtener una pasta homogénea y untuosa.",
+        "Agregar un poco de agua solamente si fuera necesario."
+      ],
+      "ingredients": [
+        {
+          "name": "tofu",
+          "quantity": "100",
+          "unit": "g",
+          "optional": false
+        },
+        {
+          "name": "levadura nutricional",
+          "quantity": "10",
+          "unit": "g",
+          "optional": false
+        },
+        {
+          "name": "jugo de limón",
+          "quantity": "1/2",
+          "unit": "limón",
+          "optional": false
+        },
+        {
+          "name": "aceite de oliva",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "sal, cúrcuma y pimentón",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "cantidad necesaria",
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina C",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Tofu a la plancha",
+      "description": "Tofu a la plancha. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 28.",
+      "instructions": [
+        "Cortar el tofu en porciones.",
+        "Opcionalmente, macerarlo desde el día anterior en salsa de soja y condimentos.",
+        "Cocinarlo en una plancha o sartén caliente, vuelta y vuelta, hasta que quede sellado."
+      ],
+      "ingredients": [
+        {
+          "name": "tofu",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "condimentos a gusto",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "salsa de soja",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Tofu revuelto",
+      "description": "Tofu revuelto. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 29.",
+      "instructions": [
+        "Desgranar el tofu con las manos.",
+        "Saltearlo con cúrcuma, pimienta y los condimentos elegidos.",
+        "Terminar con aceite de oliva y, opcionalmente, sal negra."
+      ],
+      "ingredients": [
+        {
+          "name": "tofu",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "cúrcuma",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "pimienta",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "aceite de oliva",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "sal negra",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Licuado de frutas con tofu",
+      "description": "Licuado de frutas con tofu. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 29.",
+      "instructions": [
+        "Hervir el tofu durante un minuto y dejarlo enfriar.",
+        "Licuarlo con las frutas y el hielo.",
+        "Agregar dátiles y coco rallado si se desea una preparación más dulce y cremosa."
+      ],
+      "ingredients": [
+        {
+          "name": "tofu",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "frutas a elección",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "hielo",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "dátiles",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "coco rallado",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Pizza de garbanzos y arroz integral",
+      "description": "Pizza de garbanzos y arroz integral. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 30.",
+      "instructions": [
+        "Remojar juntos los garbanzos y el arroz integral durante al menos 12 horas, cambiando el agua si el remojo se prolonga.",
+        "Escurrir y licuar con muy poca agua hasta formar una pasta espesa.",
+        "Condimentar, extender en una fuente para pizza y hornear unos 30 minutos, hasta que quede crocante."
+      ],
+      "ingredients": [
+        {
+          "name": "garbanzos crudos",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "arroz integral crudo",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "cantidad necesaria",
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "kéfir",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "sal",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "ajo en polvo",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "pimentón",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Medallones de garbanzos y arroz integral",
+      "description": "Medallones de garbanzos y arroz integral. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 30.",
+      "instructions": [
+        "Remojar juntos los garbanzos y el arroz integral durante al menos 12 horas.",
+        "Escurrir y licuar con muy poca agua hasta obtener una pasta espesa.",
+        "Condimentar, formar medallones con las manos y rebozarlos con harina de maíz o polenta.",
+        "Hornear sobre una placa caliente hasta que estén firmes y dorados."
+      ],
+      "ingredients": [
+        {
+          "name": "garbanzos crudos",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "arroz integral crudo",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "cantidad necesaria",
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "kéfir",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "condimentos a gusto",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "harina de maíz o polenta",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Pepas de porotos mung y algarroba",
+      "description": "Pepas de porotos mung y algarroba. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 32.",
+      "instructions": [
+        "Unir todos los ingredientes de la masa hasta que resulte fácil de manipular.",
+        "Formar bolitas, hacer un hueco central y rellenar con membrillo u otro dulce.",
+        "Hornear a temperatura media durante 20 minutos y dejar enfriar con cuidado porque su textura es delicada."
+      ],
+      "ingredients": [
+        {
+          "name": "porotos mung cocidos y procesados",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "harina de algarroba",
+          "quantity": "1/4",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "azúcar mascabo",
+          "quantity": "1/4",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "cacao amargo",
+          "quantity": "1/4",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "harina de arroz",
+          "quantity": "1/4",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "aceite de coco o girasol",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "cantidad necesaria",
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "dulce de membrillo",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Torta invertida de manzana y porotos blancos",
+      "description": "Torta invertida de manzana y porotos blancos. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 33.",
+      "instructions": [
+        "Procesar la avena remojada con el agua para obtener una bebida vegetal.",
+        "Espolvorear parte del azúcar en una fuente y cubrir la base con manzanas laminadas.",
+        "Procesar los porotos con la bebida de avena, el jugo y la ralladura de naranja; sumar los demás ingredientes.",
+        "Volcar sobre las manzanas y hornear a temperatura moderada durante unos 30 minutos."
+      ],
+      "ingredients": [
+        {
+          "name": "porotos blancos cocidos",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "azúcar integral o pasta de frutas secas",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "harina de centeno",
+          "quantity": "1/4",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "avena remojada",
+          "quantity": "1/4",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "manzanas",
+          "quantity": "2",
+          "unit": "unidades",
+          "optional": false
+        },
+        {
+          "name": "jugo y ralladura de naranja",
+          "quantity": "1",
+          "unit": "naranja",
+          "optional": false
+        },
+        {
+          "name": "extracto de vainilla",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "coco rallado",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "canela",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina C",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "NoTortilla de porotos adzuki",
+      "description": "NoTortilla de porotos adzuki. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 34.",
+      "instructions": [
+        "Diluir la harina de arroz en el agua para preparar el ligue.",
+        "Procesar los porotos y saltear el puerro y la cebolla.",
+        "Unir todo con la coliflor y los condimentos hasta obtener una pasta espesa.",
+        "Cocinar en una sartén antiadherente, con paciencia, hasta que la tortilla esté firme."
+      ],
+      "ingredients": [
+        {
+          "name": "porotos adzuki cocidos",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "puerro y cebolla salteados",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "coliflor cocida",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "harina de arroz integral",
+          "quantity": "1/4",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "sal y especias",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina C",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Alfajorcitos de porotos blancos",
+      "description": "Alfajorcitos de porotos blancos. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 35.",
+      "instructions": [
+        "Procesar los porotos y agregar los ingredientes secos hasta formar una pasta.",
+        "Formar las tapitas con manga o con las manos húmedas.",
+        "Hornear a temperatura moderada durante unos 15 minutos.",
+        "Enfriar y rellenar con mantequilla de maní, pasta de dátiles u otro relleno a elección."
+      ],
+      "ingredients": [
+        {
+          "name": "porotos blancos cocidos",
+          "quantity": "1 1/2",
+          "unit": "tazas",
+          "optional": false
+        },
+        {
+          "name": "harina de avena",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "harina de garbanzo",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "azúcar mascabo",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "bicarbonato de sodio",
+          "quantity": "1",
+          "unit": "cucharadita",
+          "optional": false
+        },
+        {
+          "name": "ralladura de naranja",
+          "quantity": "1",
+          "unit": "naranja",
+          "optional": false
+        },
+        {
+          "name": "jugo de naranja",
+          "quantity": "cantidad necesaria",
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "relleno a elección",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina C",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Tarta de frutillas con base de porotos negros",
+      "description": "Tarta de frutillas con base de porotos negros. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 36.",
+      "instructions": [
+        "Procesar los ingredientes de la base y hornearla durante unos 15 minutos.",
+        "Procesar el tofu con naranja, vainilla y canela hasta obtener una crema.",
+        "Procesar los dátiles remojados para formar una pasta.",
+        "Cubrir la base con la pasta de dátiles, luego con la crema de tofu y terminar con frutillas."
+      ],
+      "ingredients": [
+        {
+          "name": "porotos negros cocidos",
+          "quantity": "2",
+          "unit": "tazas",
+          "optional": false
+        },
+        {
+          "name": "azúcar integral",
+          "quantity": "1/4",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "cacao amargo",
+          "quantity": "1/4",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "extracto de vainilla",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "pimienta",
+          "quantity": "1",
+          "unit": "pizca",
+          "optional": false
+        },
+        {
+          "name": "harina de arroz integral",
+          "quantity": "1/4",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "agua o bebida vegetal",
+          "quantity": "cantidad necesaria",
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "tofu blando",
+          "quantity": "150",
+          "unit": "g",
+          "optional": false
+        },
+        {
+          "name": "jugo y ralladura de naranja",
+          "quantity": "1",
+          "unit": "naranja",
+          "optional": false
+        },
+        {
+          "name": "canela",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "dátiles",
+          "quantity": "15",
+          "unit": "unidades",
+          "optional": false
+        },
+        {
+          "name": "frutillas",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina C",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Trufas de okara, porotos rojos y dátiles",
+      "description": "Trufas de okara, porotos rojos y dátiles. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 37.",
+      "instructions": [
+        "Mezclar y procesar todos los ingredientes.",
+        "Agregar un poco de agua o bebida vegetal si la pasta no se puede moldear.",
+        "Probar el dulzor y ajustar con más dátiles si se desea.",
+        "Formar las trufas y cubrirlas con coco rallado."
+      ],
+      "ingredients": [
+        {
+          "name": "okara o bagazo de maní",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "porotos rojos cocidos y procesados",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "dátiles remojados y procesados",
+          "quantity": "10",
+          "unit": "unidades",
+          "optional": false
+        },
+        {
+          "name": "cacao amargo",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "canela, ralladura de naranja, jengibre y pimienta",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "coco rallado",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "agua o bebida vegetal",
+          "quantity": "cantidad necesaria",
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina C",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Pan chato de garbanzos, arroz y sarraceno",
+      "description": "Pan chato de garbanzos, arroz y sarraceno. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 38.",
+      "instructions": [
+        "Remojar los granos durante más de 12 horas y escurrirlos.",
+        "Licuar con agua hasta que el nivel supere aproximadamente 2 cm los ingredientes.",
+        "Volcar en una placa; usar harina de maíz para evitar que se pegue y agregar brotes si se desea.",
+        "Hornear a temperatura moderada durante unos 40 minutos, o hasta que esté cocido."
+      ],
+      "ingredients": [
+        {
+          "name": "garbanzos secos",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "arroz yamaní seco",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "trigo sarraceno seco",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "cantidad necesaria",
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "harina de maíz",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "brotes de lentejas",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Pan dulce de alubias",
+      "description": "Pan dulce de alubias. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 39.",
+      "instructions": [
+        "Preparar un fermento con levadura, agua tibia, una cucharadita de azúcar y una de harina.",
+        "Procesar los porotos con esencias, limón, aceite y dátiles; mezclar aparte la harina, el coco y la sal.",
+        "Integrar todo, amasar 10 minutos y dejar leudar 20 minutos.",
+        "Agregar frutos secos, colocar en moldes y dejar leudar otros 15 minutos.",
+        "Hornear a temperatura moderada-baja durante unos 20 minutos."
+      ],
+      "ingredients": [
+        {
+          "name": "porotos alubias cocidos",
+          "quantity": "1 1/2",
+          "unit": "tazas",
+          "optional": false
+        },
+        {
+          "name": "harina integral de trigo",
+          "quantity": "3/4",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "coco rallado",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "dátiles remojados",
+          "quantity": "8",
+          "unit": "unidades",
+          "optional": false
+        },
+        {
+          "name": "levadura fresca",
+          "quantity": "25",
+          "unit": "g",
+          "optional": false
+        },
+        {
+          "name": "frutos secos",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "esencia de vainilla o azahar",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "jugo y ralladura de limón",
+          "quantity": "1",
+          "unit": "limón",
+          "optional": false
+        },
+        {
+          "name": "aceite de coco",
+          "quantity": "2",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "agua tibia",
+          "quantity": "1/3",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "azúcar",
+          "quantity": "1",
+          "unit": "cucharadita",
+          "optional": false
+        },
+        {
+          "name": "harina",
+          "quantity": "1",
+          "unit": "cucharadita",
+          "optional": false
+        },
+        {
+          "name": "sal",
+          "quantity": "1",
+          "unit": "pizca",
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina C",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Torre de dosas de lentejas",
+      "description": "Torre de dosas de lentejas. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 40.",
+      "instructions": [
+        "Remojar lentejas y arroz durante más de 12 horas y escurrir.",
+        "Procesar con el agua hasta obtener una pasta similar a la de panqueques, pero algo más espesa.",
+        "Cocinar porciones en una sartén a fuego medio.",
+        "Apilar las dosas con vegetales y Tofudelfia u otros rellenos."
+      ],
+      "ingredients": [
+        {
+          "name": "lentejas remojadas",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "arroz yamaní remojado",
+          "quantity": "1/3",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "casi 2",
+          "unit": "tazas",
+          "optional": false
+        },
+        {
+          "name": "vegetales a elección",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "Tofudelfia",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Mezcla horneada de avena, chía y cacao",
+      "description": "Mezcla horneada de avena, chía y cacao. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 41.",
+      "instructions": [
+        "Remojar la avena y la chía en el líquido durante al menos dos horas en la heladera.",
+        "Agregar los demás ingredientes y sumar agua si la mezcla está demasiado espesa.",
+        "Distribuir en una placa y hornear a temperatura moderada durante unos 30 minutos."
+      ],
+      "ingredients": [
+        {
+          "name": "avena fina",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "semillas de chía",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "kéfir, agua o bebida vegetal",
+          "quantity": "1 1/2",
+          "unit": "tazas",
+          "optional": false
+        },
+        {
+          "name": "dátiles remojados",
+          "quantity": "5",
+          "unit": "unidades",
+          "optional": false
+        },
+        {
+          "name": "arándanos secos",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "coco rallado",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "cacao amargo",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "aceite de coco",
+          "quantity": "1",
+          "unit": "cucharadita",
+          "optional": false
+        },
+        {
+          "name": "bicarbonato de sodio",
+          "quantity": "1",
+          "unit": "cucharadita",
+          "optional": false
+        },
+        {
+          "name": "ralladura cítrica, café o canela",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "frutos secos o chocolate amargo",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro",
+        "Omega 3"
+      ]
+    },
+    {
+      "name": "Galletas sin gluten de garbanzos y pera",
+      "description": "Galletas sin gluten de garbanzos y pera. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 42.",
+      "instructions": [
+        "Procesar los garbanzos con la pera y un poco de agua.",
+        "Agregar las harinas, el coco y los extras elegidos hasta formar una pasta moldeable.",
+        "Dar forma a las galletas y hornear a temperatura moderada-baja durante 15 minutos."
+      ],
+      "ingredients": [
+        {
+          "name": "garbanzos cocidos",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "harina de arroz integral",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "harina de algarroba",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "coco rallado",
+          "quantity": "2",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "pera madura",
+          "quantity": "1",
+          "unit": "unidad",
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "cantidad necesaria",
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "canela y ralladura de naranja",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "jugo de naranja",
+          "quantity": "1/2",
+          "unit": "naranja",
+          "optional": true
+        },
+        {
+          "name": "frutos secos y arándanos secos",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina C",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Torta de remolacha, cacao y algarroba",
+      "description": "Torta de remolacha, cacao y algarroba. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 43.",
+      "instructions": [
+        "Procesar las remolachas.",
+        "Unirlas con todos los demás ingredientes hasta obtener una pasta cremosa con cuerpo.",
+        "Agregar un poco más de líquido si hiciera falta.",
+        "Hornear a temperatura moderada durante unos 30 minutos, o hasta que esté cocida."
+      ],
+      "ingredients": [
+        {
+          "name": "remolachas cocidas grandes",
+          "quantity": "4",
+          "unit": "unidades",
+          "optional": false
+        },
+        {
+          "name": "harina de centeno",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "harina integral de trigo",
+          "quantity": "3/4",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "harina de algarroba",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "cacao amargo",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "bicarbonato de sodio",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "azúcar integral",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "aceite",
+          "quantity": "2",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "sal, canela y ralladura de naranja",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "jugo de naranja",
+          "quantity": "1",
+          "unit": "naranja",
+          "optional": false
+        },
+        {
+          "name": "vinagre o kéfir",
+          "quantity": "1",
+          "unit": "chorrito",
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Ácido fólico",
+        "Vitamina C",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Pepas del amor de porotos alubias",
+      "description": "Pepas del amor de porotos alubias. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 44.",
+      "instructions": [
+        "Unir todos los ingredientes de la masa hasta obtener una pasta moldeable.",
+        "Formar bolitas, aplastarlas y hacer un hueco en el centro.",
+        "Rellenar con dulce de membrillo u otro dulce.",
+        "Hornear a temperatura moderada durante unos 20 minutos."
+      ],
+      "ingredients": [
+        {
+          "name": "porotos alubias cocidos y procesados",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "harina de arroz integral",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "coco rallado",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "azúcar integral",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "aceite de girasol o coco",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "sal, ralladura de limón, jengibre y cúrcuma",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "1/3",
+          "unit": "taza",
+          "optional": true
+        },
+        {
+          "name": "dulce de membrillo",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina C",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Medallones de papa y porotos mung",
+      "description": "Medallones de papa y porotos mung. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 45.",
+      "instructions": [
+        "Pisar la papa y unirla con los porotos, la harina de garbanzo, el ácido y los condimentos.",
+        "Con las manos húmedas, formar los medallones.",
+        "Rebozarlos con harina de maíz fina.",
+        "Hornear hasta que estén firmes y dorados."
+      ],
+      "ingredients": [
+        {
+          "name": "papa mediana cocida",
+          "quantity": "1",
+          "unit": "unidad",
+          "optional": false
+        },
+        {
+          "name": "porotos mung cocidos",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "harina de garbanzo",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "pimentón, levadura nutricional, sal y pimienta",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "harina de maíz fina",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "vinagre o jugo de limón",
+          "quantity": "1",
+          "unit": "chorrito",
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina C",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Pasta frola de garbanzos",
+      "description": "Pasta frola de garbanzos. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 46.",
+      "instructions": [
+        "Procesar los ingredientes de la masa.",
+        "Extender la mayor parte en una fuente y cubrir con el dulce de membrillo ablandado.",
+        "Decorar con un enrejado o figuras hechas con la masa restante.",
+        "Hornear unos 30 minutos, sin excederse para evitar que se endurezca."
+      ],
+      "ingredients": [
+        {
+          "name": "garbanzos cocidos",
+          "quantity": "2",
+          "unit": "tazas",
+          "optional": false
+        },
+        {
+          "name": "harina integral",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "azúcar integral",
+          "quantity": "2",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "coco rallado",
+          "quantity": "2",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "aceite de coco",
+          "quantity": "2",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "jugo y ralladura de limón",
+          "quantity": "1",
+          "unit": "limón",
+          "optional": false
+        },
+        {
+          "name": "kéfir o agua",
+          "quantity": "1",
+          "unit": "chorrito",
+          "optional": false
+        },
+        {
+          "name": "sal",
+          "quantity": "1",
+          "unit": "pizca",
+          "optional": false
+        },
+        {
+          "name": "dulce de membrillo",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina C",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Crumble de manzana y quinoa",
+      "description": "Crumble de manzana y quinoa. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 47.",
+      "instructions": [
+        "Cortar las manzanas y mezclarlas con parte del azúcar y la ralladura de naranja.",
+        "Colocarlas en una fuente para horno.",
+        "Mezclar la quinoa con el azúcar restante y el coco, distribuir por encima y presionar.",
+        "Hornear a temperatura moderada-baja durante unos 40 minutos, hasta que la superficie esté crocante."
+      ],
+      "ingredients": [
+        {
+          "name": "manzanas verdes",
+          "quantity": "3",
+          "unit": "unidades",
+          "optional": false
+        },
+        {
+          "name": "quinoa cocida",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "coco rallado",
+          "quantity": "2",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "azúcar integral",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "aceite de coco",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "jugo y ralladura de naranja",
+          "quantity": "1",
+          "unit": "naranja",
+          "optional": false
+        },
+        {
+          "name": "sal",
+          "quantity": "1",
+          "unit": "pizca",
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Ácido fólico",
+        "Vitamina C",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Snacks de garbanzos",
+      "description": "Snacks de garbanzos. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 48.",
+      "instructions": [
+        "Diluir la harina de garbanzo en el agua y agregar el vinagre o limón.",
+        "Procesar esa mezcla con los garbanzos, la harina de sarraceno y los condimentos.",
+        "Formar palitos con una manga o con las manos.",
+        "Hornear a temperatura moderada-baja durante 30 a 40 minutos."
+      ],
+      "ingredients": [
+        {
+          "name": "garbanzos cocidos",
+          "quantity": "3",
+          "unit": "tazas",
+          "optional": false
+        },
+        {
+          "name": "harina de garbanzo",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "3",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "vinagre o jugo de limón",
+          "quantity": "1",
+          "unit": "chorrito",
+          "optional": false
+        },
+        {
+          "name": "harina de trigo sarraceno",
+          "quantity": "2",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "pimentón, sal y orégano",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina C",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Lemon pie de legumbres",
+      "description": "Lemon pie de legumbres. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 49.",
+      "instructions": [
+        "Procesar los ingredientes de la base, distribuir en un molde y hornear unos 30 minutos sin resecar.",
+        "Unir en frío los ingredientes del relleno y cocinar a fuego suave-medio, revolviendo, hasta que hierva y espese.",
+        "Volcar el relleno sobre la base y refrigerar.",
+        "Batir la aquafaba hasta montar; incorporar lentamente el azúcar, el cremor tártaro y la goma xántica sin dejar de batir.",
+        "Cubrir con el merengue y, de manera opcional, darle un golpe breve de horno."
+      ],
+      "ingredients": [
+        {
+          "name": "garbanzos cocidos",
+          "quantity": "2",
+          "unit": "tazas",
+          "optional": false
+        },
+        {
+          "name": "harina integral",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "azúcar integral para la base",
+          "quantity": "2",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "coco rallado",
+          "quantity": "2",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "aceite de coco para la base",
+          "quantity": "2",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "jugo y ralladura de limón para la base",
+          "quantity": "1",
+          "unit": "limón",
+          "optional": false
+        },
+        {
+          "name": "kéfir o agua",
+          "quantity": "1",
+          "unit": "chorrito",
+          "optional": false
+        },
+        {
+          "name": "sal",
+          "quantity": "1",
+          "unit": "pizca",
+          "optional": false
+        },
+        {
+          "name": "agua para el relleno",
+          "quantity": "500",
+          "unit": "ml",
+          "optional": false
+        },
+        {
+          "name": "jugo de limón para el relleno",
+          "quantity": "3",
+          "unit": "limones",
+          "optional": false
+        },
+        {
+          "name": "ralladura de limón para el relleno",
+          "quantity": "2",
+          "unit": "limones",
+          "optional": false
+        },
+        {
+          "name": "azúcar para el relleno",
+          "quantity": "70",
+          "unit": "g",
+          "optional": false
+        },
+        {
+          "name": "almidón de maíz",
+          "quantity": "50",
+          "unit": "g",
+          "optional": false
+        },
+        {
+          "name": "puré de porotos blancos",
+          "quantity": "100",
+          "unit": "g",
+          "optional": false
+        },
+        {
+          "name": "aceite de coco para el relleno",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "cúrcuma",
+          "quantity": "1",
+          "unit": "cucharadita",
+          "optional": false
+        },
+        {
+          "name": "aquafaba",
+          "quantity": "2/3",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "azúcar para el merengue",
+          "quantity": "2/3",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "cremor tártaro",
+          "quantity": "1",
+          "unit": "cucharadita",
+          "optional": false
+        },
+        {
+          "name": "goma xántica",
+          "quantity": "1",
+          "unit": "cucharadita",
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina C",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Trifle vegano de quinoa y porotos negros",
+      "description": "Trifle vegano de quinoa y porotos negros. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 50.",
+      "instructions": [
+        "Hornear la quinoa cocida hasta que se seque y quede crocante; sumar frutos secos, azúcar y canela.",
+        "Procesar los ingredientes de la crema de porotos, agregando agua o bebida vegetal si hace falta.",
+        "Armar capas alternadas de crema, quinoa crocante y frutas.",
+        "Refrigerar al menos tres horas antes de servir."
+      ],
+      "ingredients": [
+        {
+          "name": "quinoa cocida",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "frutos secos",
+          "quantity": "1",
+          "unit": "puñado",
+          "optional": false
+        },
+        {
+          "name": "azúcar integral para la quinoa",
+          "quantity": "1",
+          "unit": "cucharadita",
+          "optional": true
+        },
+        {
+          "name": "canela",
+          "quantity": "1",
+          "unit": "cucharadita",
+          "optional": true
+        },
+        {
+          "name": "porotos negros cocidos",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "azúcar integral para la crema",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "cacao amargo",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "café",
+          "quantity": "1",
+          "unit": "cucharadita",
+          "optional": false
+        },
+        {
+          "name": "harina de algarroba",
+          "quantity": "1",
+          "unit": "cucharadita",
+          "optional": false
+        },
+        {
+          "name": "aceite de coco",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "sal",
+          "quantity": "1",
+          "unit": "pizca",
+          "optional": false
+        },
+        {
+          "name": "frutas a elección",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Galletas de arvejas y pera",
+      "description": "Galletas de arvejas y pera. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 51.",
+      "instructions": [
+        "Procesar todos los ingredientes hasta lograr una mezcla uniforme.",
+        "Distribuir en una fuente o en moldes y dar la forma deseada.",
+        "Hornear a temperatura moderada durante 20 minutos."
+      ],
+      "ingredients": [
+        {
+          "name": "arvejas cocidas",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "harina de arroz",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "pera madura",
+          "quantity": "1",
+          "unit": "unidad",
+          "optional": false
+        },
+        {
+          "name": "azúcar integral",
+          "quantity": "1",
+          "unit": "cucharadita",
+          "optional": true
+        },
+        {
+          "name": "mantequilla de maní",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "harina adicional",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "ralladura cítrica",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "canela, cacao, coco, café o sésamo",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "White-nie salado de alubias",
+      "description": "White-nie salado de alubias. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 52.",
+      "instructions": [
+        "Diluir la harina de garbanzo en el agua y agregar vinagre o limón.",
+        "Procesar esa mezcla con las alubias, la harina de arroz, el aceite y agua suficiente para obtener una pasta.",
+        "Incorporar aceitunas y condimentos.",
+        "Extender en una fuente aceitada y hornear unos 20 minutos, o hasta que esté firme."
+      ],
+      "ingredients": [
+        {
+          "name": "porotos alubias cocidos y procesados",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "harina de arroz integral",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "harina de garbanzo",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "3",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "vinagre o jugo de limón",
+          "quantity": "1",
+          "unit": "chorrito",
+          "optional": false
+        },
+        {
+          "name": "aceite de oliva",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "agua adicional",
+          "quantity": "cantidad necesaria",
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "aceitunas, orégano, sal, pimentón, pimienta y ají molido",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina C",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Untable de cajú",
+      "description": "Untable de cajú. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 53.",
+      "instructions": [
+        "Remojar las castañas durante más de cuatro horas y escurrir.",
+        "Procesarlas con el líquido, la levadura nutricional y los condimentos.",
+        "Ajustar el líquido hasta obtener una crema untable."
+      ],
+      "ingredients": [
+        {
+          "name": "castañas de cajú remojadas",
+          "quantity": "1",
+          "unit": "vaso",
+          "optional": false
+        },
+        {
+          "name": "agua o bebida vegetal",
+          "quantity": "3/4",
+          "unit": "vaso",
+          "optional": false
+        },
+        {
+          "name": "levadura nutricional",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "pimentón, sal, pimienta y ajo",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Queso firme de cajú",
+      "description": "Queso firme de cajú. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 53.",
+      "instructions": [
+        "Preparar primero el untable de cajú de la receta base.",
+        "Mezclar la mitad del untable con la harina o el almidón y los líquidos.",
+        "Cocinar a fuego mínimo, revolviendo, hasta que espese.",
+        "Pasar a un molde y enfriar para que tome más firmeza."
+      ],
+      "ingredients": [
+        {
+          "name": "untable de cajú",
+          "quantity": "1/2",
+          "unit": "preparación",
+          "optional": false
+        },
+        {
+          "name": "harina de garbanzo o almidón de maíz",
+          "quantity": "1",
+          "unit": "cucharadita",
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "1 1/2",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "vinagre",
+          "quantity": "1 1/2",
+          "unit": "cucharadas",
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Turrón helado de alubias y dátiles",
+      "description": "Turrón helado de alubias y dátiles. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 54.",
+      "instructions": [
+        "Procesar las alubias con la mantequilla de maní, el coco, la bebida vegetal y la vainilla; llevar al congelador.",
+        "Procesar los dátiles con el cacao y la banana.",
+        "Distribuir la crema de dátiles sobre la de alubias, agregando frutillas entre ambas si se desea.",
+        "Terminar con frutos secos o chocolate, congelar y retirar unos minutos antes de servir."
+      ],
+      "ingredients": [
+        {
+          "name": "alubias cocidas",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "mantequilla de maní",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "coco rallado",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "bebida vegetal",
+          "quantity": "1",
+          "unit": "vaso",
+          "optional": false
+        },
+        {
+          "name": "extracto de vainilla",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "dátiles remojados",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "cacao amargo",
+          "quantity": "1",
+          "unit": "cucharada grande",
+          "optional": false
+        },
+        {
+          "name": "banana madura",
+          "quantity": "1/2",
+          "unit": "unidad",
+          "optional": false
+        },
+        {
+          "name": "frutillas",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "frutos secos y chocolate amargo",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina C",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Torta de remolacha, manzana y ciruelas",
+      "description": "Torta de remolacha, manzana y ciruelas. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 55.",
+      "instructions": [
+        "Procesar la remolacha, las frutas secas, la manzana, el azúcar, los aromáticos y el agua.",
+        "Agregar la harina de arroz, el cacao y el coco e integrar sin batir.",
+        "Volcar en un recipiente aceitado y enharinado.",
+        "Hornear durante unos 20 minutos, o hasta que esté cocida."
+      ],
+      "ingredients": [
+        {
+          "name": "remolacha grande cocida",
+          "quantity": "1",
+          "unit": "unidad",
+          "optional": false
+        },
+        {
+          "name": "ciruelas secas o pasas remojadas",
+          "quantity": "7",
+          "unit": "unidades",
+          "optional": false
+        },
+        {
+          "name": "manzana verde rallada",
+          "quantity": "1",
+          "unit": "unidad",
+          "optional": false
+        },
+        {
+          "name": "cacao amargo",
+          "quantity": "2",
+          "unit": "cucharadas generosas",
+          "optional": false
+        },
+        {
+          "name": "harina de arroz",
+          "quantity": "2",
+          "unit": "cucharadas generosas",
+          "optional": false
+        },
+        {
+          "name": "coco rallado",
+          "quantity": "2",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "azúcar",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": true
+        },
+        {
+          "name": "canela, café y ralladura de naranja",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "sal",
+          "quantity": "1",
+          "unit": "pizca",
+          "optional": false
+        },
+        {
+          "name": "bicarbonato de sodio",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "1/2",
+          "unit": "vaso",
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Ácido fólico",
+        "Vitamina C",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Alfarogel de garbanzos",
+      "description": "Alfarogel de garbanzos. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 56.",
+      "instructions": [
+        "Procesar los garbanzos con el líquido, el aceite y la ralladura.",
+        "Agregar los ingredientes secos hasta formar una masa blanda que no requiere amasado.",
+        "Moldear las tapitas con las manos y hornear a temperatura media hasta 20 minutos.",
+        "Enfriar, rellenar y decorar de manera opcional con glasé de limón."
+      ],
+      "ingredients": [
+        {
+          "name": "garbanzos cocidos y procesados",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "harina de arroz",
+          "quantity": "2",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "harina de coco",
+          "quantity": "2",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "fécula de mandioca",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "aceite neutro",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "azúcar",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": true
+        },
+        {
+          "name": "ralladura de limón o naranja",
+          "quantity": "1",
+          "unit": "unidad",
+          "optional": false
+        },
+        {
+          "name": "agua o bebida vegetal",
+          "quantity": "1",
+          "unit": "vaso",
+          "optional": false
+        },
+        {
+          "name": "dulce de leche de almendras o pasta de dátiles",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina C",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Choco no torta de porotos adzuki",
+      "description": "Choco no torta de porotos adzuki. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 57.",
+      "instructions": [
+        "Integrar los ingredientes de las galletas, darles forma y hornear durante 10 a 15 minutos.",
+        "Preparar una crema salada procesando tofu, levadura nutricional, condimentos y agua.",
+        "Preparar una crema dulce procesando los dátiles con bebida vegetal y vainilla.",
+        "Humedecer las galletas cocidas en café y armar capas alternadas con ambas cremas.",
+        "Refrigerar antes de cortar y servir."
+      ],
+      "ingredients": [
+        {
+          "name": "porotos adzuki cocidos y procesados",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "harina de arroz",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "fécula de mandioca",
+          "quantity": "1/3",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "azúcar",
+          "quantity": "1/3",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "sal",
+          "quantity": "1",
+          "unit": "pizca",
+          "optional": false
+        },
+        {
+          "name": "cacao amargo",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "aceite",
+          "quantity": "2",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "1/3",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "tofu",
+          "quantity": "1/4",
+          "unit": "bloque",
+          "optional": false
+        },
+        {
+          "name": "levadura nutricional",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "dátiles remojados",
+          "quantity": "20",
+          "unit": "unidades",
+          "optional": false
+        },
+        {
+          "name": "bebida vegetal o agua",
+          "quantity": "cantidad necesaria",
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "extracto de vainilla",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "café suave",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "chocolate amargo",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Scones de lentejas turcas",
+      "description": "Scones de lentejas turcas. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 58.",
+      "instructions": [
+        "Integrar todos los ingredientes y agregar agua solo si la masa lo necesita.",
+        "Estirar con cuidado y cortar los scones.",
+        "Hornear a temperatura moderada-baja durante 15 a 20 minutos."
+      ],
+      "ingredients": [
+        {
+          "name": "lentejas turcas cocidas",
+          "quantity": "1 1/2",
+          "unit": "tazas",
+          "optional": false
+        },
+        {
+          "name": "harina de arroz",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "almidón de maíz o fécula de mandioca",
+          "quantity": "1",
+          "unit": "cucharada grande",
+          "optional": false
+        },
+        {
+          "name": "harina de garbanzo",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "vinagre o jugo de limón",
+          "quantity": "3",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "levadura nutricional",
+          "quantity": "3",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "polvo para hornear",
+          "quantity": "1",
+          "unit": "cucharadita",
+          "optional": false
+        },
+        {
+          "name": "pimentón, ají molido, cúrcuma y pimienta",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "sal",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "aceite",
+          "quantity": "1/3",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "cantidad necesaria",
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina C",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Galletas de lentejas y algarroba",
+      "description": "Galletas de lentejas y algarroba. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 59.",
+      "instructions": [
+        "Procesar todos los ingredientes.",
+        "Agregar agua solamente si la humedad de las lentejas no alcanza para formar una pasta.",
+        "Formar unas 15 galletas y hornear a temperatura moderada durante 20 minutos."
+      ],
+      "ingredients": [
+        {
+          "name": "lentejas cocidas y procesadas",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "harina de algarroba",
+          "quantity": "1",
+          "unit": "cucharada generosa",
+          "optional": false
+        },
+        {
+          "name": "harina de arroz integral",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "azúcar integral",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "canela, café y ralladura de naranja",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "agua",
+          "quantity": "cantidad necesaria",
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina C",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Gulita vegana",
+      "description": "Gulita vegana. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 60.",
+      "instructions": [
+        "Rellenar pares de galletas de arroz con mantequilla de maní, pasta de dátiles u otro relleno.",
+        "Cubrir con chocolate amargo derretido.",
+        "Decorar con maní o frutos secos molidos y, opcionalmente, sal en escamas.",
+        "Enfriar hasta que el chocolate solidifique."
+      ],
+      "ingredients": [
+        {
+          "name": "galletas finas de arroz integral",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "relleno a elección",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "chocolate amargo al 80%",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "maní o frutos secos",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "sal en escamas",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Panqueques sin huevo ni lácteos",
+      "description": "Panqueques sin huevo ni lácteos. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 61.",
+      "instructions": [
+        "Mezclar el lino molido con agua y dejarlo gelificar.",
+        "Unirlo con las harinas y el almidón, agregando líquido hasta lograr una masa semilíquida.",
+        "Dejar reposar unos minutos.",
+        "Cocinar porciones en una sartén bien caliente y apenas aceitada."
+      ],
+      "ingredients": [
+        {
+          "name": "harina de garbanzo",
+          "quantity": "2",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "lino molido",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "agua para activar el lino",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "harina de arroz integral",
+          "quantity": "2",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "almidón de maíz, mandioca o papa",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "agua o bebida vegetal",
+          "quantity": "cantidad necesaria",
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "aceite para la sartén",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro",
+        "Omega 3"
+      ]
+    },
+    {
+      "name": "Hongo melena de león salteado",
+      "description": "Hongo melena de león salteado. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 62.",
+      "instructions": [
+        "Condimentar el hongo con limón, salsa de soja y especias.",
+        "Agregar el almidón y apenas de líquido para adherir el recubrimiento.",
+        "Cocinar por poco tiempo, dorando ambos lados."
+      ],
+      "ingredients": [
+        {
+          "name": "hongo melena de león",
+          "quantity": "cantidad a gusto",
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "jugo de limón",
+          "quantity": "1",
+          "unit": "limón",
+          "optional": false
+        },
+        {
+          "name": "salsa de soja",
+          "quantity": "2 a 3",
+          "unit": "cucharaditas",
+          "optional": false
+        },
+        {
+          "name": "pimentón, ají triturado y pimienta",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "almidón de maíz, mandioca o papa",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "agua o bebida vegetal",
+          "quantity": "cantidad necesaria",
+          "unit": null,
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina C",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Gomitas de manzana, jengibre y cúrcuma",
+      "description": "Gomitas de manzana, jengibre y cúrcuma. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 63.",
+      "instructions": [
+        "Rallar la manzana y el jengibre.",
+        "Hervirlos tres minutos con el agua y el agar agar, y procesar ligeramente.",
+        "Agregar los jugos, la cúrcuma, la pimienta, el aceite y endulzante opcional.",
+        "Colar, distribuir en moldes y refrigerar; conservar hasta una semana."
+      ],
+      "ingredients": [
+        {
+          "name": "manzana rallada",
+          "quantity": "1",
+          "unit": "unidad",
+          "optional": false
+        },
+        {
+          "name": "jengibre",
+          "quantity": "2",
+          "unit": "rodajas",
+          "optional": false
+        },
+        {
+          "name": "cúrcuma",
+          "quantity": "1",
+          "unit": "cucharadita",
+          "optional": false
+        },
+        {
+          "name": "pimienta",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "agar agar",
+          "quantity": "3 a 4",
+          "unit": "g",
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "200",
+          "unit": "cc",
+          "optional": false
+        },
+        {
+          "name": "jugo de naranja",
+          "quantity": "1",
+          "unit": "naranja",
+          "optional": false
+        },
+        {
+          "name": "jugo de limón",
+          "quantity": "1/2",
+          "unit": "limón",
+          "optional": false
+        },
+        {
+          "name": "aceite de coco",
+          "quantity": "1",
+          "unit": "cucharadita",
+          "optional": false
+        },
+        {
+          "name": "endulzante",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Ácido fólico",
+        "Vitamina C",
+        "Vitamina E",
+        "Coenzima Q10"
+      ]
+    },
+    {
+      "name": "Croquetas de arroz, zapallo y tofu",
+      "description": "Croquetas de arroz, zapallo y tofu. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 64.",
+      "instructions": [
+        "Mezclar arroz, zapallo, tofu y condimentos; agregar sarraceno si la mezcla está muy húmeda.",
+        "Formar croquetas y colocar un trocito de queso vegetal en el centro si se desea.",
+        "Pasar por un ligue de harina de garbanzo, limón y agua, y luego por el rebozador.",
+        "Hornear hasta que estén crocantes por fuera."
+      ],
+      "ingredients": [
+        {
+          "name": "arroz con cúrcuma cocido",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "zapallo cocido",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "tofu",
+          "quantity": "1/3",
+          "unit": "bloque",
+          "optional": false
+        },
+        {
+          "name": "sal, pimienta, pimentón y levadura nutricional",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "harina de trigo sarraceno",
+          "quantity": "2",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "queso vegetal",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "harina de garbanzo",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "jugo de limón",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "cantidad necesaria",
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "rebozador a elección",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina C",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Trufas de dátiles, frutos secos y alubias",
+      "description": "Trufas de dátiles, frutos secos y alubias. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 65.",
+      "instructions": [
+        "Remojar los dátiles, retirar los carozos y reservar el líquido.",
+        "Procesarlos con los frutos secos y las alubias, agregando líquido de remojo si hace falta.",
+        "Formar trufas y, opcionalmente, bañarlas en chocolate o cubrirlas con coco."
+      ],
+      "ingredients": [
+        {
+          "name": "dátiles",
+          "quantity": "6",
+          "unit": "unidades",
+          "optional": false
+        },
+        {
+          "name": "frutos secos",
+          "quantity": "50",
+          "unit": "g",
+          "optional": false
+        },
+        {
+          "name": "alubias cocidas",
+          "quantity": "50",
+          "unit": "g",
+          "optional": false
+        },
+        {
+          "name": "cacao amargo",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "chocolate amargo",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "coco rallado",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Picadillo de porotos adzuki",
+      "description": "Picadillo de porotos adzuki. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 66.",
+      "instructions": [
+        "Colocar todos los ingredientes en un recipiente.",
+        "Procesar hasta obtener una pasta para untar.",
+        "Ajustar condimentos y textura a gusto."
+      ],
+      "ingredients": [
+        {
+          "name": "porotos adzuki cocidos",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "pimentón ahumado, sal, pimienta, cebolla y ajo",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "levadura nutricional",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "aceite de oliva",
+          "quantity": "1",
+          "unit": "chorrito",
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Pizza de arroz y lentejas",
+      "description": "Pizza de arroz y lentejas. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 67.",
+      "instructions": [
+        "Procesar el arroz y las lentejas con muy poca agua y condimentos opcionales.",
+        "Extender en una placa aceitada.",
+        "Hornear unos 30 minutos, hasta que la base se seque.",
+        "Agregar salsa, queso vegetal y las cubiertas elegidas."
+      ],
+      "ingredients": [
+        {
+          "name": "arroz cocido",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "lentejas cocidas",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "poca cantidad",
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "condimentos",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "salsa de tomate",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "queso vegetal",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina C",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Postre de amaranto con frutas",
+      "description": "Postre de amaranto con frutas. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 68.",
+      "instructions": [
+        "Lavar el amaranto.",
+        "Cocinarlo en la bebida vegetal hasta lograr una preparación cremosa y más sólida que líquida.",
+        "Dejar entibiar y armar capas con frutas y los agregados elegidos.",
+        "Refrigerar y servir frío."
+      ],
+      "ingredients": [
+        {
+          "name": "amaranto",
+          "quantity": "100",
+          "unit": "g",
+          "optional": false
+        },
+        {
+          "name": "bebida vegetal",
+          "quantity": "250",
+          "unit": "cc",
+          "optional": false
+        },
+        {
+          "name": "extracto de vainilla",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "frutas",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "frutos secos",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "coco rallado",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "mantequilla de maní",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "chocolate amargo",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "yogur vegetal",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Ácido fólico",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Postre de lino y chocolate",
+      "description": "Postre de lino y chocolate. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 69.",
+      "instructions": [
+        "Remojar las semillas de lino en el agua durante al menos 30 minutos.",
+        "Procesarlas con el cacao y las pasas.",
+        "Agregar chocolate picado por encima.",
+        "Refrigerar bien antes de consumir."
+      ],
+      "ingredients": [
+        {
+          "name": "semillas de lino",
+          "quantity": "2",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "4 a 6",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "cacao amargo",
+          "quantity": "1",
+          "unit": "cucharada generosa",
+          "optional": false
+        },
+        {
+          "name": "pasas de uva",
+          "quantity": "2",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "chocolate amargo",
+          "quantity": "1",
+          "unit": "barrita",
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro",
+        "Omega 3"
+      ]
+    },
+    {
+      "name": "Panqueques de lino y trigo sarraceno",
+      "description": "Panqueques de lino y trigo sarraceno. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 70.",
+      "instructions": [
+        "Remojar el lino en el agua durante una hora, hasta formar un gel.",
+        "Procesar y sumar la harina de trigo sarraceno; agregar un poco más de agua si fuera necesario.",
+        "Cocinar porciones en una sartén previamente aceitada."
+      ],
+      "ingredients": [
+        {
+          "name": "semillas de lino",
+          "quantity": "3",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "1",
+          "unit": "vaso",
+          "optional": false
+        },
+        {
+          "name": "harina de trigo sarraceno",
+          "quantity": "2",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "aceite para la sartén",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro",
+        "Omega 3"
+      ]
+    },
+    {
+      "name": "Helado proteico de frutas y castañas",
+      "description": "Helado proteico de frutas y castañas. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 71.",
+      "instructions": [
+        "Remojar los frutos secos durante al menos cuatro horas y escurrir.",
+        "Procesarlos con las frutas, la bebida vegetal y proteína opcional.",
+        "Congelar en un recipiente, removiendo cada 15 a 20 minutos para reducir la cristalización, o usar moldes de paleta.",
+        "Retirar del congelador unos minutos antes de servir."
+      ],
+      "ingredients": [
+        {
+          "name": "castañas de cajú o frutos secos remojados",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "frutillas",
+          "quantity": "5 a 6",
+          "unit": "unidades",
+          "optional": false
+        },
+        {
+          "name": "banana",
+          "quantity": "1/2",
+          "unit": "unidad",
+          "optional": false
+        },
+        {
+          "name": "bebida vegetal",
+          "quantity": "1/2",
+          "unit": "vaso",
+          "optional": false
+        },
+        {
+          "name": "proteína vegetal en polvo",
+          "quantity": "1",
+          "unit": "scoop",
+          "optional": true
+        },
+        {
+          "name": "chocolate amargo",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Vitamina C",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "ManteNOcol",
+      "description": "ManteNOcol. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 72.",
+      "instructions": [
+        "Preparar un almíbar punto bolita con el azúcar y el agua.",
+        "Verterlo caliente sobre la mantequilla de maní e integrar.",
+        "Dividir la preparación en dos y mezclar una mitad con el chocolate derretido.",
+        "Alternar ambas mezclas en un molde, presionar bien y refrigerar antes de cortar."
+      ],
+      "ingredients": [
+        {
+          "name": "mantequilla de maní",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "azúcar",
+          "quantity": "1/3",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "1/6",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "chocolate amargo",
+          "quantity": "1 a 2",
+          "unit": "barritas",
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Bombitas de legumbres",
+      "description": "Bombitas de legumbres. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 73.",
+      "instructions": [
+        "Procesar las legumbres con los condimentos, el agua y la harina.",
+        "Formar bolitas y pasarlas por harina o por un ligue vegetal y rebozador.",
+        "Hornear durante 15 a 20 minutos."
+      ],
+      "ingredients": [
+        {
+          "name": "legumbres cocidas",
+          "quantity": "200",
+          "unit": "g",
+          "optional": false
+        },
+        {
+          "name": "sal, pimienta y pimentón",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "1",
+          "unit": "chorrito",
+          "optional": false
+        },
+        {
+          "name": "harina de arroz",
+          "quantity": "1/3",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "sustituto vegetal de huevo",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "pan rallado o rebozador",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        }
+      ],
+      "nutrients": []
+    },
+    {
+      "name": "Salteado de legumbres y vegetales",
+      "description": "Salteado de legumbres y vegetales. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 74.",
+      "instructions": [
+        "Cortar y saltear los vegetales elegidos.",
+        "Agregar las legumbres cocidas y calentar todo junto.",
+        "Servir solo, con ensalada o arroz, o utilizar como relleno de tortillas."
+      ],
+      "ingredients": [
+        {
+          "name": "cebolla, zapallito, berenjena, morrón y puerro",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "legumbres cocidas",
+          "quantity": "200",
+          "unit": "g",
+          "optional": false
+        },
+        {
+          "name": "arroz, ensalada o tortillas",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Vitamina C"
+      ]
+    },
+    {
+      "name": "Galletas de chocolate y legumbres",
+      "description": "Galletas de chocolate y legumbres. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 75.",
+      "instructions": [
+        "Procesar las legumbres con el cacao, la mantequilla de maní, el azúcar y un poco de líquido.",
+        "Agregar la harina, la vainilla y el chocolate picado.",
+        "Formar las galletas y hornear a temperatura moderada-baja durante 20 minutos."
+      ],
+      "ingredients": [
+        {
+          "name": "legumbres cocidas",
+          "quantity": "200",
+          "unit": "g",
+          "optional": false
+        },
+        {
+          "name": "mantequilla de maní",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "azúcar",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "cacao amargo",
+          "quantity": "1/3",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "agua o bebida vegetal",
+          "quantity": "cantidad necesaria",
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "extracto de vainilla",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "harina de alubias y arroz",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "chocolate amargo picado",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Alfajor de coco y lino",
+      "description": "Alfajor de coco y lino. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 76.",
+      "instructions": [
+        "Mezclar coco, almidón y lino; hacer un hueco e incorporar la vainilla y el líquido de a poco.",
+        "Formar tapitas con las manos húmedas.",
+        "Hornear a temperatura moderada durante 15 minutos.",
+        "Enfriar y rellenar con mantequilla de maní y cacao, pasta de dátiles, membrillo u otro relleno."
+      ],
+      "ingredients": [
+        {
+          "name": "coco rallado",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "almidón de maíz",
+          "quantity": "1/3",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "lino molido",
+          "quantity": "2",
+          "unit": "cucharadas generosas",
+          "optional": false
+        },
+        {
+          "name": "azúcar integral",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": true
+        },
+        {
+          "name": "extracto de vainilla",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "agua o bebida vegetal",
+          "quantity": "1/3",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "relleno a elección",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Omega 3"
+      ]
+    },
+    {
+      "name": "Muffins de alubias y manzana",
+      "description": "Muffins de alubias y manzana. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 77.",
+      "instructions": [
+        "Mezclar los ingredientes secos.",
+        "Agregar manzana, ralladura, mantequilla de maní y aceite.",
+        "Incorporar el líquido de a poco hasta lograr una mezcla para muffins.",
+        "Distribuir en moldes y hornear a temperatura moderada-baja durante 20 a 25 minutos."
+      ],
+      "ingredients": [
+        {
+          "name": "harina de alubias",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "harina de arroz integral y almidón de maíz",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "azúcar integral",
+          "quantity": "1/3",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "polvo para hornear",
+          "quantity": "1",
+          "unit": "cucharadita",
+          "optional": false
+        },
+        {
+          "name": "sal",
+          "quantity": "1",
+          "unit": "pizca",
+          "optional": false
+        },
+        {
+          "name": "manzana rallada",
+          "quantity": "1",
+          "unit": "unidad",
+          "optional": false
+        },
+        {
+          "name": "ralladura de limón",
+          "quantity": "1",
+          "unit": "limón",
+          "optional": false
+        },
+        {
+          "name": "mantequilla de maní",
+          "quantity": "2",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "aceite",
+          "quantity": "3",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "agua o bebida vegetal",
+          "quantity": "150",
+          "unit": "cc",
+          "optional": false
+        },
+        {
+          "name": "canela",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "chocolate y frutos secos",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina C",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Galletas de manzana, coco y limón",
+      "description": "Galletas de manzana, coco y limón. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 78.",
+      "instructions": [
+        "Mezclar harinas, coco, polvo para hornear, azúcar, sal y canela.",
+        "Agregar el aceite, el limón, la manzana y el agua de a poco hasta formar una pasta.",
+        "Con las manos húmedas, formar bolitas y aplastarlas en una placa.",
+        "Hornear a temperatura moderada-baja durante 20 minutos, o hasta que estén cocidas."
+      ],
+      "ingredients": [
+        {
+          "name": "harina de arroz integral",
+          "quantity": "3/4",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "harina de sorgo",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "coco rallado",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "azúcar mascabo",
+          "quantity": "3",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "manzana rallada",
+          "quantity": "1",
+          "unit": "unidad",
+          "optional": false
+        },
+        {
+          "name": "jugo y ralladura de limón",
+          "quantity": "1",
+          "unit": "limón",
+          "optional": false
+        },
+        {
+          "name": "polvo para hornear",
+          "quantity": "1",
+          "unit": "cucharadita",
+          "optional": false
+        },
+        {
+          "name": "sal",
+          "quantity": "1",
+          "unit": "pizca",
+          "optional": false
+        },
+        {
+          "name": "canela",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "aceite",
+          "quantity": "1/3",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Selenio",
+        "Vitamina C",
+        "Vitamina E",
+        "Coenzima Q10"
+      ]
+    },
+    {
+      "name": "Carrot cake de dátiles",
+      "description": "Carrot cake de dátiles. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 79.",
+      "instructions": [
+        "Remojar los dátiles.",
+        "Procesarlos con las zanahorias y un poco del agua de remojo.",
+        "Integrar los demás ingredientes.",
+        "Volcar en una budinera o moldes y hornear durante 20 a 30 minutos."
+      ],
+      "ingredients": [
+        {
+          "name": "dátiles sin carozo",
+          "quantity": "6",
+          "unit": "unidades",
+          "optional": false
+        },
+        {
+          "name": "zanahorias ralladas",
+          "quantity": "1 a 2",
+          "unit": "unidades",
+          "optional": false
+        },
+        {
+          "name": "agua o bebida vegetal",
+          "quantity": "100",
+          "unit": "cc",
+          "optional": false
+        },
+        {
+          "name": "harina de arroz",
+          "quantity": "2",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "polvo para hornear",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "canela",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "ralladura de limón",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "frutos secos",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Vitamina C"
+      ]
+    },
+    {
+      "name": "Untable fermentado de girasol",
+      "description": "Untable fermentado de girasol. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 80.",
+      "instructions": [
+        "Remojar las semillas entre dos y cuatro horas, escurrir y enjuagar.",
+        "Procesarlas con los condimentos, la levadura, el yogur y apenas de agua.",
+        "Colocar en un frasco abrigado y dejar fermentar fuera de la heladera durante tres o cuatro horas.",
+        "Tapar y refrigerar; controlar el crecimiento de la fermentación."
+      ],
+      "ingredients": [
+        {
+          "name": "semillas de girasol remojadas",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "sal, pimienta y ají molido",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "levadura nutricional",
+          "quantity": "2",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "yogur de coco natural",
+          "quantity": "2",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "1",
+          "unit": "chorrito",
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Pan sin gluten con masa madre",
+      "description": "Pan sin gluten con masa madre. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 81.",
+      "instructions": [
+        "Mezclar todos los ingredientes secos y luego incorporar los líquidos y la masa madre.",
+        "Refrigerar la masa cuatro horas; no será una masa amasable.",
+        "Hacer algunos pliegues, pasar a un molde aceitado y dejar leudar entre 30 y 60 minutos en un lugar cálido.",
+        "Hornear muy suave los primeros 15 minutos y luego a temperatura moderada otros 15 a 20 minutos."
+      ],
+      "ingredients": [
+        {
+          "name": "harina de arroz",
+          "quantity": "100",
+          "unit": "g",
+          "optional": false
+        },
+        {
+          "name": "harina de trigo sarraceno",
+          "quantity": "150",
+          "unit": "g",
+          "optional": false
+        },
+        {
+          "name": "harina de sorgo",
+          "quantity": "100",
+          "unit": "g",
+          "optional": false
+        },
+        {
+          "name": "almidón de maíz",
+          "quantity": "100",
+          "unit": "g",
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "350",
+          "unit": "cc",
+          "optional": false
+        },
+        {
+          "name": "aceite",
+          "quantity": "30",
+          "unit": "cc",
+          "optional": false
+        },
+        {
+          "name": "mejorador sin gluten o psyllium",
+          "quantity": "5",
+          "unit": "g",
+          "optional": true
+        },
+        {
+          "name": "sal",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "masa madre",
+          "quantity": "100",
+          "unit": "g",
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Calabaza cabutia rellena de lentejas",
+      "description": "Calabaza cabutia rellena de lentejas. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 82.",
+      "instructions": [
+        "Cocinar la cabutia al vapor o al horno.",
+        "Ahuecarla y mezclar parte de su pulpa con las lentejas y los condimentos.",
+        "Rellenar la calabaza, intercalando queso de almendras si se desea.",
+        "Calentar antes de servir."
+      ],
+      "ingredients": [
+        {
+          "name": "calabaza cabutia",
+          "quantity": "1",
+          "unit": "unidad",
+          "optional": false
+        },
+        {
+          "name": "lentejas turcas cocidas",
+          "quantity": "2",
+          "unit": "tazas",
+          "optional": false
+        },
+        {
+          "name": "sal, pimienta, cúrcuma, pimentón y levadura nutricional",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "queso de almendras",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Postre helado de yogur vegetal",
+      "description": "Postre helado de yogur vegetal. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 83.",
+      "instructions": [
+        "Mezclar el yogur con la mantequilla de maní.",
+        "Distribuir en moldes o porciones sobre papel manteca y agregar frutos secos opcionales.",
+        "Congelar.",
+        "Bañar las porciones congeladas con chocolate derretido y volver a enfriar."
+      ],
+      "ingredients": [
+        {
+          "name": "yogur vegetal",
+          "quantity": "200",
+          "unit": "g",
+          "optional": false
+        },
+        {
+          "name": "mantequilla de maní",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "chocolate amargo",
+          "quantity": "2",
+          "unit": "barritas",
+          "optional": false
+        },
+        {
+          "name": "nueces o frutos secos",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Rabanitos encurtidos",
+      "description": "Rabanitos encurtidos. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 84.",
+      "instructions": [
+        "Lavar los rabanitos y cortarlos en láminas finas.",
+        "Colocarlos en un frasco limpio.",
+        "Mezclar el vinagre, el agua, el azúcar y la sal, y verter hasta cubrir.",
+        "Agregar pimienta opcional y conservar en la heladera."
+      ],
+      "ingredients": [
+        {
+          "name": "rabanitos",
+          "quantity": "10",
+          "unit": "unidades",
+          "optional": false
+        },
+        {
+          "name": "azúcar",
+          "quantity": "1",
+          "unit": "cucharadita",
+          "optional": false
+        },
+        {
+          "name": "sal",
+          "quantity": "1/2",
+          "unit": "cucharadita",
+          "optional": false
+        },
+        {
+          "name": "vinagre de manzana",
+          "quantity": "150",
+          "unit": "cc",
+          "optional": false
+        },
+        {
+          "name": "agua templada",
+          "quantity": "150",
+          "unit": "cc",
+          "optional": false
+        },
+        {
+          "name": "granos de pimienta",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Vitamina C"
+      ]
+    },
+    {
+      "name": "Milanesas de porotos adzuki",
+      "description": "Milanesas de porotos adzuki. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 85.",
+      "instructions": [
+        "Procesar los porotos con la harina, el almidón, parte del agua y los condimentos.",
+        "Dar forma a las milanesas.",
+        "Pasarlas por un ligue de harina de garbanzo y agua y luego por semillas y harina de maíz.",
+        "Hornear durante 15 a 20 minutos, o hasta que estén firmes y doradas."
+      ],
+      "ingredients": [
+        {
+          "name": "porotos adzuki cocidos",
+          "quantity": "3",
+          "unit": "tazas",
+          "optional": false
+        },
+        {
+          "name": "harina de garbanzo",
+          "quantity": "1",
+          "unit": "cucharada sopera",
+          "optional": false
+        },
+        {
+          "name": "almidón o fécula",
+          "quantity": "2",
+          "unit": "cucharadas generosas",
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "100",
+          "unit": "cc",
+          "optional": false
+        },
+        {
+          "name": "sal, pimienta, pimentón y masala",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "harina de garbanzo para ligar",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "agua para ligar",
+          "quantity": "cantidad necesaria",
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "semillas procesadas y harina de maíz",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Postre cremoso de quinoa",
+      "description": "Postre cremoso de quinoa. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 86.",
+      "instructions": [
+        "Cocinar la quinoa en el agua durante 10 a 15 minutos, hasta que quede cremosa.",
+        "Endulzar y perfumar con vainilla.",
+        "Armar frascos intercalando la quinoa con mantequilla de maní y los agregados elegidos.",
+        "Refrigerar antes de consumir."
+      ],
+      "ingredients": [
+        {
+          "name": "quinoa lavada",
+          "quantity": "3/4",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "3",
+          "unit": "partes",
+          "optional": false
+        },
+        {
+          "name": "endulzante",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "extracto de vainilla",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "mantequilla de maní",
+          "quantity": "1",
+          "unit": "cucharada generosa",
+          "optional": false
+        },
+        {
+          "name": "banana, coco, frutas, chocolate o frutos secos",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Ácido fólico",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Croquetas de arroz integral",
+      "description": "Croquetas de arroz integral. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 87.",
+      "instructions": [
+        "Mezclar el arroz con las harinas de lenteja y sarraceno y los condimentos.",
+        "Formar las croquetas.",
+        "Pasarlas por un ligue de harina de garbanzo, limón y agua, y luego por el rebozador de semillas y harina de maíz.",
+        "Hornear a temperatura moderada-fuerte durante 10 a 15 minutos."
+      ],
+      "ingredients": [
+        {
+          "name": "arroz integral cocido",
+          "quantity": "1",
+          "unit": "plato hondo",
+          "optional": false
+        },
+        {
+          "name": "harina de lentejas",
+          "quantity": "2",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "harina de trigo sarraceno",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "sal, pimienta y nuez moscada",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "semillas de lino, chía, girasol y sésamo procesadas",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "harina de garbanzo para rebozar",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "harina de maíz",
+          "quantity": "2",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "harina de garbanzo para ligar",
+          "quantity": "2",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "jugo de limón",
+          "quantity": "1",
+          "unit": "chorrito",
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "cantidad necesaria",
+          "unit": null,
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina C",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro",
+        "Omega 3"
+      ]
+    },
+    {
+      "name": "Budín de zucchini y zanahoria",
+      "description": "Budín de zucchini y zanahoria. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 88.",
+      "instructions": [
+        "Rallar la zanahoria y el zucchini y exprimir bien el agua del zucchini.",
+        "Mezclar los demás ingredientes e incorporar al final los vegetales rallados.",
+        "Volcar en una budinera y agregar chocolate o frutos secos si se desea.",
+        "Hornear a temperatura moderada-baja durante 35 a 40 minutos."
+      ],
+      "ingredients": [
+        {
+          "name": "zucchini pequeño",
+          "quantity": "1",
+          "unit": "unidad",
+          "optional": false
+        },
+        {
+          "name": "zanahoria pequeña",
+          "quantity": "1",
+          "unit": "unidad",
+          "optional": false
+        },
+        {
+          "name": "aceite",
+          "quantity": "1/3",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "azúcar integral",
+          "quantity": "1/3",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "bebida vegetal o agua",
+          "quantity": "1/3",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "cacao amargo",
+          "quantity": "1/3",
+          "unit": "taza",
+          "optional": true
+        },
+        {
+          "name": "harina de garbanzo",
+          "quantity": "1",
+          "unit": "cucharada grande",
+          "optional": false
+        },
+        {
+          "name": "harina de trigo sarraceno",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "polvo para hornear",
+          "quantity": "1",
+          "unit": "cucharadita",
+          "optional": false
+        },
+        {
+          "name": "extracto de vainilla",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "sal",
+          "quantity": "1",
+          "unit": "pizca",
+          "optional": false
+        },
+        {
+          "name": "chocolate, nueces, almendras o coco",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Galletas de mandarina y sarraceno",
+      "description": "Galletas de mandarina y sarraceno. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 89.",
+      "instructions": [
+        "Procesar las mandarinas enteras sin semillas con el aceite y el agua tibia.",
+        "Agregar las harinas, el coco, el azúcar, el leudante y la sal hasta formar una masa moldeable.",
+        "Dar forma con las manos y agregar chocolate opcional por encima.",
+        "Hornear durante 20 a 30 minutos."
+      ],
+      "ingredients": [
+        {
+          "name": "aceite de coco o girasol",
+          "quantity": "1/4",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "1/4",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "azúcar",
+          "quantity": "2",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "mandarinas chicas sin semillas",
+          "quantity": "3",
+          "unit": "unidades",
+          "optional": false
+        },
+        {
+          "name": "harina de arroz integral",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "harina de trigo sarraceno",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "coco rallado",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "polvo para hornear o bicarbonato",
+          "quantity": "1/2",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "sal",
+          "quantity": "1",
+          "unit": "pizca",
+          "optional": false
+        },
+        {
+          "name": "canela y pimienta",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "chocolate amargo",
+          "quantity": "2",
+          "unit": "barritas",
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Vitamina C",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Mandiocadelphia",
+      "description": "Mandiocadelphia. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 90.",
+      "instructions": [
+        "Hervir la mandioca hasta que esté bien tierna.",
+        "Procesarla con la levadura nutricional, el aceite y los condimentos.",
+        "Agregar líquido de a poco hasta obtener la consistencia deseada.",
+        "Usar como untable o enfriar y luego gratinar sobre otras preparaciones."
+      ],
+      "ingredients": [
+        {
+          "name": "mandioca cocida",
+          "quantity": "3 a 4",
+          "unit": "rodajas",
+          "optional": false
+        },
+        {
+          "name": "levadura nutricional",
+          "quantity": "2",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "aceite de oliva",
+          "quantity": "1",
+          "unit": "chorrito generoso",
+          "optional": false
+        },
+        {
+          "name": "bebida vegetal o agua",
+          "quantity": "cantidad necesaria",
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "sal y pimienta",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Vitamina E",
+        "Coenzima Q10"
+      ]
+    },
+    {
+      "name": "Pancito lactal de lino y lentejas",
+      "description": "Pancito lactal de lino y lentejas. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 91.",
+      "instructions": [
+        "Mezclar el lino, las harinas, el bicarbonato y la sal.",
+        "Agregar un chorrito de agua y unir hasta formar una preparación espesa.",
+        "Colocar en un molde pequeño apto para horno.",
+        "Hornear durante 20 a 30 minutos."
+      ],
+      "ingredients": [
+        {
+          "name": "semillas de lino molidas",
+          "quantity": "2",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "harina de lentejas",
+          "quantity": "2",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "harina de arroz integral",
+          "quantity": "2",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "bicarbonato de sodio",
+          "quantity": "1",
+          "unit": "cucharadita",
+          "optional": false
+        },
+        {
+          "name": "sal",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "agua",
+          "quantity": "cantidad necesaria",
+          "unit": null,
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro",
+        "Omega 3"
+      ]
+    },
+    {
+      "name": "Postre frío de batata y chocolate",
+      "description": "Postre frío de batata y chocolate. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 92.",
+      "instructions": [
+        "Hacer un puré liso con la batata cocida.",
+        "Derretir el chocolate y mezclarlo con el puré.",
+        "Distribuir en recipientes y refrigerar durante un par de horas.",
+        "Agregar frutos secos por encima si se desea y servir bien frío."
+      ],
+      "ingredients": [
+        {
+          "name": "batata grande cocida",
+          "quantity": "1",
+          "unit": "unidad",
+          "optional": false
+        },
+        {
+          "name": "chocolate amargo al 80%",
+          "quantity": "2 a 3",
+          "unit": "barritas",
+          "optional": false
+        },
+        {
+          "name": "nueces o almendras",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Masa de empanadas de legumbres y sarraceno",
+      "description": "Masa de empanadas de legumbres y sarraceno. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 93.",
+      "instructions": [
+        "Mezclar los ingredientes secos.",
+        "Agregar aceite y agua de a poco hasta formar una masa que no se pegue.",
+        "Formar un bollo y refrigerar durante una hora.",
+        "Estirar, cortar, rellenar y cerrar las empanadas.",
+        "Hornear a temperatura moderada durante 10 a 15 minutos."
+      ],
+      "ingredients": [
+        {
+          "name": "harina de trigo sarraceno",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "harina de lentejas",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "harina de arroz integral",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "polvo para hornear",
+          "quantity": "1/2",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "sal",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "semillas de lino procesadas",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "semillas enteras",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": true
+        },
+        {
+          "name": "aceite",
+          "quantity": "3",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "1 1/2",
+          "unit": "tazas",
+          "optional": false
+        },
+        {
+          "name": "relleno vegetal a elección",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro",
+        "Omega 3"
+      ]
+    },
+    {
+      "name": "Sopa rápida de zapallo y legumbres",
+      "description": "Sopa rápida de zapallo y legumbres. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 94.",
+      "instructions": [
+        "Hervir el zapallo u otros vegetales hasta que estén tiernos.",
+        "Agregar las legumbres ya cocidas.",
+        "Procesar con un mixer hasta obtener una sopa cremosa.",
+        "Condimentar y terminar con choclo, aceite de oliva y levadura nutricional si se desea."
+      ],
+      "ingredients": [
+        {
+          "name": "zapallo o calabaza",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "legumbres cocidas",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "hojas de apio, sal, pimienta, pimentón y ají molido",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "choclo",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "aceite de oliva",
+          "quantity": "1",
+          "unit": "chorrito",
+          "optional": true
+        },
+        {
+          "name": "levadura nutricional",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Vitamina E",
+        "Coenzima Q10"
+      ]
+    },
+    {
+      "name": "Fainá de arvejas",
+      "description": "Fainá de arvejas. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 95.",
+      "instructions": [
+        "Mezclar la harina con una taza de agua hasta deshacer los grumos.",
+        "Agregar la media taza restante, sal y condimentos.",
+        "Tapar y refrigerar unas dos horas.",
+        "Verter en una pizzera bien caliente y aceitada.",
+        "Hornear a temperatura moderada-baja durante 25 a 30 minutos."
+      ],
+      "ingredients": [
+        {
+          "name": "harina de arvejas",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "1 1/2",
+          "unit": "tazas",
+          "optional": false
+        },
+        {
+          "name": "sal y pimienta",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "aceite para la placa",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Galletas de coco, sésamo y banana",
+      "description": "Galletas de coco, sésamo y banana. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 96.",
+      "instructions": [
+        "Integrar las bananas pisadas con el coco y el sésamo.",
+        "Formar las galletas en una placa aceitada.",
+        "Hornear a temperatura moderada-baja durante 25 a 30 minutos."
+      ],
+      "ingredients": [
+        {
+          "name": "bananas maduras pisadas",
+          "quantity": "2",
+          "unit": "unidades",
+          "optional": false
+        },
+        {
+          "name": "coco rallado",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "semillas de sésamo",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "NOscones de batata",
+      "description": "NOscones de batata. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 97.",
+      "instructions": [
+        "Pisar la batata y agregar aceite y sal si se desea.",
+        "Incorporar la harina hasta formar una masa moldeable.",
+        "Estirar, cortar con la forma elegida y llevar a una placa.",
+        "Hornear a temperatura moderada durante 15 minutos."
+      ],
+      "ingredients": [
+        {
+          "name": "batata grande cocida",
+          "quantity": "1",
+          "unit": "unidad",
+          "optional": false
+        },
+        {
+          "name": "harina de trigo sarraceno",
+          "quantity": "2",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "sal y condimentos",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "aceite",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Galletas de porotos mung y cacao",
+      "description": "Galletas de porotos mung y cacao. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 98.",
+      "instructions": [
+        "Procesar los porotos y mezclarlos con los demás ingredientes.",
+        "Formar bolitas con las manos y aplastarlas sobre una placa aceitada.",
+        "Hornear a temperatura moderada durante 15 minutos, o hasta que estén cocidas."
+      ],
+      "ingredients": [
+        {
+          "name": "porotos mung cocidos",
+          "quantity": "2",
+          "unit": "tazas",
+          "optional": false
+        },
+        {
+          "name": "mantequilla de maní",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "cacao amargo",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "harina de trigo sarraceno",
+          "quantity": "2 a 3",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "extracto de vainilla",
+          "quantity": "1",
+          "unit": "chorrito",
+          "optional": false
+        },
+        {
+          "name": "lino molido",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "azúcar",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "canela o café",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro",
+        "Omega 3"
+      ]
+    },
+    {
+      "name": "Tortilla vegetal con harina de garbanzo",
+      "description": "Tortilla vegetal con harina de garbanzo. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 99.",
+      "instructions": [
+        "Mezclar las harinas con agua hasta obtener una pasta espesa, similar a un engrudo.",
+        "Agregar sal negra y cúrcuma.",
+        "Volcar la preparación en una sartén caliente y acomodar las rodajas de papa.",
+        "Cocinar con paciencia hasta que la tortilla esté firme y dorada."
+      ],
+      "ingredients": [
+        {
+          "name": "harina de garbanzo",
+          "quantity": "2",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "harina de arroz integral",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "cantidad necesaria",
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "sal negra",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "cúrcuma",
+          "quantity": "1",
+          "unit": "pizca",
+          "optional": false
+        },
+        {
+          "name": "papas cocidas en rodajas",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Tortilla con sustituto vegetal de huevo",
+      "description": "Tortilla con sustituto vegetal de huevo. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 99.",
+      "instructions": [
+        "Preparar el sustituto vegetal de huevo o el ligue elegido según sus indicaciones.",
+        "Ajustar para que la mezcla quede espesa y no líquida.",
+        "Volcar en una sartén caliente y acomodar las rodajas de papa.",
+        "Cocinar hasta que la tortilla esté firme de ambos lados."
+      ],
+      "ingredients": [
+        {
+          "name": "sustituto vegetal de huevo o ligue equivalente",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "cantidad según el producto",
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "papas cocidas en rodajas",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "sal y cúrcuma",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": []
+    },
+    {
+      "name": "Tortilla vegetal de porotos alubias",
+      "description": "Tortilla vegetal de porotos alubias. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 99.",
+      "instructions": [
+        "Procesar las alubias y mezclarlas con la harina de garbanzo, agua, sal y cúrcuma.",
+        "Ajustar el agua hasta obtener una pasta espesa.",
+        "Volcar en una sartén caliente y acomodar las rodajas de papa.",
+        "Cocinar hasta que la tortilla esté firme y dorada."
+      ],
+      "ingredients": [
+        {
+          "name": "porotos alubias procesados",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "harina de garbanzo",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "cantidad necesaria",
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "sal",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "cúrcuma",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "papas cocidas en rodajas",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Tortilla vegetal de chía y sarraceno",
+      "description": "Tortilla vegetal de chía y sarraceno. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 100.",
+      "instructions": [
+        "Mezclar la chía, la harina y el almidón con agua, sal y cúrcuma hasta obtener una pasta espesa.",
+        "Volcar la mezcla en una sartén caliente.",
+        "Acomodar las rodajas de papa precocidas.",
+        "Cocinar con paciencia hasta que la tortilla esté firme y dorada."
+      ],
+      "ingredients": [
+        {
+          "name": "semillas de chía molidas",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "harina de trigo sarraceno",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "almidón de maíz",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "cantidad necesaria",
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "sal",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "cúrcuma",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "papas cocidas en rodajas",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro",
+        "Omega 3"
+      ]
+    },
+    {
+      "name": "Pan tipo lactal de legumbres",
+      "description": "Pan tipo lactal de legumbres. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 101.",
+      "instructions": [
+        "Remojar las legumbres durante más de ocho horas y escurrir.",
+        "Procesarlas y mezclar con la harina, el bicarbonato y la sal.",
+        "Agregar agua de a poco hasta obtener una mezcla espesa.",
+        "Volcar en un molde con papel manteca y hornear a temperatura moderada-baja durante unos 20 minutos."
+      ],
+      "ingredients": [
+        {
+          "name": "legumbres activadas sin cocer",
+          "quantity": "2",
+          "unit": "tazas",
+          "optional": false
+        },
+        {
+          "name": "harina de trigo sarraceno",
+          "quantity": "3",
+          "unit": "cucharadas generosas",
+          "optional": false
+        },
+        {
+          "name": "bicarbonato de sodio",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "sal",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "cantidad necesaria",
+          "unit": null,
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Calzone caprese vegetal",
+      "description": "Calzone caprese vegetal. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 102.",
+      "instructions": [
+        "Mezclar las harinas, sal, pimienta y bicarbonato; agregar aceite y agua de a poco hasta formar una masa moldeable.",
+        "Refrigerar la masa durante al menos 20 minutos.",
+        "Procesar o desgranar el tofu con levadura nutricional y condimentos, y combinar con tomate y albahaca.",
+        "Estirar la masa, rellenar, cerrar y decorar con semillas si se desea.",
+        "Hornear durante 15 a 20 minutos, hasta alcanzar el crocante deseado."
+      ],
+      "ingredients": [
+        {
+          "name": "harina de lentejas",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "harina de sorgo",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "harina de garbanzo",
+          "quantity": "1/3",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "harina de maíz gruesa",
+          "quantity": "1/3",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "sal y pimienta",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "bicarbonato de sodio",
+          "quantity": "1/2",
+          "unit": "cucharadita",
+          "optional": false
+        },
+        {
+          "name": "aceite",
+          "quantity": "1",
+          "unit": "chorrito",
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "cantidad necesaria",
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "tofu",
+          "quantity": "1/2",
+          "unit": "bloque",
+          "optional": false
+        },
+        {
+          "name": "levadura nutricional",
+          "quantity": "2",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "tomate",
+          "quantity": "1",
+          "unit": "unidad",
+          "optional": false
+        },
+        {
+          "name": "hojas de albahaca",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "queso de almendras rallado",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        },
+        {
+          "name": "condimentos",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina C",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Coquitos de lino o psyllium",
+      "description": "Coquitos de lino o psyllium. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 103.",
+      "instructions": [
+        "Preparar el gel con una parte de semillas procesadas y tres partes de agua; colarlo si se desea.",
+        "Agregar coco rallado hasta que absorba el gel y sumar azúcar o sal opcionales.",
+        "Formar entre seis y siete coquitos pequeños.",
+        "Hornear entre 15 y 20 minutos, controlando hasta que estén crocantes por fuera y tiernos por dentro."
+      ],
+      "ingredients": [
+        {
+          "name": "gel de lino o psyllium",
+          "quantity": "1/4",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "coco rallado",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "azúcar mascabo",
+          "quantity": "1",
+          "unit": "cucharadita",
+          "optional": true
+        },
+        {
+          "name": "sal",
+          "quantity": "1",
+          "unit": "pizca",
+          "optional": true
+        },
+        {
+          "name": "chocolate amargo",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Hierro",
+        "Omega 3"
+      ]
+    },
+    {
+      "name": "Yogur basado en plantas",
+      "description": "Yogur basado en plantas. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 104.",
+      "instructions": [
+        "Calentar la bebida vegetal.",
+        "Disolver el almidón en un poco de agua fría, agregarlo y cocinar tres o cuatro minutos.",
+        "Incorporar el agar agar y cocinar otros tres o cuatro minutos.",
+        "Enfriar la mezcla hasta unos 45 a 50 °C e incorporar el yogur iniciador.",
+        "Fermentar en yogurtera por más de 10 horas o en un recipiente tapado y abrigado, y luego refrigerar."
+      ],
+      "ingredients": [
+        {
+          "name": "bebida vegetal proteica",
+          "quantity": "1",
+          "unit": "litro",
+          "optional": false
+        },
+        {
+          "name": "yogur vegetal natural sin azúcar",
+          "quantity": "100",
+          "unit": "g",
+          "optional": false
+        },
+        {
+          "name": "almidón de maíz",
+          "quantity": "10",
+          "unit": "g",
+          "optional": true
+        },
+        {
+          "name": "agar agar",
+          "quantity": "3 a 5",
+          "unit": "g",
+          "optional": false
+        },
+        {
+          "name": "agua fría",
+          "quantity": "cantidad necesaria",
+          "unit": null,
+          "optional": false
+        }
+      ],
+      "nutrients": []
+    },
+    {
+      "name": "Ñoquis de alubias y rúcula",
+      "description": "Ñoquis de alubias y rúcula. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 105.",
+      "instructions": [
+        "Procesar alubias, rúcula, harina y almidón, agregando apenas de agua si hace falta, hasta formar una masa moldeable.",
+        "Cortar pequeñas porciones directamente sobre agua hirviendo.",
+        "Cocinar unos tres minutos o hasta que los ñoquis suban a la superficie.",
+        "Escurrir y, opcionalmente, saltear con aceite, tomates y nueces."
+      ],
+      "ingredients": [
+        {
+          "name": "alubias cocidas",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "rúcula",
+          "quantity": "1",
+          "unit": "puñado",
+          "optional": false
+        },
+        {
+          "name": "harina de arroz",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "almidón de maíz",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "agua",
+          "quantity": "1",
+          "unit": "chorrito",
+          "optional": true
+        },
+        {
+          "name": "sal y pimienta",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "aceite, tomates y nueces",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina C",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Barras de cereal proteicas",
+      "description": "Barras de cereal proteicas. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 106.",
+      "instructions": [
+        "Mezclar la quinoa pop con la mantequilla de maní, las proteínas y la sal opcional.",
+        "Incorporar el chocolate derretido o picado.",
+        "Presionar la mezcla en un recipiente forrado con papel.",
+        "Refrigerar al menos dos horas antes de cortar y, si se desea, congelar las porciones."
+      ],
+      "ingredients": [
+        {
+          "name": "quinoa pop",
+          "quantity": "50",
+          "unit": "g",
+          "optional": false
+        },
+        {
+          "name": "mantequilla de maní",
+          "quantity": "50",
+          "unit": "g",
+          "optional": false
+        },
+        {
+          "name": "proteína vegetal texturizada",
+          "quantity": "15",
+          "unit": "g",
+          "optional": false
+        },
+        {
+          "name": "proteína vegetal en polvo",
+          "quantity": "25",
+          "unit": "g",
+          "optional": false
+        },
+        {
+          "name": "sal",
+          "quantity": "1",
+          "unit": "pizca",
+          "optional": true
+        },
+        {
+          "name": "chocolate amargo al 80%",
+          "quantity": "40",
+          "unit": "g",
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Ácido fólico",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Rolls de canela sin gluten",
+      "description": "Rolls de canela sin gluten. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 107.",
+      "instructions": [
+        "Mezclar los ingredientes secos y la sal.",
+        "Agregar de a poco el líquido, el aceite y la vainilla; amasar hasta que no se pegue a los dedos.",
+        "Dejar leudar 20 minutos.",
+        "Estirar, pincelar con aceite o agua, espolvorear con canela y azúcar, enrollar y cortar.",
+        "Dejar leudar otros 20 minutos y hornear unos 20 minutos."
+      ],
+      "ingredients": [
+        {
+          "name": "harina de arroz",
+          "quantity": "1",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "almidón de maíz",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "fécula de mandioca",
+          "quantity": "1/2",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "harina de garbanzo",
+          "quantity": "1/3",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "levadura seca",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "azúcar para la masa",
+          "quantity": "1",
+          "unit": "cucharada",
+          "optional": false
+        },
+        {
+          "name": "sal",
+          "quantity": "1",
+          "unit": "pizca",
+          "optional": false
+        },
+        {
+          "name": "agua o bebida vegetal",
+          "quantity": "3/4",
+          "unit": "taza",
+          "optional": false
+        },
+        {
+          "name": "aceite",
+          "quantity": "2",
+          "unit": "cucharadas",
+          "optional": false
+        },
+        {
+          "name": "extracto de vainilla",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "canela y azúcar para el relleno",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    },
+    {
+      "name": "Flan vegetal de garbanzo",
+      "description": "Flan vegetal de garbanzo. Receta adaptada del material “Recetas con ciencia (y plantas)” de Nutriloca, página 108.",
+      "instructions": [
+        "Disolver la harina de garbanzo y el almidón en la mitad de la bebida vegetal fría.",
+        "Calentar la otra mitad con la cáscara de limón, el azúcar y la canela.",
+        "Unir ambas mezclas y cocinar durante cinco minutos, revolviendo.",
+        "Retirar del fuego, quitar la cáscara y agregar vainilla, cúrcuma y aceite de coco.",
+        "Volcar en una flanera acaramelada y refrigerar hasta que tome consistencia."
+      ],
+      "ingredients": [
+        {
+          "name": "bebida vegetal",
+          "quantity": "300",
+          "unit": "cc",
+          "optional": false
+        },
+        {
+          "name": "harina de garbanzo",
+          "quantity": "1 1/2",
+          "unit": "cucharaditas",
+          "optional": false
+        },
+        {
+          "name": "almidón de maíz",
+          "quantity": "2",
+          "unit": "cucharaditas",
+          "optional": false
+        },
+        {
+          "name": "azúcar",
+          "quantity": "1",
+          "unit": "cucharadita",
+          "optional": true
+        },
+        {
+          "name": "cáscara de limón",
+          "quantity": "1",
+          "unit": "tira",
+          "optional": false
+        },
+        {
+          "name": "canela",
+          "quantity": "1",
+          "unit": "pizca",
+          "optional": false
+        },
+        {
+          "name": "cúrcuma",
+          "quantity": "1",
+          "unit": "pizca",
+          "optional": false
+        },
+        {
+          "name": "extracto de vainilla",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "aceite de coco",
+          "quantity": "1/2",
+          "unit": "cucharadita",
+          "optional": false
+        },
+        {
+          "name": "caramelo",
+          "quantity": null,
+          "unit": null,
+          "optional": false
+        },
+        {
+          "name": "dulce de leche de almendras o dátiles",
+          "quantity": null,
+          "unit": null,
+          "optional": true
+        }
+      ],
+      "nutrients": [
+        "Zinc",
+        "Selenio",
+        "Ácido fólico",
+        "Vitamina C",
+        "Vitamina E",
+        "Coenzima Q10",
+        "Hierro"
+      ]
+    }
+  ]
+}

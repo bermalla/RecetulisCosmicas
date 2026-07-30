@@ -2,11 +2,13 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { recipeCategoryIcon } from "../../lib/recipe-intelligence";
 
 type Recipe = {
   id: string;
   name: string;
   description: string;
+  category: string;
   durationMinutes?: number | null;
   servings?: number | null;
   nutrients: string[];
@@ -138,7 +140,10 @@ export default function RecipesLibrary() {
             <div className="library-list">
               {visibleRecipes.map((recipe) => (
                 <article className="library-item" key={recipe.id}>
-                  <div className="library-letter" aria-hidden="true">{recipe.name.slice(0, 1)}</div>
+                  <div className="library-category">
+                    <span aria-hidden="true">{recipeCategoryIcon(recipe.category)}</span>
+                    <small>{recipe.category}</small>
+                  </div>
                   <div className="library-item-copy">
                     <h3>{recipe.name}</h3>
                     <p>{recipe.description || "Sin descripción."}</p>

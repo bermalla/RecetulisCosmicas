@@ -9,7 +9,10 @@ ejemplo ni datos precargados en el repositorio.
 - Carga manual de recetas con ingredientes, instrucciones y datos opcionales.
 - Importación de una o varias recetas desde JSON, con revisión previa de duplicados.
 - Exportación íntegra de la colección como respaldo JSON.
-- Filtro por ingredientes disponibles, priorizando las coincidencias completas.
+- Filtro que arranca vacío y prioriza las coincidencias completas.
+- Agua, sal, azúcar, pimienta y aceite neutro se asumen disponibles y no afectan
+  el conteo de faltantes.
+- Categorías generales inferidas automáticamente para reconocer cada tipo de receta.
 - Referencias automáticas de nutrientes a partir de los ingredientes obligatorios.
 - Área **Mis recetas** con búsqueda por nombre y eliminación de recetas.
 - Persistencia en Cloudflare D1.
@@ -52,6 +55,9 @@ Las recetas no forman parte del código fuente. En ejecución, la fuente de verd
 es la base D1 asociada al despliegue. Una instalación nueva comienza sin
 recetas y se completa desde la interfaz.
 
+La carpeta `recetas-json/` funciona únicamente como archivo personal de lotes
+JSON. La aplicación no la lee ni importa su contenido automáticamente.
+
 El botón **Exportar base** descarga un respaldo portable con toda la colección.
 La importación acepta ese mismo respaldo o un objeto con esta estructura:
 
@@ -60,6 +66,7 @@ type RecipeImport = {
   recipes: Array<{
     name: string;
     description?: string;
+    category?: string;
     instructions: string;
     durationMinutes?: number;
     servings?: number;
