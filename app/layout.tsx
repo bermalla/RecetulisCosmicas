@@ -16,6 +16,11 @@ export const metadata: Metadata = {
   title: "Mi Recetario",
   description:
     "Encontrá recetas según lo que tenés y guardá tu colección personal.",
+  robots: {
+    index: false,
+    follow: false,
+    nocache: true,
+  },
   other: {
     "codex-preview": "development",
   },
