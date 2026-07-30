@@ -1,0 +1,1 @@
+ALTER TABLE `recipes` ADD `nutrients` text DEFAULT '[]' NOT NULL;
