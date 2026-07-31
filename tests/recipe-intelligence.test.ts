@@ -88,12 +88,32 @@ test("matches a base ingredient despite quantities and preparation details", () 
     ingredientMatchesQuery({ name: "manojo de acelgas" }, "acelgas"),
     true,
   );
+  assert.equal(
+    ingredientMatchesQuery({ name: "relleno casero con acelgas tiernas" }, "acelga"),
+    true,
+  );
+  assert.equal(
+    ingredientMatchesQuery({ name: "mezcla de nueces y coco rallado" }, "coco"),
+    true,
+  );
 });
 
-test("matches whole ingredient words without broad compound false positives", () => {
+test("matches whole words while keeping derived products distinct", () => {
   assert.equal(
     ingredientMatchesQuery({ name: "aceite de coco" }, "coco"),
     false,
+  );
+  assert.equal(
+    ingredientMatchesQuery({ name: "harina integral de coco" }, "coco"),
+    false,
+  );
+  assert.equal(
+    ingredientMatchesQuery({ name: "leche de almendras" }, "almendra"),
+    false,
+  );
+  assert.equal(
+    ingredientMatchesQuery({ name: "aceite de coco" }, "aceite de coco"),
+    true,
   );
   assert.equal(
     ingredientMatchesQuery({ name: "cocodrilo vegano" }, "coco"),
@@ -101,6 +121,10 @@ test("matches whole ingredient words without broad compound false positives", ()
   );
   assert.equal(
     ingredientMatchesQuery({ name: "sal y pimienta" }, "pimienta"),
+    true,
+  );
+  assert.equal(
+    ingredientMatchesQuery({ name: "aceite de oliva y coco rallado" }, "coco"),
     true,
   );
 });

@@ -387,10 +387,55 @@ function startsWithTokens(candidate: string[], query: string[]) {
   );
 }
 
+const DERIVED_PRODUCT_TOKENS = new Set([
+  "aceite",
+  "almidon",
+  "azucar",
+  "bebida",
+  "crema",
+  "esencia",
+  "extracto",
+  "fecula",
+  "harina",
+  "jarabe",
+  "leche",
+  "manteca",
+  "mantequilla",
+  "pasta",
+  "polvo",
+  "proteina",
+  "pure",
+  "queso",
+  "salsa",
+  "sirope",
+  "vinagre",
+  "yogur",
+]);
+
+function tokenSequenceIndex(candidate: string[], query: string[]) {
+  for (let index = 0; index <= candidate.length - query.length; index += 1) {
+    if (query.every((token, offset) => candidate[index + offset] === token)) {
+      return index;
+    }
+  }
+  return -1;
+}
+
+function isDerivedProductReference(candidate: string[], matchIndex: number) {
+  if (matchIndex <= 0) return false;
+  const prefix = candidate.slice(0, matchIndex);
+  const connectorIndex = prefix.lastIndexOf("de");
+  if (connectorIndex < 0) return false;
+  return prefix
+    .slice(0, connectorIndex)
+    .some((token) => DERIVED_PRODUCT_TOKENS.has(token));
+}
+
 /**
  * Deriva claves de búsqueda desde el nombre visible del ingrediente. Así,
- * "1/2 taza de coco rallado" responde a "coco" sin confundir palabras
- * parciales ni tratar "aceite de coco" como si fuera coco rallado.
+ * "1/2 taza de coco rallado" y "atado de acelgas" responden a sus
+ * ingredientes base sin confundir palabras parciales. Los productos derivados,
+ * como "aceite de coco", conservan su identidad propia.
  */
 export function ingredientMatchesQuery(
   ingredient: IngredientReference,
@@ -404,8 +449,6 @@ export function ingredientMatchesQuery(
     .map((value) => stripLeadingMeasurements(ingredientTokens(value)));
 
   return candidates.some((candidate) => {
-    if (startsWithTokens(candidate, queryTokens)) return true;
-
     const segments: string[][] = [[]];
     for (const token of candidate) {
       if (token === "y" || token === "o") {
@@ -414,7 +457,12 @@ export function ingredientMatchesQuery(
         segments[segments.length - 1].push(token);
       }
     }
-    return segments.some((segment) => startsWithTokens(segment, queryTokens));
+    return segments.some((rawSegment) => {
+      const segment = stripLeadingMeasurements(rawSegment);
+      if (startsWithTokens(segment, queryTokens)) return true;
+      const matchIndex = tokenSequenceIndex(segment, queryTokens);
+      return matchIndex >= 0 && !isDerivedProductReference(segment, matchIndex);
+    });
   });
 }
 
