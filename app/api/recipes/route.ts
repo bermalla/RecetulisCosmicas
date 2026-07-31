@@ -1,9 +1,10 @@
 import { asc, desc, eq } from "drizzle-orm";
-import { ensureSchema, getDb } from "../../../db";
+import { ensureSchema, getD1, getDb } from "../../../db";
 import { appMeta, recipeIngredients, recipes } from "../../../db/schema";
 import {
   mergeNutrients,
   normalizeRecipeCategory,
+  partitionRecipeDuplicates,
   reviewRecipeDuplicates,
 } from "../../../lib/recipe-intelligence";
 
@@ -169,49 +170,61 @@ async function ensureEmptyBaselineOnce() {
 }
 
 async function saveRecipe(recipe: CleanRecipe) {
-  const db = await getDb();
+  const d1 = await getD1();
   const now = new Date().toISOString();
 
-  await db
-    .insert(recipes)
-    .values({
-      id: recipe.id,
-      name: recipe.name,
-      description: recipe.description,
-      category: recipe.category,
-      instructions: JSON.stringify(recipe.instructions),
-      nutrients: JSON.stringify(recipe.nutrients),
-      durationMinutes: recipe.durationMinutes,
-      servings: recipe.servings,
-      image: recipe.image,
-      sourceUrl: recipe.sourceUrl,
-      updatedAt: now,
-    })
-    .onConflictDoUpdate({
-      target: recipes.id,
-      set: {
-        name: recipe.name,
-        description: recipe.description,
-        category: recipe.category,
-        instructions: JSON.stringify(recipe.instructions),
-        nutrients: JSON.stringify(recipe.nutrients),
-        durationMinutes: recipe.durationMinutes,
-        servings: recipe.servings,
-        image: recipe.image,
-        sourceUrl: recipe.sourceUrl,
-        updatedAt: now,
-      },
-    });
-
-  await db.delete(recipeIngredients).where(eq(recipeIngredients.recipeId, recipe.id));
-  const ingredientRows = recipe.ingredients.map((ingredient, index) => ({
-    recipeId: recipe.id,
-    ...ingredient,
-    sortOrder: index,
-  }));
-  for (let index = 0; index < ingredientRows.length; index += 12) {
-    await db.insert(recipeIngredients).values(ingredientRows.slice(index, index + 12));
-  }
+  const statements = [
+    d1
+      .prepare(`
+        INSERT INTO recipes (
+          id, name, description, category, instructions, nutrients,
+          duration_minutes, servings, image, source_url, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(id) DO UPDATE SET
+          name = excluded.name,
+          description = excluded.description,
+          category = excluded.category,
+          instructions = excluded.instructions,
+          nutrients = excluded.nutrients,
+          duration_minutes = excluded.duration_minutes,
+          servings = excluded.servings,
+          image = excluded.image,
+          source_url = excluded.source_url,
+          updated_at = excluded.updated_at
+      `)
+      .bind(
+        recipe.id,
+        recipe.name,
+        recipe.description,
+        recipe.category,
+        JSON.stringify(recipe.instructions),
+        JSON.stringify(recipe.nutrients),
+        recipe.durationMinutes,
+        recipe.servings,
+        recipe.image,
+        recipe.sourceUrl,
+        now,
+      ),
+    d1.prepare("DELETE FROM recipe_ingredients WHERE recipe_id = ?").bind(recipe.id),
+    ...recipe.ingredients.map((ingredient, index) =>
+      d1
+        .prepare(`
+          INSERT INTO recipe_ingredients (
+            recipe_id, name, normalized_name, quantity, unit, optional, sort_order
+          ) VALUES (?, ?, ?, ?, ?, ?, ?)
+        `)
+        .bind(
+          recipe.id,
+          ingredient.name,
+          ingredient.normalizedName,
+          ingredient.quantity,
+          ingredient.unit,
+          ingredient.optional ? 1 : 0,
+          index,
+        ),
+    ),
+  ];
+  await d1.batch(statements);
   return recipe.id;
 }
 
@@ -278,6 +291,7 @@ export async function POST(request: Request) {
       recipe?: RecipeInput;
       recipes?: RecipeInput[];
       preserveIds?: boolean;
+      skipDuplicates?: boolean;
     };
     const list = payload.recipes ?? (payload.recipe ? [payload.recipe] : []);
     if (list.length === 0) {
@@ -291,11 +305,17 @@ export async function POST(request: Request) {
     const cleanedRecipes = list.map((recipe) =>
       cleanRecipe(recipe, Boolean(payload.preserveIds)),
     );
-    const duplicates = reviewRecipeDuplicates(
-      cleanedRecipes,
-      await readAllRecipes(),
-    );
-    if (duplicates.length > 0) {
+    const existingRecipes = await readAllRecipes();
+    let duplicates = reviewRecipeDuplicates(cleanedRecipes, existingRecipes);
+    let recipesToSave = cleanedRecipes;
+
+    if (payload.skipDuplicates) {
+      const partition = partitionRecipeDuplicates(cleanedRecipes, existingRecipes);
+      duplicates = partition.duplicates;
+      recipesToSave = partition.accepted;
+    }
+
+    if (duplicates.length > 0 && !payload.skipDuplicates) {
       const names = [...new Set(duplicates.map((duplicate) => duplicate.incomingName))];
       const summary =
         names.length === 1
@@ -312,12 +332,14 @@ export async function POST(request: Request) {
     }
 
     const ids: string[] = [];
-    for (const recipe of cleanedRecipes) ids.push(await saveRecipe(recipe));
+    for (const recipe of recipesToSave) ids.push(await saveRecipe(recipe));
     return Response.json(
       {
         imported: ids.length,
+        skipped: cleanedRecipes.length - recipesToSave.length,
+        duplicates,
         ids,
-        review: cleanedRecipes.map((recipe) => ({
+        review: recipesToSave.map((recipe) => ({
           name: recipe.name,
           category: recipe.category,
           nutrients: recipe.nutrients,
@@ -332,7 +354,23 @@ export async function POST(request: Request) {
 
 export async function DELETE(request: Request) {
   try {
-    const id = new URL(request.url).searchParams.get("id");
+    const url = new URL(request.url);
+    if (url.searchParams.get("all") === "true") {
+      if (request.headers.get("x-confirm-delete-all") !== "BORRAR") {
+        return Response.json({ error: "Falta la confirmación para vaciar la base." }, { status: 400 });
+      }
+      await ensureEmptyBaselineOnce();
+      const db = await getDb();
+      const existing = await db.select({ id: recipes.id }).from(recipes);
+      const d1 = await getD1();
+      await d1.batch([
+        d1.prepare("DELETE FROM recipe_ingredients"),
+        d1.prepare("DELETE FROM recipes"),
+      ]);
+      return Response.json({ deleted: existing.length });
+    }
+
+    const id = url.searchParams.get("id");
     if (!id) return Response.json({ error: "Falta el id de la receta." }, { status: 400 });
     await ensureEmptyBaselineOnce();
     const db = await getDb();

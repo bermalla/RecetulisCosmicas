@@ -29,6 +29,9 @@ export default function RecipesLibrary() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deleteAllStep, setDeleteAllStep] = useState<0 | 1 | 2>(0);
+  const [deleteAllText, setDeleteAllText] = useState("");
+  const [deletingAll, setDeletingAll] = useState(false);
   const [toast, setToast] = useState("");
 
   useEffect(() => {
@@ -79,6 +82,34 @@ export default function RecipesLibrary() {
     }
   }
 
+  function closeDeleteAll() {
+    if (deletingAll) return;
+    setDeleteAllStep(0);
+    setDeleteAllText("");
+  }
+
+  async function removeAllRecipes() {
+    if (deleteAllText.trim().toUpperCase() !== "BORRAR") return;
+    setDeletingAll(true);
+    try {
+      const response = await fetch("/api/recipes?all=true", {
+        method: "DELETE",
+        headers: { "X-Confirm-Delete-All": "BORRAR" },
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "No se pudo vaciar la base.");
+      setRecipes([]);
+      setQuery("");
+      setDeleteAllStep(0);
+      setDeleteAllText("");
+      notify(`${data.deleted} ${data.deleted === 1 ? "receta eliminada" : "recetas eliminadas"}. La base quedó vacía.`);
+    } catch (requestError) {
+      notify(requestError instanceof Error ? requestError.message : "No se pudo vaciar la base.");
+    } finally {
+      setDeletingAll(false);
+    }
+  }
+
   return (
     <main className="app-shell">
       <header className="topbar">
@@ -119,6 +150,22 @@ export default function RecipesLibrary() {
             />
             {query && <button onClick={() => setQuery("")} aria-label="Limpiar búsqueda">×</button>}
           </label>
+
+          {recipes.length > 0 && (
+            <div className="library-maintenance">
+              <div>
+                <strong>Herramientas de recuperación</strong>
+                <span>Usalas sólo si necesitás reconstruir la colección desde un respaldo.</span>
+              </div>
+              <button
+                className="danger-action"
+                onClick={() => setDeleteAllStep(1)}
+                disabled={deletingAll || Boolean(deletingId)}
+              >
+                Vaciar toda la base
+              </button>
+            </div>
+          )}
 
           {error && <div className="error-card">{error}</div>}
           {loading && <p className="library-status">Cargando tu colección…</p>}
@@ -162,7 +209,7 @@ export default function RecipesLibrary() {
                   <button
                     className="library-delete"
                     onClick={() => void removeRecipe(recipe)}
-                    disabled={deletingId === recipe.id}
+                    disabled={deletingAll || deletingId === recipe.id}
                   >
                     {deletingId === recipe.id ? "Eliminando…" : "Quitar de la base"}
                   </button>
@@ -172,6 +219,63 @@ export default function RecipesLibrary() {
           )}
         </section>
       </div>
+      {deleteAllStep > 0 && (
+        <div className="modal-backdrop">
+          <section
+            className="modal delete-all-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="delete-all-title"
+            aria-describedby="delete-all-description"
+          >
+            <p className="eyebrow">Acción irreversible</p>
+            <h2 id="delete-all-title">
+              {deleteAllStep === 1 ? "¿Vaciar toda la base?" : "Confirmación final"}
+            </h2>
+            {deleteAllStep === 1 ? (
+              <>
+                <p className="modal-intro" id="delete-all-description">
+                  Se eliminarán las {recipes.length} recetas y todos sus ingredientes. Esta acción no se puede deshacer; exportá un respaldo antes si querés conservarlos.
+                </p>
+                <div className="modal-actions">
+                  <button className="secondary-action" onClick={closeDeleteAll}>Cancelar</button>
+                  <button className="danger-action" onClick={() => setDeleteAllStep(2)}>
+                    Entiendo, continuar
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <p className="modal-intro" id="delete-all-description">
+                  Para confirmar por segunda vez, escribí <strong>BORRAR</strong> en el campo.
+                </p>
+                <label className="delete-all-field">
+                  Confirmación
+                  <input
+                    value={deleteAllText}
+                    onChange={(event) => setDeleteAllText(event.target.value)}
+                    placeholder="Escribí BORRAR"
+                    autoComplete="off"
+                    autoFocus
+                  />
+                </label>
+                <div className="modal-actions">
+                  <button className="secondary-action" onClick={closeDeleteAll} disabled={deletingAll}>
+                    Cancelar
+                  </button>
+                  <button
+                    className="danger-action"
+                    onClick={() => void removeAllRecipes()}
+                    disabled={deletingAll || deleteAllText.trim().toUpperCase() !== "BORRAR"}
+                  >
+                    {deletingAll ? "Vaciando…" : "Borrar todas las recetas"}
+                  </button>
+                </div>
+              </>
+            )}
+          </section>
+        </div>
+      )}
       {toast && <div className="toast" role="status">{toast}</div>}
     </main>
   );

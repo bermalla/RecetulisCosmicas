@@ -44,9 +44,20 @@ type ScoredRecipe = Recipe & {
   score: number;
 };
 
+type ImportProgress = {
+  fileName: string;
+  total: number;
+  processed: number;
+  imported: number;
+  skipped: number;
+  status: "importing" | "refreshing" | "complete" | "error";
+  error?: string;
+};
+
 const BACKUP_FORMAT = "recetulis-cosmicas";
 const LEGACY_BACKUP_FORMAT = ["mi", "recetario"].join("-");
 const PANTRY_STORAGE_KEY = "recetulis-cosmicas-pantry";
+const IMPORT_BATCH_SIZE = 25;
 
 function normalize(value: string) {
   return normalizeIngredientSearch(value);
@@ -80,7 +91,9 @@ export default function Home() {
   const [showAdd, setShowAdd] = useState(false);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [toast, setToast] = useState("");
+  const [importProgress, setImportProgress] = useState<ImportProgress | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
+  const isImporting = importProgress?.status === "importing" || importProgress?.status === "refreshing";
 
   useEffect(() => {
     void loadRecipes();
@@ -91,6 +104,16 @@ export default function Home() {
       window.localStorage.setItem(PANTRY_STORAGE_KEY, JSON.stringify(pantry));
     }
   }, [pantry]);
+
+  useEffect(() => {
+    if (!isImporting) return;
+    const warnBeforeLeaving = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
+    window.addEventListener("beforeunload", warnBeforeLeaving);
+    return () => window.removeEventListener("beforeunload", warnBeforeLeaving);
+  }, [isImporting]);
 
   async function loadRecipes() {
     setLoading(true);
@@ -201,23 +224,84 @@ export default function Home() {
   }
 
   async function importFile(file: File) {
+    let processed = 0;
+    let imported = 0;
+    let skipped = 0;
     try {
       const raw = JSON.parse(await file.text());
       const importedRecipes = Array.isArray(raw) ? raw : raw.recipes ? raw.recipes : [raw];
+      if (!Array.isArray(importedRecipes) || importedRecipes.length === 0) {
+        throw new Error("El archivo no contiene recetas para importar.");
+      }
+      if (importedRecipes.length > 500) {
+        throw new Error("El archivo supera el máximo de 500 recetas.");
+      }
       const isBackup = raw?.format === BACKUP_FORMAT || raw?.format === LEGACY_BACKUP_FORMAT;
-      const response = await fetch("/api/recipes", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ recipes: importedRecipes, preserveIds: isBackup }),
+      setImportProgress({
+        fileName: file.name,
+        total: importedRecipes.length,
+        processed: 0,
+        imported: 0,
+        skipped: 0,
+        status: "importing",
       });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "No se pudo importar el archivo.");
+
+      for (let index = 0; index < importedRecipes.length; index += IMPORT_BATCH_SIZE) {
+        const batch = importedRecipes.slice(index, index + IMPORT_BATCH_SIZE);
+        const response = await fetch("/api/recipes", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            recipes: batch,
+            preserveIds: isBackup,
+            skipDuplicates: true,
+          }),
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "No se pudo importar el archivo.");
+        processed += batch.length;
+        imported += Number(data.imported ?? 0);
+        skipped += Number(data.skipped ?? 0);
+        setImportProgress({
+          fileName: file.name,
+          total: importedRecipes.length,
+          processed,
+          imported,
+          skipped,
+          status: "importing",
+        });
+      }
+
+      setImportProgress({
+        fileName: file.name,
+        total: importedRecipes.length,
+        processed,
+        imported,
+        skipped,
+        status: "refreshing",
+      });
       await loadRecipes();
-      notify(
-        `${data.imported} ${data.imported === 1 ? "receta importada" : "recetas importadas"}. Sin duplicados y con nutrientes revisados.`,
-      );
+      setImportProgress({
+        fileName: file.name,
+        total: importedRecipes.length,
+        processed,
+        imported,
+        skipped,
+        status: "complete",
+      });
     } catch (requestError) {
-      notify(requestError instanceof Error ? requestError.message : "El JSON no es válido.");
+      const message = requestError instanceof Error ? requestError.message : "El JSON no es válido.";
+      setImportProgress((current) => current
+        ? { ...current, processed, imported, skipped, status: "error", error: message }
+        : {
+            fileName: file.name,
+            total: 0,
+            processed,
+            imported,
+            skipped,
+            status: "error",
+            error: message,
+          });
     } finally {
       if (fileInput.current) fileInput.current.value = "";
     }
@@ -234,7 +318,7 @@ export default function Home() {
           <Link className="nav-button nav-link" href="/recetas">
             Mis recetas
           </Link>
-          <button className="nav-button" onClick={exportDatabase}>↓ Exportar base</button>
+          <button className="nav-button" onClick={exportDatabase} disabled={isImporting}>↓ Exportar base</button>
         </nav>
       </header>
 
@@ -306,11 +390,11 @@ export default function Home() {
               <span className="tiny-label">Tu colección</span>
               <strong>{recipes.length} recetas guardadas</strong>
             </div>
-            <button className="primary-action" onClick={() => setShowAdd(true)}>
+            <button className="primary-action" onClick={() => setShowAdd(true)} disabled={isImporting}>
               <span aria-hidden="true">＋</span> Agregar receta
             </button>
-            <button className="secondary-action" onClick={() => fileInput.current?.click()}>
-              <span aria-hidden="true">↑</span> Importar JSON
+            <button className="secondary-action" onClick={() => fileInput.current?.click()} disabled={isImporting}>
+              <span aria-hidden="true">↑</span> {isImporting ? "Importando…" : "Importar JSON"}
             </button>
             <input
               ref={fileInput}
@@ -365,11 +449,11 @@ export default function Home() {
                 </p>
               </div>
               <div className="empty-recipes-actions">
-                <button className="primary-action" onClick={() => setShowAdd(true)}>
+                <button className="primary-action" onClick={() => setShowAdd(true)} disabled={isImporting}>
                   Agregar receta
                 </button>
-                <button className="secondary-action" onClick={() => fileInput.current?.click()}>
-                  Importar JSON
+                <button className="secondary-action" onClick={() => fileInput.current?.click()} disabled={isImporting}>
+                  {isImporting ? "Importando…" : "Importar JSON"}
                 </button>
               </div>
             </div>
@@ -465,6 +549,60 @@ export default function Home() {
           pantry={pantry}
           onClose={() => setSelectedRecipe(null)}
         />
+      )}
+      {importProgress && (
+        <div className="modal-backdrop import-backdrop">
+          <section
+            className="modal import-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="import-title"
+            aria-describedby="import-description"
+          >
+            <p className="eyebrow">Importación de recetas</p>
+            <h2 id="import-title">
+              {importProgress.status === "complete"
+                ? "Importación terminada"
+                : importProgress.status === "error"
+                  ? "La importación se detuvo"
+                  : "Estamos sumando tus recetas"}
+            </h2>
+            <p className="modal-intro" id="import-description">
+              {importProgress.status === "complete"
+                ? `${importProgress.imported} recetas nuevas fueron incorporadas correctamente.`
+                : importProgress.status === "error"
+                  ? "Lo que ya se guardó permanece seguro. Podés volver a elegir el mismo archivo para continuar."
+                  : importProgress.status === "refreshing"
+                    ? "La carga terminó. Estamos actualizando tu colección."
+                    : "No cierres ni recargues esta pestaña hasta que termine el proceso."}
+            </p>
+            <div className="import-file-name">{importProgress.fileName}</div>
+            <div className="import-progress-copy" aria-live="polite">
+              <strong>{importProgress.processed} de {importProgress.total}</strong>
+              <span>{importProgress.total > 0 ? Math.round((importProgress.processed / importProgress.total) * 100) : 0}%</span>
+            </div>
+            <progress
+              className="import-progress"
+              max={Math.max(importProgress.total, 1)}
+              value={importProgress.processed}
+            />
+            {importProgress.skipped > 0 && (
+              <p className="import-note">
+                {importProgress.skipped} {importProgress.skipped === 1 ? "receta ya existía" : "recetas ya existían"} y se omitieron sin interrumpir la carga.
+              </p>
+            )}
+            {importProgress.status === "error" && (
+              <p className="form-error" role="alert">{importProgress.error}</p>
+            )}
+            {(importProgress.status === "complete" || importProgress.status === "error") && (
+              <div className="modal-actions">
+                <button className="primary-action" onClick={() => setImportProgress(null)}>
+                  {importProgress.status === "complete" ? "Listo" : "Cerrar y reintentar"}
+                </button>
+              </div>
+            )}
+          </section>
+        </div>
       )}
       {toast && <div className="toast" role="status">{toast}</div>}
     </main>

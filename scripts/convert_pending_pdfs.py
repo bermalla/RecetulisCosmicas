@@ -633,11 +633,19 @@ def main() -> None:
     validate(big_recipes, 716, BIG_PDF.name)
     validate(vegan_recipes, 92, VEGAN_PDF.name)
 
-    big_output = OUTPUT / "700-recetas-chau-inflamacion.json"
+    big_split_index = (len(big_recipes) + 1) // 2
+    big_outputs = (
+        (OUTPUT / "700-recetas-chau-inflamacion-parte-1.json", big_recipes[:big_split_index]),
+        (OUTPUT / "700-recetas-chau-inflamacion-parte-2.json", big_recipes[big_split_index:]),
+    )
     vegan_output = OUTPUT / "cuadernillo-formacion-vegana.json"
-    write_json(big_output, big_recipes)
+    for path, recipes in big_outputs:
+        write_json(path, recipes)
     write_json(vegan_output, vegan_recipes)
-    print(f"{big_output.relative_to(ROOT)}: {len(big_recipes)} recetas")
+    legacy_big_output = OUTPUT / "700-recetas-chau-inflamacion.json"
+    legacy_big_output.unlink(missing_ok=True)
+    for path, recipes in big_outputs:
+        print(f"{path.relative_to(ROOT)}: {len(recipes)} recetas")
     print(f"{vegan_output.relative_to(ROOT)}: {len(vegan_recipes)} recetas")
 
 

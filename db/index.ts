@@ -1,7 +1,7 @@
 import { drizzle } from "drizzle-orm/d1";
 import * as schema from "./schema";
 
-async function getD1() {
+export async function getD1() {
   const { env } = await import("cloudflare:workers");
   if (!env.DB) {
     throw new Error(

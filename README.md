@@ -7,7 +7,8 @@ ejemplo ni datos precargados en el repositorio.
 ## Funcionalidades
 
 - Carga manual de recetas con ingredientes, instrucciones y datos opcionales.
-- Importación de una o varias recetas desde JSON, con revisión previa de duplicados.
+- Importación de hasta 500 recetas desde JSON, procesada en lotes con progreso visible.
+- Reintento seguro de importaciones interrumpidas: omite duplicados y continúa con las faltantes.
 - Exportación íntegra de la colección como respaldo JSON.
 - Filtro que arranca vacío y prioriza las coincidencias completas.
 - Agua, sal, azúcar, pimienta y aceite neutro se asumen disponibles y no afectan
@@ -15,6 +16,7 @@ ejemplo ni datos precargados en el repositorio.
 - Categorías generales inferidas automáticamente para reconocer cada tipo de receta.
 - Referencias automáticas de nutrientes a partir de los ingredientes obligatorios.
 - Área **Mis recetas** con búsqueda por nombre y eliminación de recetas.
+- Vaciado completo de la base con doble confirmación para tareas de recuperación.
 - Persistencia en Cloudflare D1.
 
 ## Tecnología

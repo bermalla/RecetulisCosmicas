@@ -307,6 +307,9 @@ const INVARIANT_SINGULAR_TOKENS = new Set([
 const LEADING_MEASUREMENT_TOKENS = new Set([
   "a",
   "aproximadamente",
+  "atado",
+  "bandeja",
+  "bolsa",
   "cc",
   "cucharada",
   "cucharadita",
@@ -322,6 +325,7 @@ const LEADING_MEASUREMENT_TOKENS = new Set([
   "l",
   "lata",
   "litro",
+  "manojo",
   "medio",
   "media",
   "mg",
@@ -639,4 +643,32 @@ export function reviewRecipeDuplicates(
   }
 
   return duplicates;
+}
+
+export function partitionRecipeDuplicates<T extends RecipeIdentity>(
+  incoming: T[],
+  existing: RecipeIdentity[],
+) {
+  const accepted: T[] = [];
+  const duplicates: DuplicateReview[] = [];
+
+  for (const recipe of incoming) {
+    const existingDuplicates = reviewRecipeDuplicates([recipe], existing);
+    if (existingDuplicates.length > 0) {
+      duplicates.push(...existingDuplicates);
+      continue;
+    }
+
+    const batchDuplicates = reviewRecipeDuplicates([recipe], accepted).map(
+      (duplicate) => ({ ...duplicate, source: "file" as const }),
+    );
+    if (batchDuplicates.length > 0) {
+      duplicates.push(...batchDuplicates);
+      continue;
+    }
+
+    accepted.push(recipe);
+  }
+
+  return { accepted, duplicates };
 }

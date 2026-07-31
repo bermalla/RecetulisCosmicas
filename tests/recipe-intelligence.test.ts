@@ -10,6 +10,7 @@ import {
   normalizeIngredientSearch,
   normalizeRecipeCategory,
   mergeNutrients,
+  partitionRecipeDuplicates,
   reviewRecipeDuplicates,
 } from "../lib/recipe-intelligence.ts";
 
@@ -58,6 +59,10 @@ test("derives singular base ingredients for autocomplete", () => {
     ["ajo"],
   );
   assert.deepEqual(
+    ingredientBaseSuggestions({ name: "un atado de acelgas" }),
+    ["acelga"],
+  );
+  assert.deepEqual(
     ingredientBaseSuggestions({ name: "sal y pimienta" }),
     ["sal", "pimienta"],
   );
@@ -73,6 +78,14 @@ test("matches a base ingredient despite quantities and preparation details", () 
   );
   assert.equal(
     ingredientMatchesQuery({ name: "tomates picados" }, "tomate"),
+    true,
+  );
+  assert.equal(
+    ingredientMatchesQuery({ name: "atado de acelgas" }, "Acelga"),
+    true,
+  );
+  assert.equal(
+    ingredientMatchesQuery({ name: "manojo de acelgas" }, "acelgas"),
     true,
   );
 });
@@ -213,4 +226,38 @@ test("detects repeated content inside a single import file", () => {
       reason: "same-content",
     },
   ]);
+});
+
+test("keeps missing recipes and skips existing ones when resuming an import", () => {
+  const existing = [
+    {
+      name: "Sopa ya guardada",
+      instructions: ["Cocinar la sopa durante veinte minutos."],
+      ingredients: [{ name: "calabaza" }],
+    },
+  ];
+  const missing = {
+    name: "Ensalada pendiente",
+    instructions: ["Mezclar todos los ingredientes y servir."],
+    ingredients: [{ name: "tomate" }],
+  };
+  const partition = partitionRecipeDuplicates([existing[0], missing], existing);
+
+  assert.deepEqual(partition.accepted, [missing]);
+  assert.equal(partition.duplicates.length, 1);
+  assert.equal(partition.duplicates[0].incomingName, "Sopa ya guardada");
+});
+
+test("accepts the first occurrence and skips later duplicates in the same batch", () => {
+  const first = {
+    name: "Preparación original",
+    instructions: ["Mezclar y cocinar durante treinta minutos."],
+    ingredients: [{ name: "garbanzos" }],
+  };
+  const repeated = { ...first };
+  const partition = partitionRecipeDuplicates([first, repeated], []);
+
+  assert.deepEqual(partition.accepted, [first]);
+  assert.equal(partition.duplicates.length, 1);
+  assert.equal(partition.duplicates[0].source, "file");
 });
