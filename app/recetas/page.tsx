@@ -84,7 +84,7 @@ export default function RecipesLibrary() {
       <header className="topbar">
         <Link className="brand" href="/" aria-label="Volver al buscador">
           <span className="brand-mark" aria-hidden="true">♨</span>
-          <span>Mi Recetario</span>
+          <span>Recetulis Cósmicas</span>
         </Link>
         <nav className="nav-actions" aria-label="Navegación">
           <Link className="nav-button nav-link" href="/">← Volver al buscador</Link>

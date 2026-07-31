@@ -1,4 +1,4 @@
-# Mi Recetario
+# Recetulis Cósmicas
 
 Web app para guardar recetas y descubrir qué cocinar según los ingredientes
 disponibles. La colección se inicia completamente vacía: no hay recetas de

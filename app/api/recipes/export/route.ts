@@ -3,7 +3,7 @@ import { readAllRecipes } from "../route";
 export async function GET() {
   try {
     const payload = {
-      format: "mi-recetario",
+      format: "recetulis-cosmicas",
       formatVersion: 1,
       exportedAt: new Date().toISOString(),
       recipes: await readAllRecipes(),
@@ -12,7 +12,7 @@ export async function GET() {
     return new Response(JSON.stringify(payload, null, 2), {
       headers: {
         "Content-Type": "application/json; charset=utf-8",
-        "Content-Disposition": `attachment; filename="mi-recetario-${date}.json"`,
+        "Content-Disposition": `attachment; filename="recetulis-cosmicas-${date}.json"`,
       },
     });
   } catch (error) {

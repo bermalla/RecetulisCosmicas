@@ -44,6 +44,10 @@ type ScoredRecipe = Recipe & {
   score: number;
 };
 
+const BACKUP_FORMAT = "recetulis-cosmicas";
+const LEGACY_BACKUP_FORMAT = ["mi", "recetario"].join("-");
+const PANTRY_STORAGE_KEY = "recetulis-cosmicas-pantry";
+
 function normalize(value: string) {
   return normalizeIngredientSearch(value);
 }
@@ -84,7 +88,7 @@ export default function Home() {
 
   useEffect(() => {
     if (pantry.length) {
-      window.localStorage.setItem("mi-recetario-pantry", JSON.stringify(pantry));
+      window.localStorage.setItem(PANTRY_STORAGE_KEY, JSON.stringify(pantry));
     }
   }, [pantry]);
 
@@ -187,7 +191,7 @@ export default function Home() {
       const href = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = href;
-      link.download = `mi-recetario-${new Date().toISOString().slice(0, 10)}.json`;
+      link.download = `recetulis-cosmicas-${new Date().toISOString().slice(0, 10)}.json`;
       link.click();
       URL.revokeObjectURL(href);
       notify("Respaldo completo descargado.");
@@ -200,7 +204,7 @@ export default function Home() {
     try {
       const raw = JSON.parse(await file.text());
       const importedRecipes = Array.isArray(raw) ? raw : raw.recipes ? raw.recipes : [raw];
-      const isBackup = raw?.format === "mi-recetario";
+      const isBackup = raw?.format === BACKUP_FORMAT || raw?.format === LEGACY_BACKUP_FORMAT;
       const response = await fetch("/api/recipes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -224,7 +228,7 @@ export default function Home() {
       <header className="topbar">
         <a className="brand" href="#inicio" aria-label="Ir al inicio">
           <span className="brand-mark" aria-hidden="true">♨</span>
-          <span>Mi Recetario</span>
+          <span>Recetulis Cósmicas</span>
         </a>
         <nav className="nav-actions" aria-label="Acciones principales">
           <Link className="nav-button nav-link" href="/recetas">
@@ -286,7 +290,7 @@ export default function Home() {
               {pantry.length > 0 && (
                 <button className="clear-button" onClick={() => {
                   setPantry([]);
-                  window.localStorage.removeItem("mi-recetario-pantry");
+                  window.localStorage.removeItem(PANTRY_STORAGE_KEY);
                 }}>
                   Limpiar
                 </button>

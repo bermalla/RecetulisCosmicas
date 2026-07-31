@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Mi Recetario",
+  title: "Recetulis Cósmicas",
   description:
     "Encontrá recetas según lo que tenés y guardá tu colección personal.",
   robots: {
