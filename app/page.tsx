@@ -4,6 +4,8 @@ import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
+  RECIPE_CATEGORIES,
+  filterRecipesByCategory,
   filterRecipesByIngredientMatches,
   inferNutrients,
   ingredientBaseSuggestions,
@@ -88,6 +90,7 @@ export default function Home() {
   const [error, setError] = useState("");
   const [pantry, setPantry] = useState<string[]>([]);
   const [ingredientInput, setIngredientInput] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [showAdd, setShowAdd] = useState(false);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [toast, setToast] = useState("");
@@ -165,6 +168,16 @@ export default function Home() {
       .slice(0, 6);
   }, [recipes, ingredientInput, pantry]);
 
+  const categoryOptions = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const recipe of recipes) {
+      counts.set(recipe.category, (counts.get(recipe.category) ?? 0) + 1);
+    }
+    return RECIPE_CATEGORIES
+      .map((category) => ({ category, count: counts.get(category) ?? 0 }))
+      .filter((option) => option.count > 0);
+  }, [recipes]);
+
   const scoredRecipes = useMemo<ScoredRecipe[]>(() => {
     const hasIngredient = (ingredient: Ingredient) =>
       isAssumedPantryIngredient(ingredient) ||
@@ -201,10 +214,14 @@ export default function Home() {
       });
   }, [recipes, pantry]);
 
-  const visibleScoredRecipes = useMemo(
-    () => filterRecipesByIngredientMatches(scoredRecipes, pantry.length > 0),
-    [pantry.length, scoredRecipes],
-  );
+  const visibleScoredRecipes = useMemo(() => {
+    const ingredientMatches = filterRecipesByIngredientMatches(
+      scoredRecipes,
+      pantry.length > 0,
+    );
+    return filterRecipesByCategory(ingredientMatches, selectedCategory);
+  }, [pantry.length, scoredRecipes, selectedCategory]);
+  const hasActiveFilters = pantry.length > 0 || Boolean(selectedCategory);
 
   async function exportDatabase() {
     try {
@@ -383,6 +400,30 @@ export default function Home() {
             <p className="pantry-help">
               Agua, sal, azúcar, pimienta y aceite neutro ya se consideran disponibles.
             </p>
+            <div className="category-filter">
+              <label htmlFor="recipe-category">Tipo de plato</label>
+              <div className="category-select-wrap">
+                <select
+                  id="recipe-category"
+                  value={selectedCategory}
+                  onChange={(event) => setSelectedCategory(event.target.value)}
+                  disabled={isImporting}
+                >
+                  <option value="">Todos los tipos de plato</option>
+                  {categoryOptions.map(({ category, count }) => (
+                    <option key={category} value={category}>
+                      {category} ({count})
+                    </option>
+                  ))}
+                </select>
+                <span aria-hidden="true">⌄</span>
+              </div>
+              {selectedCategory && (
+                <button className="clear-button" onClick={() => setSelectedCategory("")}>
+                  Quitar filtro
+                </button>
+              )}
+            </div>
           </div>
 
           <aside className="action-panel" aria-label="Gestionar recetas">
@@ -415,13 +456,19 @@ export default function Home() {
         <section className="results" id="resultados">
           <div className="results-heading">
             <div>
-              <p className="eyebrow">{recipes.length === 0 ? "Colección inicial" : "Ordenadas por coincidencia"}</p>
+              <p className="eyebrow">
+                {recipes.length === 0
+                  ? "Colección inicial"
+                  : selectedCategory
+                    ? selectedCategory
+                    : "Ordenadas por coincidencia"}
+              </p>
               <h2>
                 {loading
                   ? "Buscando recetas…"
                   : recipes.length === 0
                     ? "Tu recetario está listo"
-                    : pantry.length > 0 && visibleScoredRecipes.length === 0
+                    : hasActiveFilters && visibleScoredRecipes.length === 0
                       ? "No encontramos coincidencias"
                       : `${visibleScoredRecipes.length} recetas encontradas`}
               </h2>
@@ -461,11 +508,11 @@ export default function Home() {
           {!loading &&
             !error &&
             recipes.length > 0 &&
-            pantry.length > 0 &&
+            hasActiveFilters &&
             visibleScoredRecipes.length === 0 && (
               <div className="filter-empty">
-                <strong>No hay recetas con esos ingredientes.</strong>
-                <p>Probá quitando alguno o agregando otro ingrediente disponible.</p>
+                <strong>No hay recetas para esta combinación de filtros.</strong>
+                <p>Probá con otra categoría o cambiá los ingredientes disponibles.</p>
               </div>
             )}
           {!loading && !error && visibleScoredRecipes.length > 0 && (

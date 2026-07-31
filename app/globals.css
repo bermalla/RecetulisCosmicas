@@ -188,6 +188,46 @@ h1::after {
 .suggestions button:hover { background: var(--herb-soft); }
 .pantry-chips { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 22px; }
 .pantry-help { margin: 12px 0 0; color: var(--muted); font-size: 12px; line-height: 1.45; }
+.category-filter {
+  margin-top: 22px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.category-filter > label {
+  flex: 0 0 auto;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.category-select-wrap {
+  min-width: min(300px, 100%);
+  position: relative;
+}
+.category-select-wrap select {
+  width: 100%;
+  min-height: 48px;
+  appearance: none;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  padding: 10px 42px 10px 14px;
+  color: var(--ink);
+  cursor: pointer;
+  font-weight: 750;
+}
+.category-select-wrap select:disabled { opacity: .55; cursor: not-allowed; }
+.category-select-wrap > span {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  pointer-events: none;
+  transform: translateY(-55%);
+  color: var(--herb);
+  font-size: 20px;
+}
 .pantry-chip {
   min-height: 46px;
   padding: 8px 10px 8px 16px;
@@ -808,6 +848,9 @@ h1::after {
   .ingredient-composer { flex-wrap: wrap; padding: 8px; }
   .ingredient-composer input { min-height: 52px; width: calc(100% - 55px); }
   .ingredient-composer > button { width: 100%; }
+  .category-filter { align-items: stretch; flex-direction: column; }
+  .category-select-wrap { width: 100%; min-width: 0; }
+  .category-filter .clear-button { align-self: flex-start; }
   .action-panel { grid-template-columns: 1fr; padding: 22px; }
   .action-panel-copy { grid-column: auto; }
   .results-heading { align-items: start; flex-direction: column; }

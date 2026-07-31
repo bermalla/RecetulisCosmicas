@@ -41,6 +41,17 @@ export const RECIPE_CATEGORIES = [
 
 export type RecipeCategory = (typeof RECIPE_CATEGORIES)[number];
 
+export function filterRecipesByCategory<T extends { category?: string | null }>(
+  recipes: T[],
+  category: string,
+) {
+  const normalizedCategory = normalizeReference(category);
+  if (!normalizedCategory) return recipes;
+  return recipes.filter(
+    (recipe) => normalizeReference(String(recipe.category ?? "")) === normalizedCategory,
+  );
+}
+
 const CATEGORY_RULES: Array<{
   category: RecipeCategory;
   terms: string[];

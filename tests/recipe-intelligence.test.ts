@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
+  filterRecipesByCategory,
   filterRecipesByIngredientMatches,
   inferRecipeCategory,
   inferNutrients,
@@ -22,6 +23,18 @@ test("hides recipes without ingredient matches only while filtering", () => {
 
   assert.deepEqual(filterRecipesByIngredientMatches(recipes, true), [recipes[0]]);
   assert.deepEqual(filterRecipesByIngredientMatches(recipes, false), recipes);
+});
+
+test("filters recipes by dish category and preserves all recipes when unset", () => {
+  const recipes = [
+    { name: "Tarta de verduras", category: "Tarta" },
+    { name: "Budín de limón", category: "Postre" },
+    { name: "Guiso", category: "Plato principal" },
+  ];
+
+  assert.deepEqual(filterRecipesByCategory(recipes, "Postre"), [recipes[1]]);
+  assert.deepEqual(filterRecipesByCategory(recipes, "postre"), [recipes[1]]);
+  assert.deepEqual(filterRecipesByCategory(recipes, ""), recipes);
 });
 
 test("normalizes common Spanish singular and plural forms", () => {
