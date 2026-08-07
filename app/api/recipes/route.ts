@@ -1,10 +1,16 @@
-import { asc, desc, eq } from "drizzle-orm";
+import { and, asc, desc, eq, isNull } from "drizzle-orm";
 import { ensureSchema, getD1, getDb } from "../../../db";
-import { appMeta, recipeIngredients, recipes } from "../../../db/schema";
+import { recipeIngredients, recipes } from "../../../db/schema";
+import {
+  type AuthorizedActor,
+  authErrorResponse,
+  requireActor,
+} from "../../../lib/firebase-auth-server";
 import {
   mergeNutrients,
   normalizeRecipeCategory,
   partitionRecipeDuplicates,
+  recipeNameKey,
   reviewRecipeDuplicates,
 } from "../../../lib/recipe-intelligence";
 
@@ -18,6 +24,7 @@ type IngredientInput = {
 
 type RecipeInput = {
   id?: string;
+  version?: number;
   name?: string;
   description?: string;
   category?: string | null;
@@ -112,7 +119,7 @@ function cleanRecipe(input: RecipeInput, preserveId = false) {
             optional: Boolean(ingredient.optional),
           };
         })
-        .filter(Boolean)
+        .filter((ingredient): ingredient is NonNullable<typeof ingredient> => ingredient !== null)
     : [];
 
   if (!name || ingredientsList.length === 0) {
@@ -150,50 +157,40 @@ type CleanRecipe = ReturnType<typeof cleanRecipe>;
 
 async function ensureEmptyBaselineOnce() {
   await ensureSchema();
-  const db = await getDb();
-  const resetKey = "reset:empty-repository-baseline:v1";
-  const reset = await db
-    .select({ key: appMeta.key })
-    .from(appMeta)
-    .where(eq(appMeta.key, resetKey))
-    .limit(1);
-  if (reset.length > 0) return;
-
-  await db.delete(recipes);
-  await db
-    .insert(appMeta)
-    .values({
-      key: resetKey,
-      value: "La colección se inició vacía para la versión de repositorio.",
-    })
-    .onConflictDoNothing();
 }
 
-async function saveRecipe(recipe: CleanRecipe) {
+function revisionPayload(recipe: CleanRecipe, actor: AuthorizedActor) {
+  return JSON.stringify({
+    ...recipe,
+    groupId: actor.groupId,
+    version: 1,
+    createdBy: actor.id,
+    updatedBy: actor.id,
+  });
+}
+
+async function saveRecipe(recipe: CleanRecipe, actor: AuthorizedActor) {
   const d1 = await getD1();
   const now = new Date().toISOString();
 
   const statements = [
     d1
       .prepare(`
+        INSERT INTO recipe_name_claims (group_id, normalized_name, recipe_id)
+        VALUES (?, ?, ?)
+      `)
+      .bind(actor.groupId, recipeNameKey(recipe.name), recipe.id),
+    d1
+      .prepare(`
         INSERT INTO recipes (
-          id, name, description, category, instructions, nutrients,
-          duration_minutes, servings, image, source_url, updated_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ON CONFLICT(id) DO UPDATE SET
-          name = excluded.name,
-          description = excluded.description,
-          category = excluded.category,
-          instructions = excluded.instructions,
-          nutrients = excluded.nutrients,
-          duration_minutes = excluded.duration_minutes,
-          servings = excluded.servings,
-          image = excluded.image,
-          source_url = excluded.source_url,
-          updated_at = excluded.updated_at
+          id, group_id, name, description, category, instructions, nutrients,
+          duration_minutes, servings, image, source_url, version,
+          created_by, updated_by, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?)
       `)
       .bind(
         recipe.id,
+        actor.groupId,
         recipe.name,
         recipe.description,
         recipe.category,
@@ -203,9 +200,10 @@ async function saveRecipe(recipe: CleanRecipe) {
         recipe.servings,
         recipe.image,
         recipe.sourceUrl,
+        actor.id,
+        actor.id,
         now,
       ),
-    d1.prepare("DELETE FROM recipe_ingredients WHERE recipe_id = ?").bind(recipe.id),
     ...recipe.ingredients.map((ingredient, index) =>
       d1
         .prepare(`
@@ -223,16 +221,27 @@ async function saveRecipe(recipe: CleanRecipe) {
           index,
         ),
     ),
+    d1
+      .prepare(`
+        INSERT INTO recipe_revisions (
+          recipe_id, group_id, version, base_version, operation, payload, author_id, created_at
+        ) VALUES (?, ?, 1, NULL, 'create', ?, ?, ?)
+      `)
+      .bind(recipe.id, actor.groupId, revisionPayload(recipe, actor), actor.id, now),
   ];
   await d1.batch(statements);
   return recipe.id;
 }
 
-async function readAllRecipes() {
+async function readAllRecipes(groupId: string) {
   await ensureEmptyBaselineOnce();
   const db = await getDb();
   const [recipeRows, ingredientRows] = await Promise.all([
-    db.select().from(recipes).orderBy(desc(recipes.updatedAt), asc(recipes.name)),
+    db
+      .select()
+      .from(recipes)
+      .where(and(eq(recipes.groupId, groupId), isNull(recipes.deletedAt)))
+      .orderBy(desc(recipes.updatedAt), asc(recipes.name)),
     db
       .select()
       .from(recipeIngredients)
@@ -277,16 +286,18 @@ function errorResponse(error: unknown) {
   return Response.json({ error: friendly }, { status: 500 });
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    return Response.json({ recipes: await readAllRecipes() });
+    const actor = await requireActor(request);
+    return Response.json({ recipes: await readAllRecipes(actor.groupId) });
   } catch (error) {
-    return errorResponse(error);
+    return authErrorResponse(error) ?? errorResponse(error);
   }
 }
 
 export async function POST(request: Request) {
   try {
+    const actor = await requireActor(request, ["owner", "editor"]);
     const payload = (await request.json()) as {
       recipe?: RecipeInput;
       recipes?: RecipeInput[];
@@ -305,7 +316,7 @@ export async function POST(request: Request) {
     const cleanedRecipes = list.map((recipe) =>
       cleanRecipe(recipe, Boolean(payload.preserveIds)),
     );
-    const existingRecipes = await readAllRecipes();
+    const existingRecipes = await readAllRecipes(actor.groupId);
     let duplicates = reviewRecipeDuplicates(cleanedRecipes, existingRecipes);
     let recipesToSave = cleanedRecipes;
 
@@ -332,7 +343,7 @@ export async function POST(request: Request) {
     }
 
     const ids: string[] = [];
-    for (const recipe of recipesToSave) ids.push(await saveRecipe(recipe));
+    for (const recipe of recipesToSave) ids.push(await saveRecipe(recipe, actor));
     return Response.json(
       {
         imported: ids.length,
@@ -348,36 +359,74 @@ export async function POST(request: Request) {
       { status: 201 },
     );
   } catch (error) {
+    const authResponse = authErrorResponse(error);
+    if (authResponse) return authResponse;
+    const message = error instanceof Error ? error.message.toLowerCase() : "";
+    if (message.includes("unique constraint") || message.includes("constraint failed")) {
+      return Response.json(
+        {
+          error: "No se guardó la receta porque otro usuario ya creó una con el mismo nombre o identificador.",
+          code: "CONCURRENT_DUPLICATE",
+        },
+        { status: 409 },
+      );
+    }
     return errorResponse(error);
   }
+}
+
+type StoredRecipe = Awaited<ReturnType<typeof readAllRecipes>>[number];
+
+async function softDeleteRecipe(recipe: StoredRecipe, actor: AuthorizedActor) {
+  const d1 = await getD1();
+  const now = new Date().toISOString();
+  const currentVersion = Number(recipe.version ?? 1);
+  const nextVersion = currentVersion + 1;
+  await d1.batch([
+    d1
+      .prepare(`
+        UPDATE recipes
+        SET deleted_at = ?, version = ?, updated_by = ?, updated_at = ?
+        WHERE id = ? AND group_id = ? AND version = ? AND deleted_at IS NULL
+      `)
+      .bind(now, nextVersion, actor.id, now, recipe.id, actor.groupId, currentVersion),
+    d1
+      .prepare("DELETE FROM recipe_name_claims WHERE group_id = ? AND recipe_id = ?")
+      .bind(actor.groupId, recipe.id),
+    d1
+      .prepare(`
+        INSERT INTO recipe_revisions (
+          recipe_id, group_id, version, base_version, operation, payload, author_id, created_at
+        ) VALUES (?, ?, ?, ?, 'delete', NULL, ?, ?)
+      `)
+      .bind(recipe.id, actor.groupId, nextVersion, currentVersion, actor.id, now),
+  ]);
 }
 
 export async function DELETE(request: Request) {
   try {
     const url = new URL(request.url);
     if (url.searchParams.get("all") === "true") {
+      const actor = await requireActor(request, ["owner"]);
       if (request.headers.get("x-confirm-delete-all") !== "BORRAR") {
         return Response.json({ error: "Falta la confirmación para vaciar la base." }, { status: 400 });
       }
       await ensureEmptyBaselineOnce();
-      const db = await getDb();
-      const existing = await db.select({ id: recipes.id }).from(recipes);
-      const d1 = await getD1();
-      await d1.batch([
-        d1.prepare("DELETE FROM recipe_ingredients"),
-        d1.prepare("DELETE FROM recipes"),
-      ]);
+      const existing = await readAllRecipes(actor.groupId);
+      for (const recipe of existing) await softDeleteRecipe(recipe, actor);
       return Response.json({ deleted: existing.length });
     }
 
+    const actor = await requireActor(request, ["owner", "editor"]);
     const id = url.searchParams.get("id");
     if (!id) return Response.json({ error: "Falta el id de la receta." }, { status: 400 });
     await ensureEmptyBaselineOnce();
-    const db = await getDb();
-    await db.delete(recipes).where(eq(recipes.id, id));
+    const existing = (await readAllRecipes(actor.groupId)).find((recipe) => recipe.id === id);
+    if (!existing) return Response.json({ error: "La receta ya no existe." }, { status: 404 });
+    await softDeleteRecipe(existing, actor);
     return Response.json({ deleted: id });
   } catch (error) {
-    return errorResponse(error);
+    return authErrorResponse(error) ?? errorResponse(error);
   }
 }
 

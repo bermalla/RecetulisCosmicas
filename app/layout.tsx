@@ -1,6 +1,8 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { AuthProvider } from "./auth-provider";
+import { PwaRegister } from "./pwa-register";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -21,13 +23,22 @@ export const metadata: Metadata = {
     follow: false,
     nocache: true,
   },
-  other: {
-    "codex-preview": "development",
-  },
+  manifest: "/manifest.webmanifest",
+  appleWebApp: { capable: true, title: "Recetulis", statusBarStyle: "default" },
   icons: {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",
+    apple: "/icon-192.png",
   },
+  other: {
+    "codex-preview": "development",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#6f2b3d",
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({
@@ -40,7 +51,8 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <AuthProvider>{children}</AuthProvider>
+        <PwaRegister />
       </body>
     </html>
   );

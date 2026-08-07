@@ -881,3 +881,70 @@ h1::after {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
 }
+
+.access-shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: radial-gradient(circle at top, #fffaf2 0, #f3e8da 58%, #e8dac9 100%);
+}
+.access-card {
+  width: min(100%, 520px);
+  padding: clamp(28px, 6vw, 52px);
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  background: rgba(255, 253, 248, .94);
+  box-shadow: 0 24px 80px rgba(61, 39, 32, .14);
+}
+.access-card h1 { margin: 8px 0 14px; font-size: clamp(32px, 7vw, 52px); line-height: .98; }
+.access-card > p:not(.eyebrow):not(.form-error):not(.helper-text) { color: var(--muted); line-height: 1.6; }
+.access-actions, .settings-actions, .backup-grid { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+.access-actions button { flex: 1 1 190px; }
+.helper-text { margin-top: 16px; color: var(--muted); font-size: 13px; }
+.mode-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  background: #e6f3e8;
+  color: #285f36;
+}
+.mode-badge.offline { background: #f5e8c8; color: #77551a; }
+.settings-page { width: min(100% - 40px, 980px); margin: 0 auto; padding: 58px 0 90px; }
+.settings-hero { margin-bottom: 30px; }
+.settings-hero h1 { margin: 7px 0 12px; font-size: clamp(34px, 6vw, 58px); line-height: 1; }
+.settings-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 28px;
+  margin-bottom: 18px;
+  padding: clamp(22px, 4vw, 34px);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: var(--surface);
+}
+.settings-card h2 { margin: 4px 0 8px; }
+.settings-card p { color: var(--muted); }
+.settings-stack { display: block; }
+.invite-form { display: grid; grid-template-columns: 1fr 180px auto; align-items: end; gap: 12px; margin: 24px 0; }
+.invite-form label { display: grid; gap: 7px; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; }
+.invite-form input, .invite-form select { min-height: 46px; padding: 0 13px; border: 1px solid var(--line); border-radius: 12px; background: #fff; color: var(--ink); }
+.member-list { display: grid; border-top: 1px solid var(--line); }
+.member-row { display: flex; justify-content: space-between; align-items: center; gap: 18px; padding: 16px 0; border-bottom: 1px solid var(--line); }
+.member-row > div { display: grid; gap: 4px; }
+.member-row span { color: var(--muted); font-size: 13px; }
+.member-row.pending { opacity: .78; }
+.text-danger { border: 0; background: transparent; color: #9b2638; font-weight: 800; cursor: pointer; }
+.backup-grid { margin-top: 22px; }
+@media (max-width: 760px) {
+  .mode-badge { order: -1; width: 100%; justify-content: center; }
+  .settings-card { align-items: stretch; flex-direction: column; }
+  .invite-form { grid-template-columns: 1fr; }
+  .settings-actions button, .backup-grid button { width: 100%; }
+}

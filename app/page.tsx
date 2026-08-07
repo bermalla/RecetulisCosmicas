@@ -3,6 +3,19 @@
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { AccessGate, useAuth } from "./auth-provider";
+import {
+  GROUP_SCOPE,
+  LOCAL_SCOPE,
+  applyRecipeChanges,
+  putRecipe,
+  readCursor,
+  readRecipes,
+  replaceRecipes,
+  writeCursor,
+  type OfflineRecipe,
+  type RecipeChange,
+} from "../lib/offline-store";
 import {
   RECIPE_CATEGORIES,
   filterRecipesByCategory,
@@ -12,6 +25,7 @@ import {
   ingredientMatchesQuery,
   isAssumedPantryIngredient,
   normalizeIngredientSearch,
+  normalizeRecipeCategory,
   recipeCategoryIcon,
   recipeNameKey,
 } from "../lib/recipe-intelligence";
@@ -37,6 +51,9 @@ type Recipe = {
   sourceUrl?: string | null;
   nutrients: string[];
   ingredients: Ingredient[];
+  version?: number;
+  localOnly?: boolean;
+  updatedAt?: string;
 };
 
 type ScoredRecipe = Recipe & {
@@ -84,7 +101,51 @@ function ingredientLabel(ingredient: Ingredient) {
   return [ingredient.quantity, ingredient.unit, ingredient.name].filter(Boolean).join(" ");
 }
 
-export default function Home() {
+function toOfflineRecipe(value: Record<string, unknown>, preserveId: boolean): Recipe {
+  const name = String(value.name ?? "").trim();
+  const rawIngredients = Array.isArray(value.ingredients) ? value.ingredients : [];
+  const ingredients = rawIngredients
+    .map((item) => item as Record<string, unknown>)
+    .filter((item) => String(item.name ?? "").trim())
+    .map((item, index) => ({
+      name: String(item.name).trim(),
+      normalizedName: String(item.normalizedName ?? "").trim() || normalizeIngredientSearch(String(item.name)),
+      quantity: item.quantity == null ? null : String(item.quantity),
+      unit: item.unit == null ? null : String(item.unit),
+      optional: Boolean(item.optional),
+      sortOrder: index,
+    }));
+  if (!name || ingredients.length === 0) {
+    throw new Error("Cada receta necesita nombre y al menos un ingrediente.");
+  }
+  const rawInstructions = value.instructions;
+  const instructions = Array.isArray(rawInstructions)
+    ? rawInstructions.map(String).map((item) => item.trim()).filter(Boolean)
+    : String(rawInstructions ?? "").split(/\r?\n/).map((item) => item.trim()).filter(Boolean);
+  return {
+    id: preserveId && value.id ? String(value.id) : crypto.randomUUID(),
+    name,
+    description: String(value.description ?? "").trim(),
+    category: normalizeRecipeCategory(typeof value.category === "string" ? value.category : null, name),
+    instructions,
+    durationMinutes: typeof value.durationMinutes === "number" ? value.durationMinutes : null,
+    servings: typeof value.servings === "number" ? value.servings : null,
+    image: value.image ? String(value.image) : null,
+    sourceUrl: value.sourceUrl ? String(value.sourceUrl) : null,
+    nutrients: Array.isArray(value.nutrients) ? value.nutrients.map(String) : inferNutrients(ingredients),
+    ingredients,
+    version: Number(value.version ?? 1),
+    localOnly: true,
+    updatedAt: new Date().toISOString(),
+  };
+}
+
+export default function HomePage() {
+  return <AccessGate><Home /></AccessGate>;
+}
+
+function Home() {
+  const auth = useAuth();
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -100,6 +161,8 @@ export default function Home() {
 
   useEffect(() => {
     void loadRecipes();
+    // The access gate mounts this screen only after the selected mode is ready.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -120,14 +183,51 @@ export default function Home() {
 
   async function loadRecipes() {
     setLoading(true);
+    const scope = auth.mode === "offline" ? LOCAL_SCOPE : GROUP_SCOPE;
+    let cached: Recipe[] = [];
     try {
-      const response = await fetch("/api/recipes", { cache: "no-store" });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "No se pudieron cargar las recetas.");
-      setRecipes(data.recipes);
+      cached = (await readRecipes(scope)) as Recipe[];
+      if (cached.length > 0) setRecipes(cached);
+      if (auth.mode === "offline") {
+        setRecipes(cached);
+        setError("");
+        return;
+      }
+
+      let cursor = await readCursor(scope);
+      let hasMore = true;
+      while (hasMore) {
+        const response = await auth.authorizedFetch(`/api/sync?after=${cursor}&limit=200`, {
+          cache: "no-store",
+        });
+        const data = (await response.json()) as {
+          mode?: "snapshot" | "changes";
+          recipes?: Recipe[];
+          changes?: RecipeChange[];
+          cursor?: number;
+          hasMore?: boolean;
+          error?: string;
+        };
+        if (!response.ok) throw new Error(data.error || "No se pudieron sincronizar las recetas.");
+        if (data.mode === "snapshot") {
+          await replaceRecipes(scope, (data.recipes ?? []) as OfflineRecipe[]);
+        } else {
+          await applyRecipeChanges(scope, data.changes ?? []);
+        }
+        cursor = Number(data.cursor ?? cursor);
+        await writeCursor(scope, cursor);
+        hasMore = Boolean(data.hasMore);
+      }
+      const synchronized = (await readRecipes(scope)) as Recipe[];
+      setRecipes(synchronized);
       setError("");
     } catch (requestError) {
-      setError(requestError instanceof Error ? requestError.message : "No se pudieron cargar las recetas.");
+      if (cached.length === 0) {
+        setError(requestError instanceof Error ? requestError.message : "No se pudieron cargar las recetas.");
+      } else {
+        setError("");
+        notify("Sin conexión: estás viendo la última copia guardada.");
+      }
     } finally {
       setLoading(false);
     }
@@ -225,9 +325,21 @@ export default function Home() {
 
   async function exportDatabase() {
     try {
-      const response = await fetch("/api/recipes/export");
-      if (!response.ok) throw new Error("No se pudo generar el respaldo.");
-      const blob = await response.blob();
+      let blob: Blob;
+      if (auth.mode === "offline") {
+        const payload = {
+          format: BACKUP_FORMAT,
+          formatVersion: 1,
+          mode: "local",
+          exportedAt: new Date().toISOString(),
+          recipes,
+        };
+        blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      } else {
+        const response = await auth.authorizedFetch("/api/recipes/export");
+        if (!response.ok) throw new Error("No se pudo generar el respaldo.");
+        blob = await response.blob();
+      }
       const href = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = href;
@@ -263,9 +375,34 @@ export default function Home() {
         status: "importing",
       });
 
+      if (auth.mode === "offline") {
+        const existingNames = new Set(recipes.map((recipe) => recipeNameKey(recipe.name)));
+        for (const rawRecipe of importedRecipes) {
+          const recipe = toOfflineRecipe(rawRecipe as Record<string, unknown>, isBackup);
+          if (existingNames.has(recipeNameKey(recipe.name))) {
+            skipped += 1;
+          } else {
+            await putRecipe(LOCAL_SCOPE, recipe as OfflineRecipe);
+            existingNames.add(recipeNameKey(recipe.name));
+            imported += 1;
+          }
+          processed += 1;
+        }
+        await loadRecipes();
+        setImportProgress({
+          fileName: file.name,
+          total: importedRecipes.length,
+          processed,
+          imported,
+          skipped,
+          status: "complete",
+        });
+        return;
+      }
+
       for (let index = 0; index < importedRecipes.length; index += IMPORT_BATCH_SIZE) {
         const batch = importedRecipes.slice(index, index + IMPORT_BATCH_SIZE);
-        const response = await fetch("/api/recipes", {
+        const response = await auth.authorizedFetch("/api/recipes", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -324,6 +461,21 @@ export default function Home() {
     }
   }
 
+  async function saveNewRecipe(input: Record<string, unknown>) {
+    if (auth.mode === "offline") {
+      const recipe = toOfflineRecipe(input, false);
+      await putRecipe(LOCAL_SCOPE, recipe as OfflineRecipe);
+      return;
+    }
+    const response = await auth.authorizedFetch("/api/recipes", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ recipe: input }),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || "No se pudo guardar.");
+  }
+
   return (
     <main className="app-shell">
       <header className="topbar">
@@ -332,8 +484,14 @@ export default function Home() {
           <span>Recetulis Cósmicas</span>
         </a>
         <nav className="nav-actions" aria-label="Acciones principales">
+          <span className={`mode-badge ${auth.mode === "offline" ? "offline" : "online"}`}>
+            {auth.mode === "offline" ? "Modo local" : "Sincronizada"}
+          </span>
           <Link className="nav-button nav-link" href="/recetas">
             Mis recetas
+          </Link>
+          <Link className="nav-button nav-link" href="/ajustes">
+            Ajustes
           </Link>
           <button className="nav-button" onClick={exportDatabase} disabled={isImporting}>↓ Exportar base</button>
         </nav>
@@ -582,6 +740,7 @@ export default function Home() {
         <RecipeForm
           existingRecipes={recipes}
           onClose={() => setShowAdd(false)}
+          onSave={saveNewRecipe}
           onSaved={async () => {
             setShowAdd(false);
             await loadRecipes();
@@ -659,10 +818,12 @@ export default function Home() {
 function RecipeForm({
   existingRecipes,
   onClose,
+  onSave,
   onSaved,
 }: {
   existingRecipes: Array<{ id: string; name: string }>;
   onClose: () => void;
+  onSave: (recipe: Record<string, unknown>) => Promise<void>;
   onSaved: () => Promise<void>;
 }) {
   const [name, setName] = useState("");
@@ -697,23 +858,15 @@ function RecipeForm({
     setSaving(true);
     setError("");
     try {
-      const response = await fetch("/api/recipes", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          recipe: {
-            name,
-            description,
-            ingredients: parsedIngredients,
-            instructions,
-            durationMinutes: duration ? Number(duration) : null,
-            servings: servings ? Number(servings) : null,
-            nutrients: nutrients.split(",").map((item) => item.trim()).filter(Boolean),
-          },
-        }),
+      await onSave({
+        name,
+        description,
+        ingredients: parsedIngredients,
+        instructions,
+        durationMinutes: duration ? Number(duration) : null,
+        servings: servings ? Number(servings) : null,
+        nutrients: nutrients.split(",").map((item) => item.trim()).filter(Boolean),
       });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "No se pudo guardar.");
       await onSaved();
     } catch (requestError) {
       setError(requestError instanceof Error ? requestError.message : "No se pudo guardar.");
