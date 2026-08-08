@@ -1,0 +1,7 @@
+{
+  "versionCode": 1,
+  "versionName": "1.0.0",
+  "apkUrl": "https://mi-recetario.bermalla.chatgpt.site/mobile/recetulis-cosmicas-1.0.0.apk",
+  "sha256": "575acb309641089ff59c0d34b469365bf0a56bd1fba194b5d9da4bb70ae6c502",
+  "notes": "Primera versión Android con sincronización grupal, modo offline, respaldos JSON y actualizaciones firmadas."
+}
