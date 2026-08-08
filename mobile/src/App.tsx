@@ -1,10 +1,19 @@
-import { type FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import { type FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { App as NativeApp } from "@capacitor/app";
 import { Capacitor } from "@capacitor/core";
 import { Directory, Encoding, Filesystem } from "@capacitor/filesystem";
 import { Share as NativeShare } from "@capacitor/share";
 import { FirebaseAuthentication } from "@capacitor-firebase/authentication";
-import { createOnlineRecipe, synchronize, validateSession } from "./api";
+import {
+  createOnlineRecipe,
+  inviteGroupMember,
+  readGroupAccess,
+  removeGroupAccess,
+  synchronize,
+  validateSession,
+  type GroupInvite,
+  type GroupMember,
+} from "./api";
 import { GROUP_SCOPE, LOCAL_SCOPE, putRecipe, readRecipes, replaceRecipes } from "./storage";
 import type { Actor, Ingredient, Mode, Recipe } from "./types";
 import { checkForUpdate, installUpdate, type MobileRelease } from "./updater";
@@ -333,6 +342,64 @@ function Settings({ actor, mode, recipes, message, availableUpdate, onBack, onMo
   actor: Actor | null; mode: Mode; recipes: Recipe[]; message: string; availableUpdate: MobileRelease | null; onBack: () => void; onMode: (mode: Mode) => Promise<void>; onSignOut: () => Promise<void>; onInstallUpdate: () => Promise<void>; onImport: (recipes: Recipe[]) => Promise<void>;
 }) {
   const fileInput = useRef<HTMLInputElement>(null);
+  const [members, setMembers] = useState<GroupMember[]>([]);
+  const [invites, setInvites] = useState<GroupInvite[]>([]);
+  const [inviteEmail, setInviteEmail] = useState("");
+  const [inviteRole, setInviteRole] = useState<"editor" | "reader">("editor");
+  const [accessMessage, setAccessMessage] = useState("");
+  const [loadingAccess, setLoadingAccess] = useState(false);
+  const [savingAccess, setSavingAccess] = useState(false);
+
+  const loadAccess = useCallback(async () => {
+    if (mode !== "online" || actor?.role !== "owner") return;
+    setLoadingAccess(true);
+    try {
+      const access = await readGroupAccess();
+      setMembers(access.members);
+      setInvites(access.invites);
+    } catch (error) {
+      setAccessMessage(error instanceof Error ? error.message : "No se pudieron cargar los accesos.");
+    } finally {
+      setLoadingAccess(false);
+    }
+  }, [actor?.role, mode]);
+
+  useEffect(() => {
+    const timeout = window.setTimeout(() => void loadAccess(), 0);
+    return () => window.clearTimeout(timeout);
+  }, [loadAccess]);
+
+  async function invite(event: FormEvent) {
+    event.preventDefault();
+    setSavingAccess(true);
+    setAccessMessage("");
+    try {
+      const invited = await inviteGroupMember(inviteEmail, inviteRole);
+      setInviteEmail("");
+      setAccessMessage(`Invitación preparada para ${invited}.`);
+      await loadAccess();
+    } catch (error) {
+      setAccessMessage(error instanceof Error ? error.message : "No se pudo crear la invitación.");
+    } finally {
+      setSavingAccess(false);
+    }
+  }
+
+  async function removeAccess(email: string) {
+    if (!window.confirm(`¿Quitar el acceso de ${email}?`)) return;
+    setSavingAccess(true);
+    setAccessMessage("");
+    try {
+      await removeGroupAccess(email);
+      setAccessMessage(`Se quitó el acceso de ${email}.`);
+      await loadAccess();
+    } catch (error) {
+      setAccessMessage(error instanceof Error ? error.message : "No se pudo quitar el acceso.");
+    } finally {
+      setSavingAccess(false);
+    }
+  }
+
   async function exportData() {
     const payload = { format: "recetulis-cosmicas", formatVersion: 1, mode, exportedAt: new Date().toISOString(), recipes };
     const contents = JSON.stringify(payload, null, 2);
@@ -361,6 +428,35 @@ function Settings({ actor, mode, recipes, message, availableUpdate, onBack, onMo
     <main className="app-shell settings">
       <header className="topbar"><button className="secondary compact" onClick={onBack}>← Volver</button><strong>Ajustes</strong></header>
       <section className="settings-card"><p className="eyebrow">Modo actual</p><h2>{mode === "offline" ? "Colección local" : actor?.groupName}</h2><p>{mode === "offline" ? "Funciona solamente en este dispositivo." : `${actor?.email} · ${actor?.role}`}</p>{mode === "offline" ? <button className="primary" onClick={() => void onMode("online")}>Volver al modo online</button> : <button className="secondary" onClick={() => void onMode("offline")}>Usar colección local</button>}</section>
+      {mode === "online" && actor?.role === "owner" && (
+        <section className="settings-card access-management">
+          <p className="eyebrow">Colección privada</p>
+          <h2>Personas con acceso</h2>
+          <p>La invitación se activa cuando ese correo inicia sesión con Google.</p>
+          <form className="invite-form" onSubmit={(event) => void invite(event)}>
+            <label>Correo<input type="email" required value={inviteEmail} onChange={(event) => setInviteEmail(event.target.value)} placeholder="persona@gmail.com" /></label>
+            <label>Permiso<select value={inviteRole} onChange={(event) => setInviteRole(event.target.value as "editor" | "reader")}><option value="editor">Puede editar</option><option value="reader">Sólo lectura</option></select></label>
+            <button className="primary" type="submit" disabled={savingAccess}>Invitar</button>
+          </form>
+          {accessMessage && <p className="notice" role="status">{accessMessage}</p>}
+          {loadingAccess ? <p>Cargando accesos…</p> : (
+            <div className="member-list">
+              {members.map((member) => (
+                <div className="member-row" key={member.email}>
+                  <div><strong>{member.display_name || member.email}</strong><span>{member.email} · {member.role === "owner" ? "propietario" : member.role === "editor" ? "puede editar" : "sólo lectura"}</span></div>
+                  {member.role !== "owner" && <button className="danger compact" disabled={savingAccess} onClick={() => void removeAccess(member.email)}>Quitar</button>}
+                </div>
+              ))}
+              {invites.map((pending) => (
+                <div className="member-row pending" key={pending.email}>
+                  <div><strong>{pending.email}</strong><span>Invitación pendiente · {pending.role === "editor" ? "puede editar" : "sólo lectura"}</span></div>
+                  <button className="danger compact" disabled={savingAccess} onClick={() => void removeAccess(pending.email)}>Cancelar</button>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+      )}
       <section className="settings-card"><p className="eyebrow">Respaldo</p><h2>Copias de emergencia</h2><button className="primary" onClick={() => void exportData().catch((error) => alert(error.message))}>Exportar JSON</button>{mode === "offline" && <><button className="secondary" onClick={() => fileInput.current?.click()}>Importar JSON local</button><input ref={fileInput} hidden type="file" accept="application/json,.json" onChange={(event) => void importFile(event.target.files?.[0]).catch((error) => alert(error.message))} /></>}</section>
       {availableUpdate && <section className="settings-card"><p className="eyebrow">Actualización disponible</p><h2>Versión {availableUpdate.versionName}</h2><p>{availableUpdate.notes || "Incluye mejoras y correcciones."}</p><button className="primary" onClick={() => void onInstallUpdate()}>Descargar e instalar</button></section>}
       {mode === "online" && <section className="settings-card"><button className="danger" onClick={() => void onSignOut()}>Cerrar sesión</button></section>}

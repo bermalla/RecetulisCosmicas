@@ -1,7 +1,7 @@
 {
-  "versionCode": 2,
-  "versionName": "1.0.1",
-  "apkUrl": "https://mi-recetario.bermalla.chatgpt.site/mobile/recetulis-cosmicas-1.0.1.apk",
-  "sha256": "ad74b864f4b7fd369379fd64a063ac5d2013e678b81947fc1d06de619d5db3f0",
-  "notes": "Compatibilidad de inicio de sesión con Google para dispositivos sin Credential Manager."
+  "versionCode": 3,
+  "versionName": "1.0.2",
+  "apkUrl": "https://mi-recetario.bermalla.chatgpt.site/mobile/recetulis-cosmicas-1.0.2.apk",
+  "sha256": "cc182b599ef9c5373ed4a4b3178dee1f1d9e41a142a1695ea694e4b1e248d7fa",
+  "notes": "Gestión de integrantes de la colección privada desde Ajustes y nuevo ícono de Postre."
 }

@@ -2,6 +2,20 @@ import { FirebaseAuthentication } from "@capacitor-firebase/authentication";
 import type { Actor, Recipe, RecipeChange } from "./types";
 import { applyChanges, GROUP_SCOPE, readCursor, readRecipes, replaceRecipes, writeCursor } from "./storage";
 
+export type GroupMember = {
+  id: string;
+  email: string;
+  display_name: string;
+  role: "owner" | "editor" | "reader";
+  created_at: string;
+};
+
+export type GroupInvite = {
+  email: string;
+  role: "editor" | "reader";
+  created_at: string;
+};
+
 export const API_BASE = "https://mi-recetario.bermalla.chatgpt.site";
 
 export async function authorizedFetch(path: string, init: RequestInit = {}) {
@@ -50,4 +64,28 @@ export async function createOnlineRecipe(recipe: Omit<Recipe, "id">) {
   });
   const data = (await response.json()) as { error?: string };
   if (!response.ok) throw new Error(data.error || "No se pudo guardar la receta.");
+}
+
+export async function readGroupAccess(): Promise<{ members: GroupMember[]; invites: GroupInvite[] }> {
+  const response = await authorizedFetch("/api/group/members", { cache: "no-store" });
+  const data = (await response.json()) as { members?: GroupMember[]; invites?: GroupInvite[]; error?: string };
+  if (!response.ok) throw new Error(data.error || "No se pudieron cargar los accesos.");
+  return { members: data.members ?? [], invites: data.invites ?? [] };
+}
+
+export async function inviteGroupMember(email: string, role: "editor" | "reader") {
+  const response = await authorizedFetch("/api/group/members", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, role }),
+  });
+  const data = (await response.json()) as { invited?: string; error?: string };
+  if (!response.ok || !data.invited) throw new Error(data.error || "No se pudo crear la invitación.");
+  return data.invited;
+}
+
+export async function removeGroupAccess(email: string) {
+  const response = await authorizedFetch(`/api/group/members?email=${encodeURIComponent(email)}`, { method: "DELETE" });
+  const data = (await response.json()) as { removed?: string; error?: string };
+  if (!response.ok) throw new Error(data.error || "No se pudo quitar el acceso.");
 }
