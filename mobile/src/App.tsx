@@ -132,7 +132,7 @@ export default function App() {
     setStatus("loading");
     setMessage("");
     try {
-      await FirebaseAuthentication.signInWithGoogle();
+      await FirebaseAuthentication.signInWithGoogle({ useCredentialManager: false });
       const session = await validateSession();
       setActor(session);
       setStatus("ready");
