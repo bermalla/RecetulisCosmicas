@@ -163,7 +163,7 @@ function Settings() {
             <div>
               <p className="eyebrow">Grupo privado</p>
               <h2>Personas con acceso</h2>
-              <p>Una invitación se activa la primera vez que ese correo inicia sesión con Google.</p>
+              <p>La persona verá la invitación al iniciar sesión y decidirá si quiere aceptarla.</p>
             </div>
             <form className="invite-form" onSubmit={invite}>
               <label>Correo<input type="email" required value={email} onChange={(event) => setEmail(event.target.value)} placeholder="persona@gmail.com" /></label>

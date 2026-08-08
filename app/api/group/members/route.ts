@@ -49,6 +49,19 @@ export async function POST(request: Request) {
       return Response.json({ error: "Ingresá un correo válido." }, { status: 400 });
     }
     const d1 = await getD1();
+    const existingMember = await d1
+      .prepare(`
+        SELECT 1
+        FROM group_members gm
+        JOIN users u ON u.id = gm.user_id
+        WHERE gm.group_id = ? AND u.email = ?
+        LIMIT 1
+      `)
+      .bind(actor.groupId, email)
+      .first();
+    if (existingMember) {
+      return Response.json({ error: "Ese correo ya pertenece a la colección." }, { status: 409 });
+    }
     await d1
       .prepare(`
         INSERT INTO group_invites (group_id, email, role, invited_by)

@@ -9,6 +9,26 @@ export type Actor = {
   role: Role;
 };
 
+export type Account = {
+  id: string;
+  email: string;
+  displayName: string;
+};
+
+export type GroupInvitation = {
+  groupId: string;
+  groupName: string;
+  ownerName: string;
+  role: "editor" | "reader";
+  createdAt: string;
+};
+
+export type AuthSession = {
+  account: Account;
+  actor: Actor | null;
+  invitations: GroupInvitation[];
+};
+
 export type Ingredient = {
   id?: number;
   name: string;

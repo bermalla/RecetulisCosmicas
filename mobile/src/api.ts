@@ -1,6 +1,6 @@
 import { FirebaseAuthentication } from "@capacitor-firebase/authentication";
-import type { Actor, Recipe, RecipeChange } from "./types";
-import { applyChanges, GROUP_SCOPE, readCursor, readRecipes, replaceRecipes, writeCursor } from "./storage";
+import type { Actor, AuthSession, GroupInvitation, Recipe, RecipeChange } from "./types";
+import { applyChanges, readCursor, readRecipes, replaceRecipes, writeCursor } from "./storage";
 
 export type GroupMember = {
   id: string;
@@ -26,15 +26,20 @@ export async function authorizedFetch(path: string, init: RequestInit = {}) {
   return fetch(`${API_BASE}${path}`, { ...init, headers });
 }
 
-export async function validateSession(): Promise<Actor> {
-  const response = await authorizedFetch("/api/auth/session", { cache: "no-store" });
-  const data = (await response.json()) as { user?: Actor; error?: string };
+export async function validateSession(): Promise<AuthSession> {
+  const response = await authorizedFetch("/api/auth/session?includeInvites=1", { cache: "no-store" });
+  const data = (await response.json()) as {
+    user?: AuthSession["account"];
+    actor?: Actor | null;
+    invitations?: GroupInvitation[];
+    error?: string;
+  };
   if (!response.ok || !data.user) throw new Error(data.error || "No se pudo validar el acceso.");
-  return data.user;
+  return { account: data.user, actor: data.actor ?? null, invitations: data.invitations ?? [] };
 }
 
-export async function synchronize(): Promise<Recipe[]> {
-  let cursor = await readCursor(GROUP_SCOPE);
+export async function synchronize(scope: string, full = false): Promise<Recipe[]> {
+  let cursor = full ? 0 : await readCursor(scope);
   let hasMore = true;
   while (hasMore) {
     const response = await authorizedFetch(`/api/sync?after=${cursor}&limit=200`, { cache: "no-store" });
@@ -47,13 +52,13 @@ export async function synchronize(): Promise<Recipe[]> {
       error?: string;
     };
     if (!response.ok) throw new Error(data.error || "No se pudo sincronizar la colección.");
-    if (data.mode === "snapshot") await replaceRecipes(GROUP_SCOPE, data.recipes ?? []);
-    else await applyChanges(GROUP_SCOPE, data.changes ?? []);
+    if (data.mode === "snapshot") await replaceRecipes(scope, data.recipes ?? []);
+    else await applyChanges(scope, data.changes ?? []);
     cursor = Number(data.cursor ?? cursor);
-    await writeCursor(GROUP_SCOPE, cursor);
+    await writeCursor(scope, cursor);
     hasMore = Boolean(data.hasMore);
   }
-  return readRecipes(GROUP_SCOPE);
+  return readRecipes(scope);
 }
 
 export async function createOnlineRecipe(recipe: Omit<Recipe, "id">) {
@@ -88,4 +93,36 @@ export async function removeGroupAccess(email: string) {
   const response = await authorizedFetch(`/api/group/members?email=${encodeURIComponent(email)}`, { method: "DELETE" });
   const data = (await response.json()) as { removed?: string; error?: string };
   if (!response.ok) throw new Error(data.error || "No se pudo quitar el acceso.");
+}
+
+export async function acceptGroupInvitation(groupId: string): Promise<AuthSession> {
+  const response = await authorizedFetch("/api/group/invitations", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ groupId }),
+  });
+  const data = (await response.json()) as { actor?: Actor | null; invitations?: GroupInvitation[]; error?: string };
+  if (!response.ok || !data.actor) throw new Error(data.error || "No se pudo aceptar la invitación.");
+  return {
+    account: data.actor,
+    actor: data.actor,
+    invitations: data.invitations ?? [],
+  };
+}
+
+export async function declineGroupInvitation(groupId: string) {
+  const response = await authorizedFetch("/api/group/invitations", {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ groupId }),
+  });
+  const data = (await response.json()) as { invitations?: GroupInvitation[]; error?: string };
+  if (!response.ok) throw new Error(data.error || "No se pudo rechazar la invitación.");
+  return data.invitations ?? [];
+}
+
+export async function leaveCurrentGroup() {
+  const response = await authorizedFetch("/api/group/membership", { method: "DELETE" });
+  const data = (await response.json()) as { left?: string; error?: string };
+  if (!response.ok) throw new Error(data.error || "No se pudo salir de la colección.");
 }

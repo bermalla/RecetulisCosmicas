@@ -31,6 +31,20 @@ export type AuthorizedActor = AuthenticatedUser & {
   role: GroupRole;
 };
 
+export type PendingGroupInvitation = {
+  groupId: string;
+  groupName: string;
+  ownerName: string;
+  role: Exclude<GroupRole, "owner">;
+  createdAt: string;
+};
+
+export type AuthSession = {
+  account: AuthenticatedUser;
+  actor: AuthorizedActor | null;
+  invitations: PendingGroupInvitation[];
+};
+
 type FirebaseClaims = {
   aud?: string;
   email?: string;
@@ -175,7 +189,15 @@ function bearerToken(request: Request) {
   return match[1];
 }
 
-async function registerAndAuthorize(user: AuthenticatedUser): Promise<AuthorizedActor> {
+function ownerGroupName(user: AuthenticatedUser) {
+  const displayName = user.displayName.trim();
+  const ownerName = displayName && displayName !== user.email
+    ? displayName
+    : user.email.split("@")[0];
+  return `Colección de ${ownerName.slice(0, 80)}`;
+}
+
+async function registerUser(user: AuthenticatedUser) {
   await ensureSchema();
   const d1 = await getD1();
   const now = new Date().toISOString();
@@ -194,12 +216,16 @@ async function registerAndAuthorize(user: AuthenticatedUser): Promise<Authorized
   const env = await getRuntimeEnv();
   const ownerEmail = env.RECETULIS_OWNER_EMAIL?.trim().toLowerCase();
   if (ownerEmail && user.email === ownerEmail) {
+    const groupName = ownerGroupName(user);
     await d1.batch([
       d1
         .prepare(
           "INSERT INTO groups (id, name, created_by) VALUES (?, ?, ?) ON CONFLICT(id) DO NOTHING",
         )
-        .bind(DEFAULT_GROUP_ID, "Recetulis Cósmicas", user.id),
+        .bind(DEFAULT_GROUP_ID, groupName, user.id),
+      d1
+        .prepare("UPDATE groups SET name = ?, created_by = COALESCE(created_by, ?) WHERE id = ?")
+        .bind(groupName, user.id, DEFAULT_GROUP_ID),
       d1
         .prepare(`
           INSERT INTO group_members (group_id, user_id, role, added_by)
@@ -209,59 +235,91 @@ async function registerAndAuthorize(user: AuthenticatedUser): Promise<Authorized
         .bind(DEFAULT_GROUP_ID, user.id, user.id),
     ]);
   }
+  return user;
+}
 
-  const invite = (await d1
-    .prepare(
-      "SELECT role, invited_by FROM group_invites WHERE group_id = ? AND email = ? LIMIT 1",
-    )
-    .bind(DEFAULT_GROUP_ID, user.email)
-    .first()) as { role: "editor" | "reader"; invited_by: string } | null;
-  if (invite) {
-    await d1.batch([
-      d1
-        .prepare(`
-          INSERT INTO group_members (group_id, user_id, role, added_by)
-          VALUES (?, ?, ?, ?)
-          ON CONFLICT(group_id, user_id) DO UPDATE SET role = excluded.role
-        `)
-        .bind(DEFAULT_GROUP_ID, user.id, invite.role, invite.invited_by),
-      d1
-        .prepare("DELETE FROM group_invites WHERE group_id = ? AND email = ?")
-        .bind(DEFAULT_GROUP_ID, user.email),
-    ]);
-  }
-
+async function membershipForUser(user: AuthenticatedUser): Promise<AuthorizedActor | null> {
+  const d1 = await getD1();
   const membership = (await d1
     .prepare(`
-      SELECT gm.role AS role, g.name AS group_name
+      SELECT gm.group_id, gm.role AS role, g.name AS group_name
       FROM group_members gm
       JOIN groups g ON g.id = gm.group_id
-      WHERE gm.group_id = ? AND gm.user_id = ?
+      WHERE gm.user_id = ?
       LIMIT 1
     `)
-    .bind(DEFAULT_GROUP_ID, user.id)
-    .first()) as { role: GroupRole; group_name: string } | null;
-  if (!membership) {
-    throw new AuthError(
-      "Tu cuenta todavía no fue invitada a esta colección.",
-      403,
-      "GROUP_MEMBERSHIP_REQUIRED",
-    );
-  }
+    .bind(user.id)
+    .first()) as { group_id: string; role: GroupRole; group_name: string } | null;
+  if (!membership) return null;
   return {
     ...user,
-    groupId: DEFAULT_GROUP_ID,
+    groupId: membership.group_id,
     groupName: membership.group_name,
     role: membership.role,
   };
+}
+
+async function invitationsForUser(user: AuthenticatedUser): Promise<PendingGroupInvitation[]> {
+  const d1 = await getD1();
+  const result = (await d1
+    .prepare(`
+      SELECT
+        gi.group_id,
+        g.name AS group_name,
+        COALESCE(NULLIF(owner.display_name, ''), owner.email, g.name) AS owner_name,
+        gi.role,
+        gi.created_at
+      FROM group_invites gi
+      JOIN groups g ON g.id = gi.group_id
+      LEFT JOIN users owner ON owner.id = g.created_by
+      WHERE gi.email = ?
+      ORDER BY gi.created_at DESC
+    `)
+    .bind(user.email)
+    .all()) as {
+    results?: Array<{
+      group_id: string;
+      group_name: string;
+      owner_name: string;
+      role: "editor" | "reader";
+      created_at: string;
+    }>;
+  };
+  return (result.results ?? []).map((invite) => ({
+    groupId: invite.group_id,
+    groupName: invite.group_name,
+    ownerName: invite.owner_name,
+    role: invite.role,
+    createdAt: invite.created_at,
+  }));
+}
+
+export async function requireUser(request: Request): Promise<AuthenticatedUser> {
+  return registerUser(await verifyFirebaseToken(bearerToken(request)));
+}
+
+export async function readAuthSession(request: Request): Promise<AuthSession> {
+  const account = await requireUser(request);
+  const [actor, invitations] = await Promise.all([
+    membershipForUser(account),
+    invitationsForUser(account),
+  ]);
+  return { account, actor, invitations };
 }
 
 export async function requireActor(
   request: Request,
   allowedRoles: GroupRole[] = ["owner", "editor", "reader"],
 ): Promise<AuthorizedActor> {
-  const user = await verifyFirebaseToken(bearerToken(request));
-  const actor = await registerAndAuthorize(user);
+  const user = await requireUser(request);
+  const actor = await membershipForUser(user);
+  if (!actor) {
+    throw new AuthError(
+      "No pertenecés a una colección. Revisá tus invitaciones en Ajustes.",
+      403,
+      "GROUP_MEMBERSHIP_REQUIRED",
+    );
+  }
   if (!allowedRoles.includes(actor.role)) {
     throw new AuthError("No tenés permisos para realizar esta acción.", 403, "ROLE_REQUIRED");
   }

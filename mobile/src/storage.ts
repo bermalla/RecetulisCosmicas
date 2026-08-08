@@ -7,6 +7,10 @@ const META = "meta";
 export const GROUP_SCOPE = "group";
 export const LOCAL_SCOPE = "local";
 
+export function groupScope(groupId: string) {
+  return `group:${groupId}`;
+}
+
 type StoredRecipe = Recipe & { scope: string; storageKey: string };
 
 function openDatabase(): Promise<IDBDatabase> {
@@ -42,7 +46,12 @@ export async function readRecipes(scope: string): Promise<Recipe[]> {
     request.onerror = () => reject(request.error);
   });
   db.close();
-  return rows.map(({ scope: _scope, storageKey: _key, ...recipe }) => recipe);
+  return rows.map((row) => {
+    const recipe = { ...row } as Partial<StoredRecipe>;
+    delete recipe.scope;
+    delete recipe.storageKey;
+    return recipe as Recipe;
+  });
 }
 
 export async function replaceRecipes(scope: string, recipes: Recipe[]) {

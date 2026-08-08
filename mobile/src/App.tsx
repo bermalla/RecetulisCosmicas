@@ -1,12 +1,15 @@
-import { type FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { type FormEvent, type TouchEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { App as NativeApp } from "@capacitor/app";
 import { Capacitor } from "@capacitor/core";
 import { Directory, Encoding, Filesystem } from "@capacitor/filesystem";
 import { Share as NativeShare } from "@capacitor/share";
 import { FirebaseAuthentication } from "@capacitor-firebase/authentication";
 import {
+  acceptGroupInvitation,
   createOnlineRecipe,
+  declineGroupInvitation,
   inviteGroupMember,
+  leaveCurrentGroup,
   readGroupAccess,
   removeGroupAccess,
   synchronize,
@@ -14,8 +17,9 @@ import {
   type GroupInvite,
   type GroupMember,
 } from "./api";
-import { GROUP_SCOPE, LOCAL_SCOPE, putRecipe, readRecipes, replaceRecipes } from "./storage";
-import type { Actor, Ingredient, Mode, Recipe } from "./types";
+import { groupScope, LOCAL_SCOPE, putRecipe, readRecipes, replaceRecipes } from "./storage";
+import { filterRecipesByPantry, ingredientMatchesPantry } from "./recipe-filter";
+import type { Account, Actor, AuthSession, GroupInvitation, Ingredient, Mode, Recipe } from "./types";
 import { checkForUpdate, installUpdate, type MobileRelease } from "./updater";
 
 type Status = "loading" | "signed-out" | "ready" | "error";
@@ -44,7 +48,9 @@ function parseIngredient(line: string): Ingredient | null {
 
 export default function App() {
   const [status, setStatus] = useState<Status>("loading");
+  const [account, setAccount] = useState<Account | null>(null);
   const [actor, setActor] = useState<Actor | null>(null);
+  const [invitations, setInvitations] = useState<GroupInvitation[]>([]);
   const [mode, setMode] = useState<Mode>(() => (localStorage.getItem("recetulis-mobile-mode") === "offline" ? "offline" : "online"));
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
@@ -59,23 +65,28 @@ export default function App() {
   const [message, setMessage] = useState("");
   const [syncing, setSyncing] = useState(false);
   const [availableUpdate, setAvailableUpdate] = useState<MobileRelease | null>(null);
+  const [pullDistance, setPullDistance] = useState(0);
 
   const overlayRef = useRef({ selected: false, add: false, screen: "home" as Screen });
+  const pullRef = useRef({ active: false, startY: 0, distance: 0 });
+  const refreshRef = useRef<(full?: boolean) => Promise<void>>(async () => undefined);
   useEffect(() => {
     overlayRef.current = { selected: Boolean(selectedRecipe), add: showAdd, screen };
   }, [screen, selectedRecipe, showAdd]);
 
-  async function loadLocal(scope = mode === "offline" ? LOCAL_SCOPE : GROUP_SCOPE) {
+  async function loadLocal(scope: string) {
     const cached = await readRecipes(scope);
     setRecipes(cached);
     return cached;
   }
 
-  async function refreshOnline() {
+  async function refreshOnline(groupId = actor?.groupId, full = false) {
+    if (!groupId) return;
+    const scope = groupScope(groupId);
     setSyncing(true);
-    const cached = await loadLocal(GROUP_SCOPE);
+    const cached = await loadLocal(scope);
     try {
-      const synchronized = await synchronize();
+      const synchronized = await synchronize(scope, full);
       setRecipes(synchronized);
       setMessage("");
     } catch (error) {
@@ -83,6 +94,21 @@ export default function App() {
       setMessage("Sin conexión: estás viendo la última copia guardada.");
     } finally {
       setSyncing(false);
+    }
+  }
+
+  useEffect(() => {
+    refreshRef.current = (full = false) => refreshOnline(actor?.groupId, full);
+  });
+
+  function applySession(session: AuthSession) {
+    setAccount(session.account);
+    setActor(session.actor);
+    setInvitations(session.invitations);
+    setStatus("ready");
+    if (!session.actor) {
+      setRecipes([]);
+      setScreen("settings");
     }
   }
 
@@ -102,9 +128,8 @@ export default function App() {
         }
         const session = await validateSession();
         if (!active) return;
-        setActor(session);
-        setStatus("ready");
-        await refreshOnline();
+        applySession(session);
+        if (session.actor) await refreshOnline(session.actor.groupId, true);
       } catch (error) {
         if (!active) return;
         setMessage(error instanceof Error ? error.message : "No se pudo iniciar la aplicación.");
@@ -126,7 +151,10 @@ export default function App() {
       if (overlay.screen !== "home") { setScreen("home"); return; }
       await NativeApp.minimizeApp();
     }).then((listener) => { handle = listener; });
-    return () => { void handle?.remove(); };
+    let resumeHandle: { remove: () => Promise<void> } | undefined;
+    void NativeApp.addListener("resume", () => { void refreshRef.current(false); })
+      .then((listener) => { resumeHandle = listener; });
+    return () => { void handle?.remove(); void resumeHandle?.remove(); };
   }, []);
 
   useEffect(() => {
@@ -143,9 +171,8 @@ export default function App() {
     try {
       await FirebaseAuthentication.signInWithGoogle({ useCredentialManager: false });
       const session = await validateSession();
-      setActor(session);
-      setStatus("ready");
-      await refreshOnline();
+      applySession(session);
+      if (session.actor) await refreshOnline(session.actor.groupId, true);
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "No se pudo iniciar sesión.");
       setStatus("signed-out");
@@ -154,7 +181,9 @@ export default function App() {
 
   async function signOut() {
     await FirebaseAuthentication.signOut();
+    setAccount(null);
     setActor(null);
+    setInvitations([]);
     setRecipes([]);
     setStatus("signed-out");
     setScreen("home");
@@ -175,12 +204,33 @@ export default function App() {
     setPantryInput("");
   }
 
+  function startPull(event: TouchEvent<HTMLElement>) {
+    if (mode !== "online" || !actor || syncing || window.scrollY > 0) return;
+    pullRef.current = { active: true, startY: event.touches[0].clientY, distance: 0 };
+  }
+
+  function movePull(event: TouchEvent<HTMLElement>) {
+    if (!pullRef.current.active || window.scrollY > 0) return;
+    const distance = Math.min(110, Math.max(0, (event.touches[0].clientY - pullRef.current.startY) * 0.52));
+    pullRef.current.distance = distance;
+    setPullDistance(distance);
+    if (distance > 0) event.preventDefault();
+  }
+
+  function finishPull() {
+    if (!pullRef.current.active) return;
+    const shouldRefresh = pullRef.current.distance >= 64;
+    pullRef.current = { active: false, startY: 0, distance: 0 };
+    setPullDistance(0);
+    if (shouldRefresh) void refreshOnline(actor?.groupId, true);
+  }
+
   const visibleRecipes = useMemo(() => {
     const cleanQuery = normalize(query);
-    return recipes
+    return filterRecipesByPantry(recipes, pantry)
       .filter((recipe) => !cleanQuery || normalize(recipe.name).includes(cleanQuery))
       .sort((a, b) => a.name.localeCompare(b.name, "es"));
-  }, [query, recipes]);
+  }, [pantry, query, recipes]);
 
   if (status === "loading") return <AccessShell title="Preparando tu colección…" />;
   if ((status === "signed-out" || status === "error") && mode === "online") {
@@ -198,10 +248,12 @@ export default function App() {
     );
   }
 
-  if (screen === "settings") {
+  if (screen === "settings" || (mode === "online" && !actor)) {
     return (
       <Settings
+        account={account}
         actor={actor}
+        invitations={invitations}
         mode={mode}
         recipes={recipes}
         message={message}
@@ -209,13 +261,30 @@ export default function App() {
         onBack={() => setScreen("home")}
         onMode={changeMode}
         onSignOut={signOut}
+        onAcceptInvitation={async (groupId) => {
+          const session = await acceptGroupInvitation(groupId);
+          applySession(session);
+          if (session.actor) await refreshOnline(session.actor.groupId, true);
+          setScreen("home");
+          setMessage("Invitación aceptada.");
+        }}
+        onDeclineInvitation={async (groupId) => {
+          setInvitations(await declineGroupInvitation(groupId));
+          setMessage("Invitación rechazada.");
+        }}
+        onLeaveGroup={async () => {
+          await leaveCurrentGroup();
+          const session = await validateSession();
+          applySession(session);
+          setMessage("Saliste de la colección.");
+        }}
         onInstallUpdate={async () => {
           if (!availableUpdate) return;
           try { await installUpdate(availableUpdate); }
           catch (error) { setMessage(error instanceof Error ? error.message : "No se pudo iniciar la actualización."); }
         }}
         onImport={async (incoming) => {
-          const scope = mode === "offline" ? LOCAL_SCOPE : GROUP_SCOPE;
+          const scope = LOCAL_SCOPE;
           if (mode === "online") throw new Error("Importá a la base grupal desde la web para conservar la revisión de duplicados.");
           await replaceRecipes(scope, incoming.map((recipe) => ({ ...recipe, id: recipe.id || crypto.randomUUID(), localOnly: true })));
           await loadLocal(scope);
@@ -226,7 +295,10 @@ export default function App() {
   }
 
   return (
-    <main className="app-shell">
+    <main className="app-shell" onTouchStart={startPull} onTouchMove={movePull} onTouchEnd={finishPull} onTouchCancel={finishPull}>
+      <div className="pull-refresh" style={{ height: pullDistance }} aria-live="polite">
+        <span>{pullDistance >= 64 ? "Soltá para actualizar" : "Deslizá para actualizar"}</span>
+      </div>
       <header className="topbar">
         <div className="brand"><span>♨</span><strong>Recetulis Cósmicas</strong></div>
         <button className="icon-button" aria-label="Ajustes" onClick={() => setScreen("settings")}>⚙</button>
@@ -257,7 +329,7 @@ export default function App() {
               <b>›</b>
             </button>
           ))}
-          {!visibleRecipes.length && <div className="empty">Todavía no hay recetas en esta colección.</div>}
+          {!visibleRecipes.length && <div className="empty">{pantry.length > 0 ? "No hay recetas con esos ingredientes." : "Todavía no hay recetas en esta colección."}</div>}
         </div>
       </section>
 
@@ -265,7 +337,7 @@ export default function App() {
       {showAdd && <RecipeForm mode={mode} onClose={() => setShowAdd(false)} onSave={async (recipe) => {
         if (mode === "online") {
           await createOnlineRecipe(recipe);
-          await refreshOnline();
+          await refreshOnline(actor?.groupId);
         } else {
           const local: Recipe = { ...recipe, id: crypto.randomUUID(), localOnly: true, version: 1, updatedAt: new Date().toISOString() };
           await putRecipe(LOCAL_SCOPE, local);
@@ -283,7 +355,7 @@ function AccessShell({ title }: { title: string }) {
 }
 
 function RecipeDetail({ recipe, pantry, onClose }: { recipe: Recipe; pantry: string[]; onClose: () => void }) {
-  const hasIngredient = (ingredient: Ingredient) => pantry.some((item) => normalize(ingredient.name).includes(normalize(item)) || normalize(item).includes(normalize(ingredient.name)));
+  const hasIngredient = (ingredient: Ingredient) => pantry.some((item) => ingredientMatchesPantry(ingredient, item));
   return (
     <div className="modal-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
       <article className="modal detail" role="dialog" aria-modal="true" aria-labelledby="recipe-title">
@@ -338,8 +410,8 @@ function RecipeForm({ mode, onClose, onSave }: { mode: Mode; onClose: () => void
   );
 }
 
-function Settings({ actor, mode, recipes, message, availableUpdate, onBack, onMode, onSignOut, onInstallUpdate, onImport }: {
-  actor: Actor | null; mode: Mode; recipes: Recipe[]; message: string; availableUpdate: MobileRelease | null; onBack: () => void; onMode: (mode: Mode) => Promise<void>; onSignOut: () => Promise<void>; onInstallUpdate: () => Promise<void>; onImport: (recipes: Recipe[]) => Promise<void>;
+function Settings({ account, actor, invitations, mode, recipes, message, availableUpdate, onBack, onMode, onSignOut, onAcceptInvitation, onDeclineInvitation, onLeaveGroup, onInstallUpdate, onImport }: {
+  account: Account | null; actor: Actor | null; invitations: GroupInvitation[]; mode: Mode; recipes: Recipe[]; message: string; availableUpdate: MobileRelease | null; onBack: () => void; onMode: (mode: Mode) => Promise<void>; onSignOut: () => Promise<void>; onAcceptInvitation: (groupId: string) => Promise<void>; onDeclineInvitation: (groupId: string) => Promise<void>; onLeaveGroup: () => Promise<void>; onInstallUpdate: () => Promise<void>; onImport: (recipes: Recipe[]) => Promise<void>;
 }) {
   const fileInput = useRef<HTMLInputElement>(null);
   const [members, setMembers] = useState<GroupMember[]>([]);
@@ -400,6 +472,18 @@ function Settings({ actor, mode, recipes, message, availableUpdate, onBack, onMo
     }
   }
 
+  async function runMembershipAction(action: () => Promise<void>) {
+    setSavingAccess(true);
+    setAccessMessage("");
+    try {
+      await action();
+    } catch (error) {
+      setAccessMessage(error instanceof Error ? error.message : "No se pudo actualizar la pertenencia.");
+    } finally {
+      setSavingAccess(false);
+    }
+  }
+
   async function exportData() {
     const payload = { format: "recetulis-cosmicas", formatVersion: 1, mode, exportedAt: new Date().toISOString(), recipes };
     const contents = JSON.stringify(payload, null, 2);
@@ -426,19 +510,39 @@ function Settings({ actor, mode, recipes, message, availableUpdate, onBack, onMo
   }
   return (
     <main className="app-shell settings">
-      <header className="topbar"><button className="secondary compact" onClick={onBack}>← Volver</button><strong>Ajustes</strong></header>
-      <section className="settings-card"><p className="eyebrow">Modo actual</p><h2>{mode === "offline" ? "Colección local" : actor?.groupName}</h2><p>{mode === "offline" ? "Funciona solamente en este dispositivo." : `${actor?.email} · ${actor?.role}`}</p>{mode === "offline" ? <button className="primary" onClick={() => void onMode("online")}>Volver al modo online</button> : <button className="secondary" onClick={() => void onMode("offline")}>Usar colección local</button>}</section>
+      <header className="topbar">{(mode === "offline" || actor) ? <button className="secondary compact" onClick={onBack}>← Volver</button> : <span />}<strong>Ajustes</strong></header>
+      <section className="settings-card"><p className="eyebrow">Modo actual</p><h2>{mode === "offline" ? "Colección local" : actor?.groupName || "Sin colección"}</h2><p>{mode === "offline" ? "Funciona solamente en este dispositivo." : `${account?.email || "Cuenta conectada"}${actor ? ` · ${actor.role}` : " · sin pertenencia activa"}`}</p>{mode === "offline" ? <button className="primary" onClick={() => void onMode("online")}>Volver al modo online</button> : <button className="secondary" onClick={() => void onMode("offline")}>Usar colección local</button>}</section>
+      {mode === "online" && invitations.length > 0 && (
+        <section className="settings-card access-management">
+          <p className="eyebrow">Invitaciones</p>
+          <h2>Colecciones disponibles</h2>
+          {actor && <p>Para aceptar otra invitación, primero tenés que salir de tu colección actual.</p>}
+          <div className="member-list">
+            {invitations.map((invitation) => (
+              <div className="invitation-card" key={invitation.groupId}>
+                <div><strong>{invitation.groupName}</strong><span>De {invitation.ownerName} · {invitation.role === "editor" ? "puede editar" : "sólo lectura"}</span></div>
+                <div className="invitation-actions">
+                  <button className="primary compact" disabled={savingAccess || Boolean(actor)} onClick={() => void runMembershipAction(() => onAcceptInvitation(invitation.groupId))}>Aceptar</button>
+                  <button className="secondary compact" disabled={savingAccess} onClick={() => void runMembershipAction(() => onDeclineInvitation(invitation.groupId))}>Rechazar</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+      {mode === "online" && !actor && invitations.length === 0 && (
+        <section className="settings-card"><p className="eyebrow">Colección privada</p><h2>Todavía no pertenecés a un grupo</h2><p>Cuando alguien te invite, la propuesta aparecerá acá para que decidas si querés aceptarla.</p></section>
+      )}
       {mode === "online" && actor?.role === "owner" && (
         <section className="settings-card access-management">
           <p className="eyebrow">Colección privada</p>
           <h2>Personas con acceso</h2>
-          <p>La invitación se activa cuando ese correo inicia sesión con Google.</p>
+          <p>La persona verá esta invitación en Ajustes y decidirá si quiere aceptarla.</p>
           <form className="invite-form" onSubmit={(event) => void invite(event)}>
             <label>Correo<input type="email" required value={inviteEmail} onChange={(event) => setInviteEmail(event.target.value)} placeholder="persona@gmail.com" /></label>
             <label>Permiso<select value={inviteRole} onChange={(event) => setInviteRole(event.target.value as "editor" | "reader")}><option value="editor">Puede editar</option><option value="reader">Sólo lectura</option></select></label>
             <button className="primary" type="submit" disabled={savingAccess}>Invitar</button>
           </form>
-          {accessMessage && <p className="notice" role="status">{accessMessage}</p>}
           {loadingAccess ? <p>Cargando accesos…</p> : (
             <div className="member-list">
               {members.map((member) => (
@@ -457,9 +561,13 @@ function Settings({ actor, mode, recipes, message, availableUpdate, onBack, onMo
           )}
         </section>
       )}
+      {mode === "online" && actor && actor.role !== "owner" && (
+        <section className="settings-card"><p className="eyebrow">Pertenencia</p><h2>Salir de esta colección</h2><p>La copia local queda guardada, pero dejarás de recibir cambios y podrás aceptar otra invitación.</p><button className="danger" disabled={savingAccess} onClick={() => { if (window.confirm(`¿Salir de ${actor.groupName}?`)) void runMembershipAction(onLeaveGroup); }}>Salir del grupo</button></section>
+      )}
       <section className="settings-card"><p className="eyebrow">Respaldo</p><h2>Copias de emergencia</h2><button className="primary" onClick={() => void exportData().catch((error) => alert(error.message))}>Exportar JSON</button>{mode === "offline" && <><button className="secondary" onClick={() => fileInput.current?.click()}>Importar JSON local</button><input ref={fileInput} hidden type="file" accept="application/json,.json" onChange={(event) => void importFile(event.target.files?.[0]).catch((error) => alert(error.message))} /></>}</section>
       {availableUpdate && <section className="settings-card"><p className="eyebrow">Actualización disponible</p><h2>Versión {availableUpdate.versionName}</h2><p>{availableUpdate.notes || "Incluye mejoras y correcciones."}</p><button className="primary" onClick={() => void onInstallUpdate()}>Descargar e instalar</button></section>}
       {mode === "online" && <section className="settings-card"><button className="danger" onClick={() => void onSignOut()}>Cerrar sesión</button></section>}
+      {accessMessage && <p className="notice" role="status">{accessMessage}</p>}
       {message && <p className="notice">{message}</p>}
     </main>
   );

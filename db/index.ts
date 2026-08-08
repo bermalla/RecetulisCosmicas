@@ -160,5 +160,8 @@ export async function ensureSchema() {
     d1.prepare(
       "CREATE INDEX IF NOT EXISTS recipe_revisions_group_sequence_idx ON recipe_revisions (group_id, sequence)",
     ),
+    d1.prepare(
+      "CREATE UNIQUE INDEX IF NOT EXISTS group_members_user_idx ON group_members (user_id)",
+    ),
   ]);
 }

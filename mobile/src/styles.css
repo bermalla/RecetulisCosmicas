@@ -4,7 +4,9 @@ html, body, #root { min-height: 100%; margin: 0; }
 body { background: radial-gradient(circle at top right, #f4c9ba 0, transparent 28rem), #f7f1e6; }
 button, input, textarea, select { font: inherit; }
 button { cursor: pointer; }
-.app-shell { min-height: 100vh; padding-bottom: calc(32px + env(safe-area-inset-bottom)); }
+.app-shell { min-height: 100vh; padding-bottom: calc(32px + env(safe-area-inset-bottom)); overscroll-behavior-y: contain; }
+.pull-refresh { display: grid; place-items: end center; overflow: hidden; color: #8c4a5a; font-size: 12px; font-weight: 800; transition: height .18s ease; }
+.pull-refresh span { padding-bottom: 9px; }
 .topbar { position: sticky; top: 0; z-index: 10; min-height: calc(64px + env(safe-area-inset-top)); padding: calc(12px + env(safe-area-inset-top)) 18px 12px; display: flex; align-items: center; justify-content: space-between; background: rgba(247,241,230,.9); backdrop-filter: blur(18px); border-bottom: 1px solid rgba(111,43,61,.12); }
 .brand { display: flex; gap: 10px; align-items: center; color: #6f2b3d; }
 .brand > span { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 12px; color: white; background: #6f2b3d; }
@@ -68,4 +70,9 @@ input:focus, textarea:focus, select:focus { border-color: #8c4a5a; box-shadow: 0
 .member-row span { color: #73666a; font-size: 12px; }
 .member-row button { width: auto; flex: 0 0 auto; margin: 0; }
 .member-row.pending { opacity: .8; }
+.invitation-card { padding: 16px; display: grid; gap: 13px; border: 1px solid rgba(83,35,51,.12); border-radius: 16px; background: rgba(255,255,255,.58); }
+.invitation-card > div:first-child { display: grid; gap: 4px; }
+.invitation-card span { color: #73666a; font-size: 12px; }
+.invitation-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+.invitation-actions button { margin: 0; }
 @media (min-width: 700px) { .hero, .library { max-width: 760px; margin-inline: auto; } .modal { max-width: 720px; margin: auto; border-radius: 28px; } }

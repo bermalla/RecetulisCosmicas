@@ -31,7 +31,10 @@ export const groupMembers = sqliteTable(
     addedBy: text("added_by").references(() => users.id),
     createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
   },
-  (table) => [primaryKey({ columns: [table.groupId, table.userId] })],
+  (table) => [
+    primaryKey({ columns: [table.groupId, table.userId] }),
+    uniqueIndex("group_members_user_idx").on(table.userId),
+  ],
 );
 
 export const groupInvites = sqliteTable(
