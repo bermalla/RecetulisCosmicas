@@ -20,7 +20,7 @@ export async function checkForUpdate(): Promise<MobileRelease | null> {
   if (!Capacitor.isNativePlatform()) return null;
   const [info, response] = await Promise.all([
     App.getInfo(),
-    fetch(`${API_BASE}/mobile/latest.json`, { cache: "no-store" }),
+    fetch(`${API_BASE}/mobile/latest.json?check=${Date.now()}`, { cache: "no-store" }),
   ]);
   if (!response.ok) return null;
   const release = (await response.json()) as MobileRelease;
