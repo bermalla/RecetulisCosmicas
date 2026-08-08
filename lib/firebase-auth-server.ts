@@ -81,7 +81,11 @@ function decodeBase64Url(value: string) {
 }
 
 function parseJsonPart<T>(part: string): T {
-  return JSON.parse(new TextDecoder().decode(decodeBase64Url(part))) as T;
+  try {
+    return JSON.parse(new TextDecoder().decode(decodeBase64Url(part))) as T;
+  } catch {
+    throw new AuthError("La sesión no es válida.", 401, "AUTH_TOKEN");
+  }
 }
 
 async function getGoogleSigningKey(kid: string): Promise<SigningJsonWebKey> {
@@ -113,6 +117,9 @@ export async function verifyFirebaseToken(token: string): Promise<AuthenticatedU
       503,
       "AUTH_NOT_CONFIGURED",
     );
+  }
+  if (token.length > 8192) {
+    throw new AuthError("La sesión no es válida.", 401, "AUTH_TOKEN");
   }
   const parts = token.split(".");
   if (parts.length !== 3) throw new AuthError("La sesión no es válida.", 401, "AUTH_TOKEN");
@@ -147,13 +154,15 @@ export async function verifyFirebaseToken(token: string): Promise<AuthenticatedU
     !claims.iat ||
     claims.iat > now + 60 ||
     !claims.sub ||
+    claims.sub.length > 128 ||
     !claims.email ||
+    claims.email.length > 254 ||
     claims.email_verified !== true
   ) {
     throw new AuthError("La sesión venció o no es válida.", 401, "AUTH_CLAIMS");
   }
   return {
-    id: claims.user_id ?? claims.sub,
+    id: claims.sub,
     email: claims.email.trim().toLowerCase(),
     displayName: claims.name?.trim() || claims.email,
   };

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Recetulis Cósmicas</string>
+    <string name="title_activity_main">Recetulis Cósmicas</string>
+    <string name="package_name">com.recetuliscosmicas.app</string>
+    <string name="custom_url_scheme">com.recetuliscosmicas.app</string>
+</resources>

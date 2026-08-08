@@ -23,6 +23,14 @@
 *.pem
 *.jks
 *.keystore
+/.android-secrets/
+/.android-tools/
+/mobile/android/app/google-services.json
+/mobile/dist/
+/mobile/node_modules/
+/mobile/*.js
+/mobile/*.d.ts
+/mobile/*.tsbuildinfo
 
 # debug
 npm-debug.log*

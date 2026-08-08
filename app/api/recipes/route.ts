@@ -37,6 +37,35 @@ type RecipeInput = {
   ingredients?: IngredientInput[];
 };
 
+class RecipeInputError extends Error {}
+
+function boundedText(value: unknown, label: string, maximum: number) {
+  const text = String(value ?? "").trim();
+  if (text.length > maximum) {
+    throw new RecipeInputError(`${label} supera el máximo de ${maximum} caracteres.`);
+  }
+  return text;
+}
+
+function optionalHttpUrl(value: unknown, label: string) {
+  const text = boundedText(value, label, 2048);
+  if (!text) return null;
+  try {
+    const url = new URL(text);
+    if (url.protocol !== "https:" && url.protocol !== "http:") throw new Error();
+    return url.toString();
+  } catch {
+    throw new RecipeInputError(`${label} debe ser una dirección web http o https válida.`);
+  }
+}
+
+function assertRequestSize(request: Request) {
+  const declared = Number(request.headers.get("content-length") ?? 0);
+  if (declared > 2_000_000) {
+    throw new RecipeInputError("El archivo supera el máximo permitido de 2 MB.");
+  }
+}
+
 function normalizeIngredient(value: string) {
   const cleaned = value
     .normalize("NFD")
@@ -100,11 +129,14 @@ function nutrientsToArray(value: RecipeInput["nutrients"] | string) {
 }
 
 function cleanRecipe(input: RecipeInput, preserveId = false) {
-  const name = String(input.name ?? "").trim();
+  const name = boundedText(input.name, "El nombre", 180);
+  if (Array.isArray(input.ingredients) && input.ingredients.length > 300) {
+    throw new RecipeInputError("Una receta no puede superar los 300 ingredientes.");
+  }
   const ingredientsList = Array.isArray(input.ingredients)
     ? input.ingredients
         .map((ingredient) => {
-          const ingredientName = String(ingredient.name ?? "").trim();
+          const ingredientName = boundedText(ingredient.name, "El ingrediente", 250);
           if (!ingredientName) return null;
           return {
             name: ingredientName,
@@ -114,8 +146,8 @@ function cleanRecipe(input: RecipeInput, preserveId = false) {
             quantity:
               ingredient.quantity === null || ingredient.quantity === undefined
                 ? null
-                : String(ingredient.quantity).trim(),
-            unit: ingredient.unit ? String(ingredient.unit).trim() : null,
+                : boundedText(ingredient.quantity, "La cantidad", 100),
+            unit: ingredient.unit ? boundedText(ingredient.unit, "La unidad", 100) : null,
             optional: Boolean(ingredient.optional),
           };
         })
@@ -123,16 +155,25 @@ function cleanRecipe(input: RecipeInput, preserveId = false) {
     : [];
 
   if (!name || ingredientsList.length === 0) {
-    throw new Error("Cada receta necesita un nombre y al menos un ingrediente.");
+    throw new RecipeInputError("Cada receta necesita un nombre y al menos un ingrediente.");
+  }
+
+  const instructions = instructionsToArray(input.instructions);
+  if (instructions.length > 500 || instructions.some((item) => item.length > 5000)) {
+    throw new RecipeInputError("Las instrucciones superan el tamaño permitido.");
+  }
+  const nutrients = nutrientsToArray(input.nutrients ?? []);
+  if (nutrients.length > 100 || nutrients.some((item) => item.length > 120)) {
+    throw new RecipeInputError("La lista de nutrientes supera el tamaño permitido.");
   }
 
   return {
     id: preserveId && input.id ? String(input.id) : crypto.randomUUID(),
     name,
-    description: String(input.description ?? "").trim(),
+    description: boundedText(input.description, "La descripción", 10000),
     category: normalizeRecipeCategory(input.category, name),
-    instructions: instructionsToArray(input.instructions),
-    nutrients: mergeNutrients(nutrientsToArray(input.nutrients ?? []), ingredientsList),
+    instructions,
+    nutrients: mergeNutrients(nutrients, ingredientsList),
     durationMinutes:
       typeof input.durationMinutes === "number" && input.durationMinutes > 0
         ? Math.round(input.durationMinutes)
@@ -141,8 +182,8 @@ function cleanRecipe(input: RecipeInput, preserveId = false) {
       typeof input.servings === "number" && input.servings > 0
         ? Math.round(input.servings)
         : null,
-    image: input.image ? String(input.image) : null,
-    sourceUrl: input.sourceUrl ? String(input.sourceUrl) : null,
+    image: input.image ? optionalHttpUrl(input.image, "La imagen") : null,
+    sourceUrl: input.sourceUrl ? optionalHttpUrl(input.sourceUrl, "La fuente") : null,
     ingredients: ingredientsList as Array<{
       name: string;
       normalizedName: string;
@@ -276,6 +317,9 @@ async function readAllRecipes(groupId: string) {
 }
 
 function errorResponse(error: unknown) {
+  if (error instanceof RecipeInputError) {
+    return Response.json({ error: error.message }, { status: 400 });
+  }
   const message = error instanceof Error ? error.message : "Ocurrió un error inesperado.";
   const detail =
     error instanceof Error && error.cause instanceof Error ? error.cause.message : "";
@@ -298,6 +342,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const actor = await requireActor(request, ["owner", "editor"]);
+    assertRequestSize(request);
     const payload = (await request.json()) as {
       recipe?: RecipeInput;
       recipes?: RecipeInput[];

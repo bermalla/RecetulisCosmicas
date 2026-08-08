@@ -38,10 +38,14 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const actor = await requireActor(request, ["owner"]);
+    const declaredSize = Number(request.headers.get("content-length") ?? 0);
+    if (declaredSize > 16_384) {
+      return Response.json({ error: "La solicitud es demasiado grande." }, { status: 413 });
+    }
     const payload = (await request.json()) as { email?: string; role?: InviteRole };
     const email = String(payload.email ?? "").trim().toLowerCase();
     const role: InviteRole = payload.role === "reader" ? "reader" : "editor";
-    if (!/^\S+@\S+\.\S+$/.test(email)) {
+    if (email.length > 254 || !/^\S+@\S+\.\S+$/.test(email)) {
       return Response.json({ error: "Ingresá un correo válido." }, { status: 400 });
     }
     const d1 = await getD1();

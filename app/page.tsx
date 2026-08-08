@@ -160,6 +160,28 @@ function Home() {
   const isImporting = importProgress?.status === "importing" || importProgress?.status === "refreshing";
 
   useEffect(() => {
+    if (!selectedRecipe) return;
+    const marker = `recipe:${selectedRecipe.id}`;
+    window.history.pushState(
+      { ...window.history.state, recetulisOverlay: marker },
+      "",
+      window.location.href,
+    );
+    const closeOnBack = () => setSelectedRecipe(null);
+    window.addEventListener("popstate", closeOnBack);
+    return () => window.removeEventListener("popstate", closeOnBack);
+  }, [selectedRecipe]);
+
+  function closeRecipeDetail() {
+    const marker = selectedRecipe ? `recipe:${selectedRecipe.id}` : "";
+    if (window.history.state?.recetulisOverlay === marker) {
+      window.history.back();
+      return;
+    }
+    setSelectedRecipe(null);
+  }
+
+  useEffect(() => {
     void loadRecipes();
     // The access gate mounts this screen only after the selected mode is ready.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -753,7 +775,7 @@ function Home() {
         <RecipeDetail
           recipe={selectedRecipe}
           pantry={pantry}
-          onClose={() => setSelectedRecipe(null)}
+          onClose={closeRecipeDetail}
         />
       )}
       {importProgress && (
