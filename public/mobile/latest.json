@@ -1,7 +1,7 @@
 {
-  "versionCode": 4,
-  "versionName": "1.0.3",
-  "apkUrl": "https://mi-recetario.bermalla.chatgpt.site/mobile/recetulis-cosmicas-1.0.3.apk",
-  "sha256": "31fe1262181b5b2828e40ad45f41427537afe87ba135e259d1761581229aa384",
-  "notes": "Sincronización grupal corregida, actualizar al deslizar, filtro por ingredientes e invitaciones que requieren aceptación."
+  "versionCode": 5,
+  "versionName": "1.0.4",
+  "apkUrl": "https://mi-recetario.bermalla.chatgpt.site/mobile/recetulis-cosmicas-1.0.4.apk",
+  "sha256": "add3f66e6b4e406fc4ef29d7055028c865201fda7f9a31c6ca31b358b472e633",
+  "notes": "Edición y borrado de recetas, favoritos compartidos, autocompletado y navegación Atrás corregida."
 }

@@ -80,6 +80,14 @@ export async function putRecipe(scope: string, recipe: Recipe) {
   db.close();
 }
 
+export async function removeRecipe(scope: string, recipeId: string) {
+  const db = await openDatabase();
+  const tx = db.transaction(RECIPES, "readwrite");
+  tx.objectStore(RECIPES).delete(`${scope}:${recipeId}`);
+  await complete(tx);
+  db.close();
+}
+
 export async function applyChanges(scope: string, changes: RecipeChange[]) {
   const db = await openDatabase();
   const tx = db.transaction(RECIPES, "readwrite");

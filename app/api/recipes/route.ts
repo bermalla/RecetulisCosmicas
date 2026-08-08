@@ -33,6 +33,7 @@ type RecipeInput = {
   servings?: number | null;
   image?: string | null;
   sourceUrl?: string | null;
+  favorite?: boolean;
   nutrients?: string[];
   ingredients?: IngredientInput[];
 };
@@ -184,6 +185,7 @@ function cleanRecipe(input: RecipeInput, preserveId = false) {
         : null,
     image: input.image ? optionalHttpUrl(input.image, "La imagen") : null,
     sourceUrl: input.sourceUrl ? optionalHttpUrl(input.sourceUrl, "La fuente") : null,
+    favorite: Boolean(input.favorite),
     ingredients: ingredientsList as Array<{
       name: string;
       normalizedName: string;
@@ -225,9 +227,9 @@ async function saveRecipe(recipe: CleanRecipe, actor: AuthorizedActor) {
       .prepare(`
         INSERT INTO recipes (
           id, group_id, name, description, category, instructions, nutrients,
-          duration_minutes, servings, image, source_url, version,
+          duration_minutes, servings, image, source_url, favorite, version,
           created_by, updated_by, updated_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?)
       `)
       .bind(
         recipe.id,
@@ -241,6 +243,7 @@ async function saveRecipe(recipe: CleanRecipe, actor: AuthorizedActor) {
         recipe.servings,
         recipe.image,
         recipe.sourceUrl,
+        recipe.favorite ? 1 : 0,
         actor.id,
         actor.id,
         now,
@@ -422,12 +425,201 @@ export async function POST(request: Request) {
 
 type StoredRecipe = Awaited<ReturnType<typeof readAllRecipes>>[number];
 
+async function updateRecipe(
+  input: RecipeInput,
+  actor: AuthorizedActor,
+  baseVersion: number,
+) {
+  const id = String(input.id ?? "").trim();
+  if (!id) throw new RecipeInputError("Falta el id de la receta.");
+  const current = (await readAllRecipes(actor.groupId)).find((recipe) => recipe.id === id);
+  if (!current) return { status: "missing" as const };
+  const currentVersion = Number(current.version ?? 1);
+  if (baseVersion !== currentVersion) return { status: "conflict" as const };
+
+  const recipe = cleanRecipe({ ...input, id }, true);
+  const nextVersion = currentVersion + 1;
+  const now = new Date().toISOString();
+  const payload = JSON.stringify({
+    ...recipe,
+    groupId: actor.groupId,
+    version: nextVersion,
+    createdBy: current.createdBy,
+    updatedBy: actor.id,
+    createdAt: current.createdAt,
+    updatedAt: now,
+  });
+  const d1 = await getD1();
+  const statements = [
+    d1
+      .prepare(`
+        UPDATE recipes
+        SET name = ?, description = ?, category = ?, instructions = ?, nutrients = ?,
+            duration_minutes = ?, servings = ?, image = ?, source_url = ?, favorite = ?,
+            version = ?, updated_by = ?, updated_at = ?
+        WHERE id = ? AND group_id = ? AND version = ? AND deleted_at IS NULL
+      `)
+      .bind(
+        recipe.name,
+        recipe.description,
+        recipe.category,
+        JSON.stringify(recipe.instructions),
+        JSON.stringify(recipe.nutrients),
+        recipe.durationMinutes,
+        recipe.servings,
+        recipe.image,
+        recipe.sourceUrl,
+        recipe.favorite ? 1 : 0,
+        nextVersion,
+        actor.id,
+        now,
+        id,
+        actor.groupId,
+        currentVersion,
+      ),
+    d1
+      .prepare(`
+        DELETE FROM recipe_name_claims
+        WHERE group_id = ? AND recipe_id = ?
+          AND EXISTS (
+            SELECT 1 FROM recipes
+            WHERE id = ? AND group_id = ? AND version = ? AND updated_by = ? AND updated_at = ?
+          )
+      `)
+      .bind(actor.groupId, id, id, actor.groupId, nextVersion, actor.id, now),
+    d1
+      .prepare(`
+        INSERT INTO recipe_name_claims (group_id, normalized_name, recipe_id)
+        SELECT ?, ?, ?
+        WHERE EXISTS (
+          SELECT 1 FROM recipes
+          WHERE id = ? AND group_id = ? AND version = ? AND updated_by = ? AND updated_at = ?
+        )
+      `)
+      .bind(
+        actor.groupId,
+        recipeNameKey(recipe.name),
+        id,
+        id,
+        actor.groupId,
+        nextVersion,
+        actor.id,
+        now,
+      ),
+    d1
+      .prepare(`
+        DELETE FROM recipe_ingredients
+        WHERE recipe_id = ?
+          AND EXISTS (
+            SELECT 1 FROM recipes
+            WHERE id = ? AND group_id = ? AND version = ? AND updated_by = ? AND updated_at = ?
+          )
+      `)
+      .bind(id, id, actor.groupId, nextVersion, actor.id, now),
+    ...recipe.ingredients.map((ingredient, index) =>
+      d1
+        .prepare(`
+          INSERT INTO recipe_ingredients (
+            recipe_id, name, normalized_name, quantity, unit, optional, sort_order
+          )
+          SELECT ?, ?, ?, ?, ?, ?, ?
+          WHERE EXISTS (
+            SELECT 1 FROM recipes
+            WHERE id = ? AND group_id = ? AND version = ? AND updated_by = ? AND updated_at = ?
+          )
+        `)
+        .bind(
+          id,
+          ingredient.name,
+          ingredient.normalizedName,
+          ingredient.quantity,
+          ingredient.unit,
+          ingredient.optional ? 1 : 0,
+          index,
+          id,
+          actor.groupId,
+          nextVersion,
+          actor.id,
+          now,
+        ),
+    ),
+    d1
+      .prepare(`
+        INSERT INTO recipe_revisions (
+          recipe_id, group_id, version, base_version, operation, payload, author_id, created_at
+        )
+        SELECT ?, ?, ?, ?, 'update', ?, ?, ?
+        WHERE EXISTS (
+          SELECT 1 FROM recipes
+          WHERE id = ? AND group_id = ? AND version = ? AND updated_by = ? AND updated_at = ?
+        )
+      `)
+      .bind(
+        id,
+        actor.groupId,
+        nextVersion,
+        currentVersion,
+        payload,
+        actor.id,
+        now,
+        id,
+        actor.groupId,
+        nextVersion,
+        actor.id,
+        now,
+      ),
+  ];
+  const results = await d1.batch(statements);
+  const changed = Number(results[0]?.meta?.changes ?? 0);
+  return changed > 0
+    ? { status: "updated" as const, recipe: JSON.parse(payload) }
+    : { status: "conflict" as const };
+}
+
+export async function PUT(request: Request) {
+  try {
+    const actor = await requireActor(request, ["owner", "editor"]);
+    assertRequestSize(request);
+    await ensureEmptyBaselineOnce();
+    const payload = (await request.json()) as { recipe?: RecipeInput; baseVersion?: number };
+    if (!payload.recipe) {
+      return Response.json({ error: "Falta la receta para actualizar." }, { status: 400 });
+    }
+    const baseVersion = Number(payload.baseVersion);
+    if (!Number.isInteger(baseVersion) || baseVersion < 1) {
+      return Response.json({ error: "Falta la versión original de la receta." }, { status: 400 });
+    }
+    const result = await updateRecipe(payload.recipe, actor, baseVersion);
+    if (result.status === "missing") {
+      return Response.json({ error: "La receta ya no existe." }, { status: 404 });
+    }
+    if (result.status === "conflict") {
+      return Response.json(
+        { error: "Otra persona modificó esta receta. Actualizá la base y volvé a editarla." },
+        { status: 409 },
+      );
+    }
+    return Response.json({ recipe: result.recipe });
+  } catch (error) {
+    const authResponse = authErrorResponse(error);
+    if (authResponse) return authResponse;
+    const message = error instanceof Error ? error.message.toLowerCase() : "";
+    if (message.includes("unique constraint") || message.includes("constraint failed")) {
+      return Response.json(
+        { error: "Ya existe otra receta con ese nombre." },
+        { status: 409 },
+      );
+    }
+    return errorResponse(error);
+  }
+}
+
 async function softDeleteRecipe(recipe: StoredRecipe, actor: AuthorizedActor) {
   const d1 = await getD1();
   const now = new Date().toISOString();
   const currentVersion = Number(recipe.version ?? 1);
   const nextVersion = currentVersion + 1;
-  await d1.batch([
+  const results = await d1.batch([
     d1
       .prepare(`
         UPDATE recipes
@@ -436,16 +628,40 @@ async function softDeleteRecipe(recipe: StoredRecipe, actor: AuthorizedActor) {
       `)
       .bind(now, nextVersion, actor.id, now, recipe.id, actor.groupId, currentVersion),
     d1
-      .prepare("DELETE FROM recipe_name_claims WHERE group_id = ? AND recipe_id = ?")
-      .bind(actor.groupId, recipe.id),
+      .prepare(`
+        DELETE FROM recipe_name_claims
+        WHERE group_id = ? AND recipe_id = ?
+          AND EXISTS (
+            SELECT 1 FROM recipes
+            WHERE id = ? AND group_id = ? AND version = ? AND deleted_at = ?
+          )
+      `)
+      .bind(actor.groupId, recipe.id, recipe.id, actor.groupId, nextVersion, now),
     d1
       .prepare(`
         INSERT INTO recipe_revisions (
           recipe_id, group_id, version, base_version, operation, payload, author_id, created_at
-        ) VALUES (?, ?, ?, ?, 'delete', NULL, ?, ?)
+        )
+        SELECT ?, ?, ?, ?, 'delete', NULL, ?, ?
+        WHERE EXISTS (
+          SELECT 1 FROM recipes
+          WHERE id = ? AND group_id = ? AND version = ? AND deleted_at = ?
+        )
       `)
-      .bind(recipe.id, actor.groupId, nextVersion, currentVersion, actor.id, now),
+      .bind(
+        recipe.id,
+        actor.groupId,
+        nextVersion,
+        currentVersion,
+        actor.id,
+        now,
+        recipe.id,
+        actor.groupId,
+        nextVersion,
+        now,
+      ),
   ]);
+  return Number(results[0]?.meta?.changes ?? 0) > 0;
 }
 
 export async function DELETE(request: Request) {
@@ -468,7 +684,20 @@ export async function DELETE(request: Request) {
     await ensureEmptyBaselineOnce();
     const existing = (await readAllRecipes(actor.groupId)).find((recipe) => recipe.id === id);
     if (!existing) return Response.json({ error: "La receta ya no existe." }, { status: 404 });
-    await softDeleteRecipe(existing, actor);
+    const requestedVersion = Number(url.searchParams.get("version"));
+    if (Number.isInteger(requestedVersion) && requestedVersion > 0 && requestedVersion !== Number(existing.version ?? 1)) {
+      return Response.json(
+        { error: "Otra persona modificó esta receta. Actualizá la base antes de borrarla." },
+        { status: 409 },
+      );
+    }
+    const deleted = await softDeleteRecipe(existing, actor);
+    if (!deleted) {
+      return Response.json(
+        { error: "Otra persona modificó esta receta. Actualizá la base antes de borrarla." },
+        { status: 409 },
+      );
+    }
     return Response.json({ deleted: id });
   } catch (error) {
     return authErrorResponse(error) ?? errorResponse(error);

@@ -75,6 +75,7 @@ export async function ensureSchema() {
         servings integer,
         image text,
         source_url text,
+        favorite integer DEFAULT 0 NOT NULL,
         version integer DEFAULT 1 NOT NULL,
         created_by text,
         updated_by text,
@@ -137,6 +138,7 @@ export async function ensureSchema() {
     "created_by text",
     "updated_by text",
     "deleted_at text",
+    "favorite integer DEFAULT 0 NOT NULL",
   ];
   for (const definition of recipeColumns) {
     try {

@@ -7,18 +7,21 @@ import { FirebaseAuthentication } from "@capacitor-firebase/authentication";
 import {
   acceptGroupInvitation,
   createOnlineRecipe,
+  deleteOnlineRecipe,
   declineGroupInvitation,
   inviteGroupMember,
   leaveCurrentGroup,
   readGroupAccess,
   removeGroupAccess,
   synchronize,
+  updateOnlineRecipe,
   validateSession,
   type GroupInvite,
   type GroupMember,
 } from "./api";
-import { groupScope, LOCAL_SCOPE, putRecipe, readRecipes, replaceRecipes } from "./storage";
+import { groupScope, LOCAL_SCOPE, putRecipe, readRecipes, removeRecipe, replaceRecipes } from "./storage";
 import { filterRecipesByPantry, ingredientMatchesPantry } from "./recipe-filter";
+import { ingredientSuggestionQuery, rankSuggestions, replaceActiveIngredient } from "./autocomplete";
 import type { Account, Actor, AuthSession, GroupInvitation, Ingredient, Mode, Recipe } from "./types";
 import { checkForUpdate, installUpdate, type MobileRelease } from "./updater";
 
@@ -36,14 +39,16 @@ function ingredientLabel(ingredient: Ingredient) {
 function parseIngredient(line: string): Ingredient | null {
   const clean = line.replace(/^[-•]\s*/, "").trim();
   if (!clean) return null;
-  const match = clean.match(/^(\d+(?:[.,]\d+)?(?:\s*\/\s*\d+)?|\d+\/\d+)?\s*([a-zA-ZáéíóúüñÁÉÍÓÚÜÑ]+)?\s+(.+)$/);
+  const match = clean.match(/^(\d+(?:[.,]\d+)?(?:\s*\/\s*\d+)?)\s+(.+)$/);
   if (!match) return { name: clean };
-  const [, quantity, possibleUnit, rest] = match;
+  const [, quantity, remainder] = match;
+  const unitMatch = remainder.match(/^([a-zA-ZáéíóúüñÁÉÍÓÚÜÑ]+)\s+(.+)$/);
+  const possibleUnit = unitMatch?.[1];
   const units = new Set(["g", "kg", "ml", "l", "taza", "tazas", "cda", "cdas", "cdta", "cdtas", "unidad", "unidades"]);
   if (possibleUnit && units.has(normalize(possibleUnit))) {
-    return { name: rest.trim(), quantity: quantity?.replace(",", ".") || null, unit: possibleUnit };
+    return { name: unitMatch[2].trim(), quantity: quantity.replace(",", "."), unit: possibleUnit };
   }
-  return { name: [possibleUnit, rest].filter(Boolean).join(" ").trim(), quantity: quantity?.replace(",", ".") || null };
+  return { name: remainder.trim(), quantity: quantity.replace(",", ".") };
 }
 
 export default function App() {
@@ -54,25 +59,46 @@ export default function App() {
   const [mode, setMode] = useState<Mode>(() => (localStorage.getItem("recetulis-mobile-mode") === "offline" ? "offline" : "online"));
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
+  const [editingRecipe, setEditingRecipe] = useState<Recipe | null>(null);
   const [screen, setScreen] = useState<Screen>("home");
   const [showAdd, setShowAdd] = useState(false);
   const [query, setQuery] = useState("");
-  const [pantry, setPantry] = useState<string[]>(() => {
-    try { return JSON.parse(localStorage.getItem("recetulis-mobile-pantry") ?? "[]") as string[]; }
-    catch { return []; }
-  });
+  const [pantry, setPantry] = useState<string[]>([]);
   const [pantryInput, setPantryInput] = useState("");
+  const [favoritesOnly, setFavoritesOnly] = useState(false);
   const [message, setMessage] = useState("");
   const [syncing, setSyncing] = useState(false);
   const [availableUpdate, setAvailableUpdate] = useState<MobileRelease | null>(null);
   const [pullDistance, setPullDistance] = useState(0);
 
-  const overlayRef = useRef({ selected: false, add: false, screen: "home" as Screen });
+  const overlayRef = useRef({ selected: false, editing: false, add: false, screen: "home" as Screen });
   const pullRef = useRef({ active: false, startY: 0, distance: 0 });
   const refreshRef = useRef<(full?: boolean) => Promise<void>>(async () => undefined);
   useEffect(() => {
-    overlayRef.current = { selected: Boolean(selectedRecipe), add: showAdd, screen };
-  }, [screen, selectedRecipe, showAdd]);
+    overlayRef.current = { selected: Boolean(selectedRecipe), editing: Boolean(editingRecipe), add: showAdd, screen };
+  }, [editingRecipe, screen, selectedRecipe, showAdd]);
+
+  function openRecipe(recipe: Recipe) {
+    overlayRef.current.selected = true;
+    setSelectedRecipe(recipe);
+  }
+
+  function closeRecipe() {
+    overlayRef.current.selected = false;
+    overlayRef.current.editing = false;
+    setEditingRecipe(null);
+    setSelectedRecipe(null);
+  }
+
+  function closeEditor() {
+    overlayRef.current.editing = false;
+    setEditingRecipe(null);
+  }
+
+  function closeAddForm() {
+    overlayRef.current.add = false;
+    setShowAdd(false);
+  }
 
   async function loadLocal(scope: string) {
     const cached = await readRecipes(scope);
@@ -146,10 +172,11 @@ export default function App() {
     let handle: { remove: () => Promise<void> } | undefined;
     void NativeApp.addListener("backButton", async () => {
       const overlay = overlayRef.current;
-      if (overlay.selected) { setSelectedRecipe(null); return; }
-      if (overlay.add) { setShowAdd(false); return; }
-      if (overlay.screen !== "home") { setScreen("home"); return; }
-      await NativeApp.minimizeApp();
+      if (overlay.editing) { overlayRef.current.editing = false; setEditingRecipe(null); return; }
+      if (overlay.selected) { overlayRef.current.selected = false; setSelectedRecipe(null); return; }
+      if (overlay.add) { overlayRef.current.add = false; setShowAdd(false); return; }
+      if (overlay.screen !== "home") { overlayRef.current.screen = "home"; setScreen("home"); return; }
+      if (window.confirm("¿Querés salir de Recetulis Cósmicas?")) await NativeApp.exitApp();
     }).then((listener) => { handle = listener; });
     let resumeHandle: { remove: () => Promise<void> } | undefined;
     void NativeApp.addListener("resume", () => { void refreshRef.current(false); })
@@ -158,8 +185,8 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("recetulis-mobile-pantry", JSON.stringify(pantry));
-  }, [pantry]);
+    localStorage.removeItem("recetulis-mobile-pantry");
+  }, []);
 
   useEffect(() => {
     void checkForUpdate().then(setAvailableUpdate).catch(() => null);
@@ -185,6 +212,10 @@ export default function App() {
     setActor(null);
     setInvitations([]);
     setRecipes([]);
+    setQuery("");
+    setPantry([]);
+    setPantryInput("");
+    setFavoritesOnly(false);
     setStatus("signed-out");
     setScreen("home");
   }
@@ -192,7 +223,11 @@ export default function App() {
   async function changeMode(next: Mode) {
     localStorage.setItem("recetulis-mobile-mode", next);
     setMode(next);
-    setSelectedRecipe(null);
+    closeRecipe();
+    setQuery("");
+    setPantry([]);
+    setPantryInput("");
+    setFavoritesOnly(false);
     setScreen("home");
     setStatus("loading");
   }
@@ -228,9 +263,90 @@ export default function App() {
   const visibleRecipes = useMemo(() => {
     const cleanQuery = normalize(query);
     return filterRecipesByPantry(recipes, pantry)
+      .filter((recipe) => !favoritesOnly || Boolean(recipe.favorite))
       .filter((recipe) => !cleanQuery || normalize(recipe.name).includes(cleanQuery))
       .sort((a, b) => a.name.localeCompare(b.name, "es"));
-  }, [pantry, query, recipes]);
+  }, [favoritesOnly, pantry, query, recipes]);
+
+  const recipeNameCandidates = useMemo(() => recipes.map((recipe) => recipe.name), [recipes]);
+  const ingredientCandidates = useMemo(
+    () => recipes.flatMap((recipe) => recipe.ingredients.map((ingredient) => ingredient.name)),
+    [recipes],
+  );
+  const canModifyRecipes = mode === "offline" || actor?.role === "owner" || actor?.role === "editor";
+
+  async function saveRecipe(draft: Omit<Recipe, "id">) {
+    if (editingRecipe) {
+      const candidate: Recipe = { ...editingRecipe, ...draft, id: editingRecipe.id };
+      let saved: Recipe;
+      if (mode === "online") {
+        saved = await updateOnlineRecipe(candidate);
+        await refreshOnline(actor?.groupId);
+      } else {
+        saved = {
+          ...candidate,
+          localOnly: true,
+          version: Number(editingRecipe.version ?? 1) + 1,
+          updatedAt: new Date().toISOString(),
+        };
+        await putRecipe(LOCAL_SCOPE, saved);
+        await loadLocal(LOCAL_SCOPE);
+      }
+      setSelectedRecipe(saved);
+      closeEditor();
+      setMessage("Receta actualizada.");
+      return;
+    }
+
+    if (mode === "online") {
+      await createOnlineRecipe(draft);
+      await refreshOnline(actor?.groupId);
+    } else {
+      const local: Recipe = {
+        ...draft,
+        id: crypto.randomUUID(),
+        localOnly: true,
+        version: 1,
+        updatedAt: new Date().toISOString(),
+      };
+      await putRecipe(LOCAL_SCOPE, local);
+      await loadLocal(LOCAL_SCOPE);
+    }
+    closeAddForm();
+    setMessage("Receta guardada.");
+  }
+
+  async function toggleFavorite(recipe: Recipe) {
+    const candidate = { ...recipe, favorite: !recipe.favorite };
+    let saved: Recipe;
+    if (mode === "online") {
+      saved = await updateOnlineRecipe(candidate);
+      await refreshOnline(actor?.groupId);
+    } else {
+      saved = {
+        ...candidate,
+        localOnly: true,
+        version: Number(recipe.version ?? 1) + 1,
+        updatedAt: new Date().toISOString(),
+      };
+      await putRecipe(LOCAL_SCOPE, saved);
+      await loadLocal(LOCAL_SCOPE);
+    }
+    setSelectedRecipe(saved);
+  }
+
+  async function deleteRecipe(recipe: Recipe) {
+    if (!window.confirm(`¿Borrar definitivamente “${recipe.name}”?`)) return;
+    if (mode === "online") {
+      await deleteOnlineRecipe(recipe);
+      await refreshOnline(actor?.groupId);
+    } else {
+      await removeRecipe(LOCAL_SCOPE, recipe.id);
+      await loadLocal(LOCAL_SCOPE);
+    }
+    closeRecipe();
+    setMessage("Receta borrada.");
+  }
 
   if (status === "loading") return <AccessShell title="Preparando tu colección…" />;
   if ((status === "signed-out" || status === "error") && mode === "online") {
@@ -258,7 +374,7 @@ export default function App() {
         recipes={recipes}
         message={message}
         availableUpdate={availableUpdate}
-        onBack={() => setScreen("home")}
+        onBack={() => { overlayRef.current.screen = "home"; setScreen("home"); }}
         onMode={changeMode}
         onSignOut={signOut}
         onAcceptInvitation={async (groupId) => {
@@ -301,7 +417,7 @@ export default function App() {
       </div>
       <header className="topbar">
         <div className="brand"><span>♨</span><strong>Recetulis Cósmicas</strong></div>
-        <button className="icon-button" aria-label="Ajustes" onClick={() => setScreen("settings")}>⚙</button>
+        <button className="icon-button" aria-label="Ajustes" onClick={() => { overlayRef.current.screen = "settings"; setScreen("settings"); }}>⚙</button>
       </header>
 
       <section className="hero">
@@ -317,35 +433,25 @@ export default function App() {
       <section className="library">
         <div className="section-heading">
           <div><p className="eyebrow">Tu base</p><h2>{recipes.length} recetas</h2></div>
-          <button className="primary compact" disabled={mode === "online" && actor?.role === "reader"} onClick={() => setShowAdd(true)}>+ Receta</button>
+          <button className="primary compact" disabled={!canModifyRecipes} onClick={() => { overlayRef.current.add = true; setShowAdd(true); }}>+ Receta</button>
         </div>
         <input className="search" type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Buscar receta" />
+        <label className="favorite-filter"><input type="checkbox" checked={favoritesOnly} onChange={(event) => setFavoritesOnly(event.target.checked)} /><span>Mostrar sólo favoritas</span></label>
         {syncing && <p className="notice">Sincronizando…</p>}
         {message && <p className="notice">{message}</p>}
         <div className="recipe-list">
           {visibleRecipes.map((recipe) => (
-            <button className="recipe-card" key={recipe.id} onClick={() => setSelectedRecipe(recipe)}>
-              <div><span>{recipe.category || "Receta"}</span><h3>{recipe.name}</h3><p>{recipe.description || `${recipe.ingredients.length} ingredientes`}</p></div>
+            <button className="recipe-card" key={recipe.id} onClick={() => openRecipe(recipe)}>
+              <div><span>{recipe.favorite ? "★ " : ""}{recipe.category || "Receta"}</span><h3>{recipe.name}</h3><p>{recipe.description || `${recipe.ingredients.length} ingredientes`}</p></div>
               <b>›</b>
             </button>
           ))}
-          {!visibleRecipes.length && <div className="empty">{pantry.length > 0 ? "No hay recetas con esos ingredientes." : "Todavía no hay recetas en esta colección."}</div>}
+          {!visibleRecipes.length && <div className="empty">{favoritesOnly ? "No hay recetas favoritas que coincidan con los filtros." : pantry.length > 0 ? "No hay recetas con esos ingredientes." : "Todavía no hay recetas en esta colección."}</div>}
         </div>
       </section>
 
-      {selectedRecipe && <RecipeDetail recipe={selectedRecipe} pantry={pantry} onClose={() => setSelectedRecipe(null)} />}
-      {showAdd && <RecipeForm mode={mode} onClose={() => setShowAdd(false)} onSave={async (recipe) => {
-        if (mode === "online") {
-          await createOnlineRecipe(recipe);
-          await refreshOnline(actor?.groupId);
-        } else {
-          const local: Recipe = { ...recipe, id: crypto.randomUUID(), localOnly: true, version: 1, updatedAt: new Date().toISOString() };
-          await putRecipe(LOCAL_SCOPE, local);
-          await loadLocal(LOCAL_SCOPE);
-        }
-        setShowAdd(false);
-        setMessage("Receta guardada.");
-      }} />}
+      {selectedRecipe && <RecipeDetail recipe={selectedRecipe} pantry={pantry} canModify={canModifyRecipes} onClose={closeRecipe} onFavorite={toggleFavorite} onEdit={() => { overlayRef.current.editing = true; setEditingRecipe(selectedRecipe); }} onDelete={deleteRecipe} />}
+      {(showAdd || editingRecipe) && <RecipeForm mode={mode} recipe={editingRecipe} recipeNames={recipeNameCandidates} ingredientNames={ingredientCandidates} onClose={editingRecipe ? closeEditor : closeAddForm} onSave={saveRecipe} />}
     </main>
   );
 }
@@ -354,38 +460,107 @@ function AccessShell({ title }: { title: string }) {
   return <main className="access-shell"><section className="access-card"><p className="eyebrow">Recetulis Cósmicas</p><h1>{title}</h1></section></main>;
 }
 
-function RecipeDetail({ recipe, pantry, onClose }: { recipe: Recipe; pantry: string[]; onClose: () => void }) {
+function RecipeDetail({ recipe, pantry, canModify, onClose, onFavorite, onEdit, onDelete }: {
+  recipe: Recipe;
+  pantry: string[];
+  canModify: boolean;
+  onClose: () => void;
+  onFavorite: (recipe: Recipe) => Promise<void>;
+  onEdit: () => void;
+  onDelete: (recipe: Recipe) => Promise<void>;
+}) {
   const hasIngredient = (ingredient: Ingredient) => pantry.some((item) => ingredientMatchesPantry(ingredient, item));
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+
+  async function run(action: () => Promise<void>) {
+    setSaving(true);
+    setError("");
+    try {
+      await action();
+    } catch (actionError) {
+      setError(actionError instanceof Error ? actionError.message : "No se pudo modificar la receta.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
   return (
     <div className="modal-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
       <article className="modal detail" role="dialog" aria-modal="true" aria-labelledby="recipe-title">
         <button className="modal-close" onClick={onClose} aria-label="Cerrar receta">×</button>
+        <button className={`favorite-star ${recipe.favorite ? "selected" : ""}`} disabled={!canModify || saving} aria-pressed={Boolean(recipe.favorite)} aria-label={recipe.favorite ? "Quitar de favoritas" : "Marcar como favorita"} onClick={() => void run(() => onFavorite(recipe))}>{recipe.favorite ? "★" : "☆"}</button>
         <p className="eyebrow">{recipe.category || "Receta"}</p>
         <h2 id="recipe-title">{recipe.name}</h2>
         <p className="description">{recipe.description}</p>
         {recipe.nutrients?.length > 0 && <div className="chips static">{recipe.nutrients.map((item) => <span key={item}>{item}</span>)}</div>}
         <section><h3>Ingredientes</h3><ul>{recipe.ingredients.map((ingredient, index) => <li className={hasIngredient(ingredient) ? "available" : ""} key={`${ingredient.name}-${index}`}><span>{hasIngredient(ingredient) ? "✓" : "○"}</span>{ingredientLabel(ingredient)}</li>)}</ul></section>
         <section><h3>Preparación</h3><ol>{recipe.instructions.map((step, index) => <li key={`${index}-${step}`}>{step}</li>)}</ol></section>
+        {error && <p className="error" role="alert">{error}</p>}
+        {canModify && <section className="detail-actions"><button className="primary" disabled={saving} onClick={onEdit}>Editar receta</button><button className="danger" disabled={saving} onClick={() => void run(() => onDelete(recipe))}>Borrar receta</button></section>}
       </article>
     </div>
   );
 }
 
-function RecipeForm({ mode, onClose, onSave }: { mode: Mode; onClose: () => void; onSave: (recipe: Omit<Recipe, "id">) => Promise<void> }) {
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [category, setCategory] = useState("");
-  const [ingredients, setIngredients] = useState("");
-  const [instructions, setInstructions] = useState("");
+function RecipeForm({ mode, recipe, recipeNames, ingredientNames, onClose, onSave }: {
+  mode: Mode;
+  recipe: Recipe | null;
+  recipeNames: string[];
+  ingredientNames: string[];
+  onClose: () => void;
+  onSave: (recipe: Omit<Recipe, "id">) => Promise<void>;
+}) {
+  const [name, setName] = useState(recipe?.name ?? "");
+  const [description, setDescription] = useState(recipe?.description ?? "");
+  const [category, setCategory] = useState(recipe?.category ?? "");
+  const [ingredients, setIngredients] = useState(() => recipe?.ingredients.map(ingredientLabel).join("\n") ?? "");
+  const [instructions, setInstructions] = useState(() => recipe?.instructions.join("\n") ?? "");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [activeField, setActiveField] = useState<"name" | "ingredients" | null>(null);
+  const [ingredientCursor, setIngredientCursor] = useState(0);
+  const ingredientRef = useRef<HTMLTextAreaElement>(null);
+  const nameSuggestions = useMemo(
+    () => rankSuggestions(name, recipeNames).filter((suggestion) => normalize(suggestion) !== normalize(name)),
+    [name, recipeNames],
+  );
+  const ingredientQuery = ingredientSuggestionQuery(ingredients, ingredientCursor);
+  const ingredientSuggestions = useMemo(
+    () => rankSuggestions(ingredientQuery, ingredientNames).filter((suggestion) => normalize(suggestion) !== normalize(ingredientQuery)),
+    [ingredientNames, ingredientQuery],
+  );
+
+  function chooseIngredient(suggestion: string) {
+    const replacement = replaceActiveIngredient(ingredients, ingredientCursor, suggestion);
+    setIngredients(replacement.value);
+    setIngredientCursor(replacement.cursor);
+    setActiveField(null);
+    window.requestAnimationFrame(() => {
+      ingredientRef.current?.focus();
+      ingredientRef.current?.setSelectionRange(replacement.cursor, replacement.cursor);
+    });
+  }
+
   async function submit(event: FormEvent) {
     event.preventDefault();
     const parsedIngredients = ingredients.split(/\r?\n/).map(parseIngredient).filter((item): item is Ingredient => Boolean(item));
     if (!name.trim() || parsedIngredients.length === 0) { setError("Ingresá un nombre y al menos un ingrediente."); return; }
     setSaving(true);
     try {
-      await onSave({ name: name.trim(), description: description.trim(), category: category.trim(), ingredients: parsedIngredients, instructions: instructions.split(/\r?\n/).map((item) => item.trim()).filter(Boolean), nutrients: [] });
+      await onSave({
+        name: name.trim(),
+        description: description.trim(),
+        category: category.trim(),
+        ingredients: parsedIngredients,
+        instructions: instructions.split(/\r?\n/).map((item) => item.trim()).filter(Boolean),
+        nutrients: recipe?.nutrients ?? [],
+        durationMinutes: recipe?.durationMinutes,
+        servings: recipe?.servings,
+        image: recipe?.image,
+        sourceUrl: recipe?.sourceUrl,
+        favorite: recipe?.favorite ?? false,
+      });
     } catch (saveError) {
       setError(saveError instanceof Error ? saveError.message : "No se pudo guardar.");
       setSaving(false);
@@ -393,21 +568,25 @@ function RecipeForm({ mode, onClose, onSave }: { mode: Mode; onClose: () => void
   }
   return (
     <div className="modal-backdrop">
-      <section className="modal form" role="dialog" aria-modal="true" aria-labelledby="new-title">
+      <section className="modal form" role="dialog" aria-modal="true" aria-labelledby="recipe-form-title">
         <button className="modal-close" onClick={onClose} aria-label="Cerrar">×</button>
-        <p className="eyebrow">{mode === "offline" ? "Colección local" : "Base grupal"}</p><h2 id="new-title">Nueva receta</h2>
+        <p className="eyebrow">{mode === "offline" ? "Colección local" : "Base grupal"}</p><h2 id="recipe-form-title">{recipe ? "Editar receta" : "Nueva receta"}</h2>
         <form onSubmit={submit}>
-          <label>Nombre<input required value={name} onChange={(event) => setName(event.target.value)} /></label>
+          <label className="autocomplete-field">Nombre<input required value={name} onFocus={() => setActiveField("name")} onChange={(event) => { setName(event.target.value); setActiveField("name"); }} />{activeField === "name" && nameSuggestions.length > 0 && <SuggestionList suggestions={nameSuggestions} onChoose={(suggestion) => { setName(suggestion); setActiveField(null); }} />}</label>
           <label>Descripción<textarea value={description} onChange={(event) => setDescription(event.target.value)} /></label>
           <label>Categoría<input value={category} onChange={(event) => setCategory(event.target.value)} placeholder="Cena, desayuno…" /></label>
-          <label>Ingredientes, uno por línea<textarea required rows={7} value={ingredients} onChange={(event) => setIngredients(event.target.value)} placeholder="2 tazas harina" /></label>
+          <label className="autocomplete-field">Ingredientes: cada renglón se guarda por separado<textarea ref={ingredientRef} required rows={7} value={ingredients} onFocus={(event) => { setIngredientCursor(event.currentTarget.selectionStart); setActiveField("ingredients"); }} onClick={(event) => setIngredientCursor(event.currentTarget.selectionStart)} onKeyUp={(event) => setIngredientCursor(event.currentTarget.selectionStart)} onChange={(event) => { setIngredients(event.target.value); setIngredientCursor(event.target.selectionStart); setActiveField("ingredients"); }} placeholder={"2 tazas harina\n1 huevo\nSal"} />{activeField === "ingredients" && ingredientSuggestions.length > 0 && <SuggestionList suggestions={ingredientSuggestions} onChoose={chooseIngredient} />}</label>
           <label>Preparación, un paso por línea<textarea rows={7} value={instructions} onChange={(event) => setInstructions(event.target.value)} /></label>
           {error && <p className="error">{error}</p>}
-          <button className="primary" disabled={saving}>{saving ? "Guardando…" : "Guardar receta"}</button>
+          <div className="form-actions"><button type="submit" className="primary" disabled={saving}>{saving ? "Guardando…" : "Guardar"}</button><button type="button" className="secondary" disabled={saving} onClick={onClose}>Cancelar</button></div>
         </form>
       </section>
     </div>
   );
+}
+
+function SuggestionList({ suggestions, onChoose }: { suggestions: string[]; onChoose: (suggestion: string) => void }) {
+  return <div className="suggestions" role="listbox">{suggestions.slice(0, 5).map((suggestion) => <button type="button" role="option" aria-selected="false" key={suggestion} onMouseDown={(event) => event.preventDefault()} onClick={() => onChoose(suggestion)}>{suggestion}</button>)}</div>;
 }
 
 function Settings({ account, actor, invitations, mode, recipes, message, availableUpdate, onBack, onMode, onSignOut, onAcceptInvitation, onDeclineInvitation, onLeaveGroup, onInstallUpdate, onImport }: {

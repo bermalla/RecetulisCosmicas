@@ -43,6 +43,13 @@
       "when": 1786212858614,
       "tag": "0005_wooden_toxin",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1786225444278,
+      "tag": "0006_flaky_thunderbolt_ross",
+      "breakpoints": true
     }
   ]
 }

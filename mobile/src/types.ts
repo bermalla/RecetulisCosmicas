@@ -50,6 +50,7 @@ export type Recipe = {
   servings?: number | null;
   image?: string | null;
   sourceUrl?: string | null;
+  favorite?: boolean;
   ingredients: Ingredient[];
   version?: number;
   updatedAt?: string;

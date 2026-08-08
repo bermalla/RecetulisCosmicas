@@ -71,6 +71,26 @@ export async function createOnlineRecipe(recipe: Omit<Recipe, "id">) {
   if (!response.ok) throw new Error(data.error || "No se pudo guardar la receta.");
 }
 
+export async function updateOnlineRecipe(recipe: Recipe) {
+  const response = await authorizedFetch("/api/recipes", {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ recipe, baseVersion: recipe.version ?? 1 }),
+  });
+  const data = (await response.json()) as { recipe?: Recipe; error?: string };
+  if (!response.ok || !data.recipe) throw new Error(data.error || "No se pudo actualizar la receta.");
+  return data.recipe;
+}
+
+export async function deleteOnlineRecipe(recipe: Recipe) {
+  const query = new URLSearchParams({ id: recipe.id, version: String(recipe.version ?? 1) });
+  const response = await authorizedFetch(`/api/recipes?${query.toString()}`, {
+    method: "DELETE",
+  });
+  const data = (await response.json()) as { deleted?: string; error?: string };
+  if (!response.ok) throw new Error(data.error || "No se pudo borrar la receta.");
+}
+
 export async function readGroupAccess(): Promise<{ members: GroupMember[]; invites: GroupInvite[] }> {
   const response = await authorizedFetch("/api/group/members", { cache: "no-store" });
   const data = (await response.json()) as { members?: GroupMember[]; invites?: GroupInvite[]; error?: string };

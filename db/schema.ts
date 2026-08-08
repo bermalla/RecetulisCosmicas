@@ -65,6 +65,7 @@ export const recipes = sqliteTable("recipes", {
   servings: integer("servings"),
   image: text("image"),
   sourceUrl: text("source_url"),
+  favorite: integer("favorite", { mode: "boolean" }).notNull().default(false),
   version: integer("version").notNull().default(1),
   createdBy: text("created_by"),
   updatedBy: text("updated_by"),

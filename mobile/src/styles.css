@@ -30,6 +30,8 @@ input:focus, textarea:focus, select:focus { border-color: #8c4a5a; box-shadow: 0
 .library { padding: 24px 18px 50px; border-radius: 28px 28px 0 0; background: rgba(255,252,245,.74); }
 .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 16px; }
 .search { margin: 18px 0 12px; }
+.favorite-filter { margin: 0 0 18px; display: flex; align-items: center; gap: 10px; color: #633146; font-weight: 750; }
+.favorite-filter input { width: 20px; height: 20px; accent-color: #8c4a5a; }
 .recipe-list { display: grid; gap: 10px; }
 .recipe-card { width: 100%; border: 1px solid rgba(83,35,51,.1); border-radius: 20px; padding: 17px; display: flex; align-items: center; justify-content: space-between; gap: 16px; text-align: left; color: inherit; background: rgba(255,255,255,.85); box-shadow: 0 10px 30px rgba(83,35,51,.05); }
 .recipe-card span { color: #8c4a5a; font-size: 12px; font-weight: 800; text-transform: uppercase; }
@@ -45,8 +47,11 @@ input:focus, textarea:focus, select:focus { border-color: #8c4a5a; box-shadow: 0
 .error { padding: 12px; border-radius: 12px; color: #8c243d !important; background: #f7dcdf; }
 .modal-backdrop { position: fixed; inset: 0; z-index: 30; padding: calc(18px + env(safe-area-inset-top)) 12px calc(12px + env(safe-area-inset-bottom)); display: flex; align-items: flex-end; background: rgba(33,20,24,.56); }
 .modal { position: relative; width: 100%; max-height: 93vh; overflow: auto; padding: 28px 22px 34px; border-radius: 28px 28px 18px 18px; background: #fffaf0; box-shadow: 0 24px 80px rgba(0,0,0,.22); }
-.modal h2 { padding-right: 42px; font-size: 40px; }
+.modal h2 { padding-right: 92px; font-size: 40px; }
 .modal-close { position: absolute; top: 16px; right: 16px; width: 42px; height: 42px; border: 0; border-radius: 50%; color: #6f2b3d; background: #eadbd1; font-size: 28px; }
+.favorite-star { position: absolute; top: 16px; right: 66px; width: 42px; height: 42px; border: 0; border-radius: 50%; color: #8c4a5a; background: #f2e3d7; font-size: 27px; line-height: 1; }
+.favorite-star.selected { color: #b06f13; background: #f8e8b8; }
+.favorite-star:disabled { opacity: .55; }
 .description { color: #73666a; line-height: 1.6; }
 .detail section { margin-top: 28px; }
 .detail section h3 { font-family: Georgia, serif; color: #532333; font-size: 25px; }
@@ -55,8 +60,15 @@ input:focus, textarea:focus, select:focus { border-color: #8c4a5a; box-shadow: 0
 .detail ul { padding: 0; list-style: none; }
 .detail ul li { display: flex; gap: 10px; }
 .detail li.available { color: #267255; }
+.detail-actions { padding-top: 22px; display: grid; gap: 10px; border-top: 1px solid rgba(83,35,51,.12); }
+.detail-actions button { width: 100%; }
 .form form { display: grid; gap: 14px; }
 .form label { display: grid; gap: 7px; font-weight: 750; }
+.form-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.autocomplete-field { position: relative; }
+.suggestions { position: relative; z-index: 2; margin-top: -3px; padding: 6px; display: grid; gap: 3px; border: 1px solid rgba(83,35,51,.16); border-radius: 14px; background: #fffdf8; box-shadow: 0 14px 30px rgba(83,35,51,.12); }
+.suggestions button { border: 0; border-radius: 10px; padding: 10px 12px; text-align: left; color: #532333; background: transparent; }
+.suggestions button:active { background: #eadbd1; }
 .settings { padding: 16px 16px calc(42px + env(safe-area-inset-bottom)); }
 .settings .topbar { margin: -16px -16px 18px; }
 .settings-card { margin: 12px 0; padding: 22px; border-radius: 22px; background: rgba(255,252,245,.9); box-shadow: 0 12px 35px rgba(83,35,51,.06); }
