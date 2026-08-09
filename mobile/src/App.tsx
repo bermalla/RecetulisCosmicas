@@ -21,6 +21,7 @@ import {
 } from "./api";
 import { groupScope, LOCAL_SCOPE, putRecipe, readRecipes, removeRecipe, replaceRecipes } from "./storage";
 import { filterRecipesByPantry, ingredientMatchesPantry } from "./recipe-filter";
+import { filterRecipesByCategory, recipeCategoryOptions } from "./recipe-category";
 import { ingredientSuggestionQuery, rankIngredientSuggestions, rankSuggestions, replaceActiveIngredient } from "./autocomplete";
 import type { Account, Actor, AuthSession, GroupInvitation, Ingredient, Mode, Recipe } from "./types";
 import { checkForUpdate, installUpdate, type MobileRelease } from "./updater";
@@ -66,6 +67,7 @@ export default function App() {
   const [pantry, setPantry] = useState<string[]>([]);
   const [pantryInput, setPantryInput] = useState("");
   const [favoritesOnly, setFavoritesOnly] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [message, setMessage] = useState("");
   const [syncing, setSyncing] = useState(false);
   const [availableUpdate, setAvailableUpdate] = useState<MobileRelease | null>(null);
@@ -224,6 +226,7 @@ export default function App() {
     setPantry([]);
     setPantryInput("");
     setFavoritesOnly(false);
+    setSelectedCategory("");
     setStatus("signed-out");
     setScreen("home");
   }
@@ -236,6 +239,7 @@ export default function App() {
     setPantry([]);
     setPantryInput("");
     setFavoritesOnly(false);
+    setSelectedCategory("");
     setScreen("home");
     setStatus("loading");
   }
@@ -270,17 +274,18 @@ export default function App() {
 
   const visibleRecipes = useMemo(() => {
     const cleanQuery = normalize(query);
-    return filterRecipesByPantry(recipes, pantry)
+    return filterRecipesByCategory(filterRecipesByPantry(recipes, pantry), selectedCategory)
       .filter((recipe) => !favoritesOnly || Boolean(recipe.favorite))
       .filter((recipe) => !cleanQuery || normalize(recipe.name).includes(cleanQuery))
       .sort((a, b) => a.name.localeCompare(b.name, "es"));
-  }, [favoritesOnly, pantry, query, recipes]);
+  }, [favoritesOnly, pantry, query, recipes, selectedCategory]);
 
   const recipeNameCandidates = useMemo(() => recipes.map((recipe) => recipe.name), [recipes]);
   const ingredientCandidates = useMemo(
     () => recipes.flatMap((recipe) => recipe.ingredients.map((ingredient) => ingredient.name)),
     [recipes],
   );
+  const categoryOptions = useMemo(() => recipeCategoryOptions(recipes), [recipes]);
   const pantrySuggestions = useMemo(
     () => rankIngredientSuggestions(pantryInput, pantryInput.length, ingredientCandidates)
       .filter((suggestion) => !pantry.some((item) => normalize(item) === normalize(suggestion))),
@@ -452,6 +457,13 @@ export default function App() {
           <button className="primary compact" disabled={!canModifyRecipes} onClick={() => { overlayRef.current.add = true; setShowAdd(true); }}>+ Receta</button>
         </div>
         <input className="search" type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Buscar receta" />
+        <label className="category-filter">
+          <span>Tipo de receta</span>
+          <select value={selectedCategory} onChange={(event) => setSelectedCategory(event.target.value)}>
+            <option value="">Todas las categorías</option>
+            {categoryOptions.map((option) => <option key={option.value} value={option.value}>{option.label} ({option.count})</option>)}
+          </select>
+        </label>
         <label className="favorite-filter"><input type="checkbox" checked={favoritesOnly} onChange={(event) => setFavoritesOnly(event.target.checked)} /><span>Mostrar sólo favoritas</span></label>
         {syncing && <p className="notice">Sincronizando…</p>}
         {message && <p className="notice">{message}</p>}

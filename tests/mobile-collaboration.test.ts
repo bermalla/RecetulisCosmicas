@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 import { DatabaseSync } from "node:sqlite";
 import { filterRecipesByPantry, ingredientMatchesPantry } from "../mobile/src/recipe-filter.ts";
+import { filterRecipesByCategory, recipeCategoryOptions } from "../mobile/src/recipe-category.ts";
 import {
   ingredientSuggestionQuery,
   rankIngredientSuggestions,
@@ -42,6 +43,20 @@ test("filters Android recipes by pantry ingredients", () => {
 test("keeps derived products distinct in the Android filter", () => {
   assert.equal(ingredientMatchesPantry({ name: "aceite de coco" }, "coco"), false);
   assert.equal(ingredientMatchesPantry({ name: "aceite de coco" }, "aceite de coco"), true);
+});
+
+test("filters Android recipes by category and lists only available categories", () => {
+  const dessert: Recipe = { ...recipes[0], id: "dessert", category: "Postre" };
+  const main: Recipe = { ...recipes[1], id: "main", category: "Plato principal" };
+  const secondDessert: Recipe = { ...recipes[1], id: "dessert-2", category: "postre" };
+  const collection = [dessert, main, secondDessert];
+
+  assert.deepEqual(filterRecipesByCategory(collection, "POSTRE"), [dessert, secondDessert]);
+  assert.deepEqual(filterRecipesByCategory(collection, ""), collection);
+  assert.deepEqual(recipeCategoryOptions(collection), [
+    { value: "plato principal", label: "Plato principal", count: 1 },
+    { value: "postre", label: "Postre", count: 2 },
+  ]);
 });
 
 test("isolates Android caches and cursors by group", () => {

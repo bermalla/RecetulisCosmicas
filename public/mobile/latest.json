@@ -1,7 +1,7 @@
 {
-  "versionCode": 7,
-  "versionName": "1.0.6",
-  "apkUrl": "https://mi-recetario.bermalla.chatgpt.site/mobile/recetulis-cosmicas-1.0.6.apk",
-  "sha256": "3ede64a549d6f6c168fdcdec926747158ff1afea4c44db2c865e087ff84bc00e",
-  "notes": "Agrega predicción de ingredientes en filtros y recetas, priorizada por coincidencia, frecuencia y simplicidad."
+  "versionCode": 8,
+  "versionName": "1.0.7",
+  "apkUrl": "https://mi-recetario.bermalla.chatgpt.site/mobile/recetulis-cosmicas-1.0.7.apk",
+  "sha256": "d03ba282f46d50d8dd95c40534d8939a5f1ddec39db2fb4febaa695e642f241a",
+  "notes": "Recupera el filtro por tipo de receta y permite combinarlo con ingredientes, búsqueda y favoritos."
 }
