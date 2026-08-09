@@ -1,9 +1,11 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 import { DatabaseSync } from "node:sqlite";
 import { filterRecipesByPantry, ingredientMatchesPantry } from "../mobile/src/recipe-filter.ts";
 import {
   ingredientSuggestionQuery,
+  rankIngredientSuggestions,
   rankSuggestions,
   replaceActiveIngredient,
 } from "../mobile/src/autocomplete.ts";
@@ -99,6 +101,22 @@ test("ingredient autocomplete only replaces the active line and keeps its amount
   assert.equal(ingredientSuggestionQuery(source, cursor), "hari");
   const replacement = replaceActiveIngredient(source, cursor, "harina integral");
   assert.equal(replacement.value, "2 tazas harina integral\n1 huevo");
+});
+
+test("ingredient autocomplete understands common quantities and units", () => {
+  const candidates = ["harina integral", "huevo", "aceite de oliva", "ajo"];
+  const source = "2 cucharadas de hari";
+  assert.equal(ingredientSuggestionQuery(source, source.length), "hari");
+  assert.deepEqual(rankIngredientSuggestions(source, source.length, candidates), ["harina integral"]);
+
+  const impreciseUnit = "un poco de acei";
+  assert.ok(rankIngredientSuggestions(impreciseUnit, impreciseUnit.length, candidates).includes("aceite de oliva"));
+});
+
+test("Android native back handling remains enabled", () => {
+  const config = readFileSync(new URL("../mobile/capacitor.config.ts", import.meta.url), "utf8");
+  assert.match(config, /disableBackButtonHandler:\s*false/);
+  assert.doesNotMatch(config, /disableBackButtonHandler:\s*true/);
 });
 
 test("recipe edits reject a stale shared version", () => {

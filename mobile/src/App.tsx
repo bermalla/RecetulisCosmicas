@@ -21,7 +21,7 @@ import {
 } from "./api";
 import { groupScope, LOCAL_SCOPE, putRecipe, readRecipes, removeRecipe, replaceRecipes } from "./storage";
 import { filterRecipesByPantry, ingredientMatchesPantry } from "./recipe-filter";
-import { ingredientSuggestionQuery, rankSuggestions, replaceActiveIngredient } from "./autocomplete";
+import { ingredientSuggestionQuery, rankIngredientSuggestions, rankSuggestions, replaceActiveIngredient } from "./autocomplete";
 import type { Account, Actor, AuthSession, GroupInvitation, Ingredient, Mode, Recipe } from "./types";
 import { checkForUpdate, installUpdate, type MobileRelease } from "./updater";
 
@@ -169,19 +169,27 @@ export default function App() {
 
   useEffect(() => {
     if (!Capacitor.isNativePlatform()) return;
+    let cancelled = false;
     let handle: { remove: () => Promise<void> } | undefined;
-    void NativeApp.addListener("backButton", async () => {
-      const overlay = overlayRef.current;
-      if (overlay.editing) { overlayRef.current.editing = false; setEditingRecipe(null); return; }
-      if (overlay.selected) { overlayRef.current.selected = false; setSelectedRecipe(null); return; }
-      if (overlay.add) { overlayRef.current.add = false; setShowAdd(false); return; }
-      if (overlay.screen !== "home") { overlayRef.current.screen = "home"; setScreen("home"); return; }
-      if (window.confirm("¿Querés salir de Recetulis Cósmicas?")) await NativeApp.exitApp();
-    }).then((listener) => { handle = listener; });
     let resumeHandle: { remove: () => Promise<void> } | undefined;
-    void NativeApp.addListener("resume", () => { void refreshRef.current(false); })
-      .then((listener) => { resumeHandle = listener; });
-    return () => { void handle?.remove(); void resumeHandle?.remove(); };
+    void (async () => {
+      await NativeApp.toggleBackButtonHandler({ enabled: true });
+      const backListener = await NativeApp.addListener("backButton", async () => {
+        const overlay = overlayRef.current;
+        if (overlay.editing) { overlayRef.current.editing = false; setEditingRecipe(null); return; }
+        if (overlay.selected) { overlayRef.current.selected = false; setSelectedRecipe(null); return; }
+        if (overlay.add) { overlayRef.current.add = false; setShowAdd(false); return; }
+        if (overlay.screen !== "home") { overlayRef.current.screen = "home"; setScreen("home"); return; }
+        if (window.confirm("¿Querés salir de Recetulis Cósmicas?")) await NativeApp.exitApp();
+      });
+      if (cancelled) await backListener.remove();
+      else handle = backListener;
+
+      const foregroundListener = await NativeApp.addListener("resume", () => { void refreshRef.current(false); });
+      if (cancelled) await foregroundListener.remove();
+      else resumeHandle = foregroundListener;
+    })();
+    return () => { cancelled = true; void handle?.remove(); void resumeHandle?.remove(); };
   }, []);
 
   useEffect(() => {
@@ -527,8 +535,9 @@ function RecipeForm({ mode, recipe, recipeNames, ingredientNames, onClose, onSav
   );
   const ingredientQuery = ingredientSuggestionQuery(ingredients, ingredientCursor);
   const ingredientSuggestions = useMemo(
-    () => rankSuggestions(ingredientQuery, ingredientNames).filter((suggestion) => normalize(suggestion) !== normalize(ingredientQuery)),
-    [ingredientNames, ingredientQuery],
+    () => rankIngredientSuggestions(ingredients, ingredientCursor, ingredientNames)
+      .filter((suggestion) => normalize(suggestion) !== normalize(ingredientQuery)),
+    [ingredientCursor, ingredientNames, ingredientQuery, ingredients],
   );
 
   function chooseIngredient(suggestion: string) {

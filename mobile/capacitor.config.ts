@@ -6,7 +6,7 @@ const config: CapacitorConfig = {
   webDir: "dist",
   server: { androidScheme: "https" },
   plugins: {
-    App: { disableBackButtonHandler: true },
+    App: { disableBackButtonHandler: false },
     CapacitorHttp: { enabled: true },
     FirebaseAuthentication: { skipNativeAuth: false, providers: ["google.com"] },
   },

@@ -59,10 +59,33 @@ function activeLine(text: string, cursor: number) {
   return { start, end, value: text.slice(start, end) };
 }
 
-const INGREDIENT_PREFIX = /^(\s*(?:[-•]\s*)?(?:(?:\d+(?:[.,]\d+)?|\d+\s*\/\s*\d+)\s*)?(?:(?:g|kg|ml|l|taza(?:s)?|cda(?:s)?|cdta(?:s)?|unidad(?:es)?)\s+)?)/i;
+const INGREDIENT_PREFIX = /^(\s*(?:[-•]\s*)?(?:(?:\d+(?:[.,]\d+)?(?:\s*\/\s*\d+)?)\s*)?(?:(?:g|gr|gramos?|kg|kilos?|ml|mililitros?|l|litros?|tazas?|cucharadas?|cucharaditas?|cdas?|cdtas?|unidades?|pizcas?|paquetes?|latas?|dientes?|ramas?)\s+(?:de\s+)?)?)/i;
 
 export function ingredientSuggestionQuery(text: string, cursor: number) {
   return activeLine(text, cursor).value.replace(INGREDIENT_PREFIX, "").trim();
+}
+
+export function rankIngredientSuggestions(text: string, cursor: number, candidates: string[], limit = 5) {
+  const query = ingredientSuggestionQuery(text, cursor);
+  if (!query) return [];
+  const words = query.split(/\s+/).filter(Boolean);
+  const queries = [query];
+  if (words.length > 2) queries.push(words.slice(-2).join(" "));
+  if (words.length > 1) queries.push(words.at(-1) ?? "");
+
+  const suggestions: string[] = [];
+  const seen = new Set<string>();
+  for (const partial of queries) {
+    for (const suggestion of rankSuggestions(partial, candidates, limit)) {
+      const key = normalize(suggestion);
+      if (!seen.has(key)) {
+        seen.add(key);
+        suggestions.push(suggestion);
+      }
+      if (suggestions.length >= limit) return suggestions;
+    }
+  }
+  return suggestions;
 }
 
 export function replaceActiveIngredient(text: string, cursor: number, suggestion: string) {
