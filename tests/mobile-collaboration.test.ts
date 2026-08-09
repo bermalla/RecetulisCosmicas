@@ -107,10 +107,46 @@ test("ingredient autocomplete understands common quantities and units", () => {
   const candidates = ["harina integral", "huevo", "aceite de oliva", "ajo"];
   const source = "2 cucharadas de hari";
   assert.equal(ingredientSuggestionQuery(source, source.length), "hari");
-  assert.deepEqual(rankIngredientSuggestions(source, source.length, candidates), ["harina integral"]);
+  assert.deepEqual(rankIngredientSuggestions(source, source.length, candidates), ["harina", "harina integral"]);
 
   const impreciseUnit = "un poco de acei";
   assert.ok(rankIngredientSuggestions(impreciseUnit, impreciseUnit.length, candidates).includes("aceite de oliva"));
+});
+
+test("ingredient autocomplete ranks basic and frequent ingredients before variants", () => {
+  const candidates = [
+    "cebolla de verdeo",
+    "cebolla",
+    "cebolla morada",
+    "cebolla",
+    "cebolla de verdeo",
+    "cebolla caramelizada",
+  ];
+  const suggestions = rankIngredientSuggestions("cebo", 4, candidates);
+  assert.equal(suggestions.length, 4);
+  assert.deepEqual(suggestions.slice(0, 2), ["cebolla", "cebolla de verdeo"]);
+  assert.ok(suggestions.length <= 5);
+});
+
+test("ingredient autocomplete derives a basic suggestion from complex ingredients", () => {
+  const candidates = ["aceite de oliva extra virgen", "aceite de coco"];
+  assert.deepEqual(
+    rankIngredientSuggestions("acei", 4, candidates),
+    ["aceite", "aceite de coco", "aceite de oliva extra virgen"],
+  );
+});
+
+test("ingredient autocomplete never returns more than five ranked candidates", () => {
+  const candidates = [
+    "cebolla",
+    "cebolla de verdeo",
+    "cebolla morada",
+    "cebolla blanca",
+    "cebolla caramelizada",
+    "cebolla deshidratada",
+    "cebollín",
+  ];
+  assert.equal(rankIngredientSuggestions("cebo", 4, candidates).length, 5);
 });
 
 test("Android native back handling remains enabled", () => {

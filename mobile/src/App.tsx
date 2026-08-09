@@ -240,8 +240,8 @@ export default function App() {
     setStatus("loading");
   }
 
-  function addPantry() {
-    const value = pantryInput.trim();
+  function addPantry(suggestion = pantryInput) {
+    const value = suggestion.trim();
     if (!value || pantry.some((item) => normalize(item) === normalize(value))) return;
     setPantry((current) => [...current, value]);
     setPantryInput("");
@@ -280,6 +280,11 @@ export default function App() {
   const ingredientCandidates = useMemo(
     () => recipes.flatMap((recipe) => recipe.ingredients.map((ingredient) => ingredient.name)),
     [recipes],
+  );
+  const pantrySuggestions = useMemo(
+    () => rankIngredientSuggestions(pantryInput, pantryInput.length, ingredientCandidates)
+      .filter((suggestion) => !pantry.some((item) => normalize(item) === normalize(suggestion))),
+    [ingredientCandidates, pantry, pantryInput],
   );
   const canModifyRecipes = mode === "offline" || actor?.role === "owner" || actor?.role === "editor";
 
@@ -431,9 +436,12 @@ export default function App() {
       <section className="hero">
         <p className="eyebrow">{mode === "offline" ? "Colección local" : actor?.groupName}</p>
         <h1>¿Qué cocinamos?</h1>
-        <div className="pantry-input">
-          <input value={pantryInput} onChange={(event) => setPantryInput(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") addPantry(); }} placeholder="Sumá un ingrediente" />
-          <button className="primary" onClick={addPantry}>Agregar</button>
+        <div className="pantry-autocomplete">
+          <div className="pantry-input">
+            <input value={pantryInput} onChange={(event) => setPantryInput(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") addPantry(); }} placeholder="Sumá un ingrediente" />
+            <button className="primary" onClick={() => addPantry()}>Agregar</button>
+          </div>
+          {pantrySuggestions.length > 0 && <SuggestionList suggestions={pantrySuggestions} onChoose={addPantry} />}
         </div>
         {pantry.length > 0 && <div className="chips">{pantry.map((item) => <button key={item} onClick={() => setPantry((current) => current.filter((value) => value !== item))}>{item} ×</button>)}</div>}
       </section>
