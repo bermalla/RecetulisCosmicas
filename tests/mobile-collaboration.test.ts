@@ -4,6 +4,7 @@ import test from "node:test";
 import { DatabaseSync } from "node:sqlite";
 import { filterRecipesByPantry, ingredientMatchesPantry } from "../mobile/src/recipe-filter.ts";
 import { filterRecipesByCategory, recipeCategoryOptions } from "../mobile/src/recipe-category.ts";
+import { mergeLocalRecipeImport, parseRecipeImport } from "../mobile/src/recipe-import.ts";
 import {
   ingredientSuggestionQuery,
   rankIngredientSuggestions,
@@ -57,6 +58,35 @@ test("filters Android recipes by category and lists only available categories", 
     { value: "plato principal", label: "Plato principal", count: 1 },
     { value: "postre", label: "Postre", count: 2 },
   ]);
+});
+
+test("parses recipe JSON exports and simple generated ingredient lists", () => {
+  const imported = parseRecipeImport(JSON.stringify({ recipes: [{
+    name: "Tarta de cebolla",
+    category: "Plato principal",
+    ingredients: ["cebolla", { name: "harina", quantity: 200, unit: "g" }],
+    instructions: "Picar la cebolla\nHornear",
+  }] }));
+  assert.equal(imported[0].name, "Tarta de cebolla");
+  assert.deepEqual(imported[0].ingredients, [
+    { name: "cebolla" },
+    { name: "harina", normalizedName: undefined, quantity: "200", unit: "g", optional: false },
+  ]);
+  assert.deepEqual(imported[0].instructions, ["Picar la cebolla", "Hornear"]);
+});
+
+test("local JSON import adds recipes and skips duplicate names", () => {
+  const incoming = [
+    { ...recipes[0], id: "external-1", name: "Sopa de lentejas" },
+    { ...recipes[1], id: "external-2", name: "Tarta nueva" },
+    { ...recipes[1], id: "external-3", name: "tarta NUEVA" },
+  ];
+  const merged = mergeLocalRecipeImport([recipes[0]], incoming, () => "new-id", "2026-08-09T00:00:00.000Z");
+  assert.equal(merged.imported, 1);
+  assert.equal(merged.skipped, 2);
+  assert.equal(merged.recipes.length, 2);
+  assert.equal(merged.recipes[1].id, "new-id");
+  assert.equal(merged.recipes[1].localOnly, true);
 });
 
 test("isolates Android caches and cursors by group", () => {

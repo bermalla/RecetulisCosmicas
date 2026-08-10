@@ -71,6 +71,17 @@ export async function createOnlineRecipe(recipe: Omit<Recipe, "id">) {
   if (!response.ok) throw new Error(data.error || "No se pudo guardar la receta.");
 }
 
+export async function importOnlineRecipes(recipes: Recipe[]) {
+  const response = await authorizedFetch("/api/recipes", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ recipes, skipDuplicates: true }),
+  });
+  const data = (await response.json()) as { imported?: number; skipped?: number; error?: string };
+  if (!response.ok) throw new Error(data.error || "No se pudieron importar las recetas.");
+  return { imported: Number(data.imported ?? 0), skipped: Number(data.skipped ?? 0) };
+}
+
 export async function updateOnlineRecipe(recipe: Recipe) {
   const response = await authorizedFetch("/api/recipes", {
     method: "PUT",

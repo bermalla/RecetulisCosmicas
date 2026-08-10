@@ -10,6 +10,7 @@ import {
   deleteOnlineRecipe,
   declineGroupInvitation,
   inviteGroupMember,
+  importOnlineRecipes,
   leaveCurrentGroup,
   readGroupAccess,
   removeGroupAccess,
@@ -22,6 +23,7 @@ import {
 import { groupScope, LOCAL_SCOPE, putRecipe, readRecipes, removeRecipe, replaceRecipes } from "./storage";
 import { filterRecipesByPantry, ingredientMatchesPantry } from "./recipe-filter";
 import { filterRecipesByCategory, recipeCategoryOptions } from "./recipe-category";
+import { mergeLocalRecipeImport, parseRecipeImport } from "./recipe-import";
 import { ingredientSuggestionQuery, rankIngredientSuggestions, rankSuggestions, replaceActiveIngredient } from "./autocomplete";
 import type { Account, Actor, AuthSession, GroupInvitation, Ingredient, Mode, Recipe } from "./types";
 import { checkForUpdate, installUpdate, type MobileRelease } from "./updater";
@@ -71,6 +73,8 @@ export default function App() {
   const [message, setMessage] = useState("");
   const [syncing, setSyncing] = useState(false);
   const [availableUpdate, setAvailableUpdate] = useState<MobileRelease | null>(null);
+  const [checkingUpdate, setCheckingUpdate] = useState(false);
+  const [updateCheckError, setUpdateCheckError] = useState(false);
   const [pullDistance, setPullDistance] = useState(0);
 
   const overlayRef = useRef({ selected: false, editing: false, add: false, screen: "home" as Screen });
@@ -199,8 +203,18 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    void checkForUpdate().then(setAvailableUpdate).catch(() => null);
-  }, []);
+    if (status !== "ready" || (screen !== "settings" && !(mode === "online" && !actor))) return;
+    let active = true;
+    const timeout = window.setTimeout(() => {
+      setCheckingUpdate(true);
+      setUpdateCheckError(false);
+      void checkForUpdate()
+        .then((release) => { if (active) setAvailableUpdate(release); })
+        .catch(() => { if (active) setUpdateCheckError(true); })
+        .finally(() => { if (active) setCheckingUpdate(false); });
+    }, 0);
+    return () => { active = false; window.clearTimeout(timeout); };
+  }, [actor, mode, screen, status]);
 
   async function signIn() {
     setStatus("loading");
@@ -392,6 +406,8 @@ export default function App() {
         recipes={recipes}
         message={message}
         availableUpdate={availableUpdate}
+        checkingUpdate={checkingUpdate}
+        updateCheckError={updateCheckError}
         onBack={() => { overlayRef.current.screen = "home"; setScreen("home"); }}
         onMode={changeMode}
         onSignOut={signOut}
@@ -418,11 +434,17 @@ export default function App() {
           catch (error) { setMessage(error instanceof Error ? error.message : "No se pudo iniciar la actualización."); }
         }}
         onImport={async (incoming) => {
-          const scope = LOCAL_SCOPE;
-          if (mode === "online") throw new Error("Importá a la base grupal desde la web para conservar la revisión de duplicados.");
-          await replaceRecipes(scope, incoming.map((recipe) => ({ ...recipe, id: recipe.id || crypto.randomUUID(), localOnly: true })));
-          await loadLocal(scope);
-          setMessage("Respaldo importado en la colección local.");
+          if (mode === "online") {
+            if (!actor) throw new Error("Necesitás pertenecer a una colección para importar.");
+            const result = await importOnlineRecipes(incoming);
+            await refreshOnline(actor.groupId, true);
+            setMessage(`${result.imported} recetas importadas${result.skipped ? `; ${result.skipped} duplicadas omitidas` : ""}.`);
+            return;
+          }
+          const result = mergeLocalRecipeImport(recipes, incoming, () => crypto.randomUUID());
+          await replaceRecipes(LOCAL_SCOPE, result.recipes);
+          await loadLocal(LOCAL_SCOPE);
+          setMessage(`${result.imported} recetas importadas${result.skipped ? `; ${result.skipped} duplicadas omitidas` : ""}.`);
         }}
       />
     );
@@ -618,8 +640,8 @@ function SuggestionList({ suggestions, onChoose }: { suggestions: string[]; onCh
   return <div className="suggestions" role="listbox">{suggestions.slice(0, 5).map((suggestion) => <button type="button" role="option" aria-selected="false" key={suggestion} onMouseDown={(event) => event.preventDefault()} onClick={() => onChoose(suggestion)}>{suggestion}</button>)}</div>;
 }
 
-function Settings({ account, actor, invitations, mode, recipes, message, availableUpdate, onBack, onMode, onSignOut, onAcceptInvitation, onDeclineInvitation, onLeaveGroup, onInstallUpdate, onImport }: {
-  account: Account | null; actor: Actor | null; invitations: GroupInvitation[]; mode: Mode; recipes: Recipe[]; message: string; availableUpdate: MobileRelease | null; onBack: () => void; onMode: (mode: Mode) => Promise<void>; onSignOut: () => Promise<void>; onAcceptInvitation: (groupId: string) => Promise<void>; onDeclineInvitation: (groupId: string) => Promise<void>; onLeaveGroup: () => Promise<void>; onInstallUpdate: () => Promise<void>; onImport: (recipes: Recipe[]) => Promise<void>;
+function Settings({ account, actor, invitations, mode, recipes, message, availableUpdate, checkingUpdate, updateCheckError, onBack, onMode, onSignOut, onAcceptInvitation, onDeclineInvitation, onLeaveGroup, onInstallUpdate, onImport }: {
+  account: Account | null; actor: Actor | null; invitations: GroupInvitation[]; mode: Mode; recipes: Recipe[]; message: string; availableUpdate: MobileRelease | null; checkingUpdate: boolean; updateCheckError: boolean; onBack: () => void; onMode: (mode: Mode) => Promise<void>; onSignOut: () => Promise<void>; onAcceptInvitation: (groupId: string) => Promise<void>; onDeclineInvitation: (groupId: string) => Promise<void>; onLeaveGroup: () => Promise<void>; onInstallUpdate: () => Promise<void>; onImport: (recipes: Recipe[]) => Promise<void>;
 }) {
   const fileInput = useRef<HTMLInputElement>(null);
   const [members, setMembers] = useState<GroupMember[]>([]);
@@ -629,6 +651,8 @@ function Settings({ account, actor, invitations, mode, recipes, message, availab
   const [accessMessage, setAccessMessage] = useState("");
   const [loadingAccess, setLoadingAccess] = useState(false);
   const [savingAccess, setSavingAccess] = useState(false);
+  const [importing, setImporting] = useState(false);
+  const canImport = mode === "offline" || actor?.role === "owner" || actor?.role === "editor";
 
   const loadAccess = useCallback(async () => {
     if (mode !== "online" || actor?.role !== "owner") return;
@@ -707,14 +731,11 @@ function Settings({ account, actor, invitations, mode, recipes, message, availab
   async function importFile(file?: File) {
     if (!file) return;
     if (file.size > 2_000_000) throw new Error("El respaldo supera el máximo de 2 MB.");
-    const payload = JSON.parse(await file.text()) as { recipes?: Recipe[] } | Recipe[];
-    const incoming = Array.isArray(payload) ? payload : payload.recipes;
-    if (!Array.isArray(incoming)) throw new Error("El archivo no contiene recetas.");
-    if (incoming.length > 500) throw new Error("El respaldo supera las 500 recetas.");
-    if (incoming.some((recipe) => !recipe || typeof recipe.name !== "string" || !Array.isArray(recipe.ingredients))) {
-      throw new Error("El respaldo contiene recetas con un formato inválido.");
-    }
-    await onImport(incoming);
+    const incoming = parseRecipeImport(await file.text());
+    if (!window.confirm(`¿Sumar ${incoming.length} recetas a la colección actual? Las duplicadas se omitirán.`)) return;
+    setImporting(true);
+    try { await onImport(incoming); }
+    finally { setImporting(false); }
   }
   return (
     <main className="app-shell settings">
@@ -772,8 +793,8 @@ function Settings({ account, actor, invitations, mode, recipes, message, availab
       {mode === "online" && actor && actor.role !== "owner" && (
         <section className="settings-card"><p className="eyebrow">Pertenencia</p><h2>Salir de esta colección</h2><p>La copia local queda guardada, pero dejarás de recibir cambios y podrás aceptar otra invitación.</p><button className="danger" disabled={savingAccess} onClick={() => { if (window.confirm(`¿Salir de ${actor.groupName}?`)) void runMembershipAction(onLeaveGroup); }}>Salir del grupo</button></section>
       )}
-      <section className="settings-card"><p className="eyebrow">Respaldo</p><h2>Copias de emergencia</h2><button className="primary" onClick={() => void exportData().catch((error) => alert(error.message))}>Exportar JSON</button>{mode === "offline" && <><button className="secondary" onClick={() => fileInput.current?.click()}>Importar JSON local</button><input ref={fileInput} hidden type="file" accept="application/json,.json" onChange={(event) => void importFile(event.target.files?.[0]).catch((error) => alert(error.message))} /></>}</section>
-      {availableUpdate && <section className="settings-card"><p className="eyebrow">Actualización disponible</p><h2>Versión {availableUpdate.versionName}</h2><p>{availableUpdate.notes || "Incluye mejoras y correcciones."}</p><button className="primary" onClick={() => void onInstallUpdate()}>Descargar e instalar</button></section>}
+      <section className="settings-card"><p className="eyebrow">Respaldo</p><h2>Copias de emergencia</h2><button className="primary" onClick={() => void exportData().catch((error) => alert(error.message))}>Exportar JSON</button><button className="secondary" disabled={!canImport || importing} onClick={() => fileInput.current?.click()}>{importing ? "Importando…" : "Importar JSON"}</button><input ref={fileInput} hidden type="file" accept="application/json,.json" onChange={(event) => { const file = event.target.files?.[0]; event.currentTarget.value = ""; void importFile(file).catch((error) => alert(error.message)); }} />{!canImport && <small>Necesitás permiso de edición para importar en esta colección.</small>}</section>
+      <section className="settings-card"><p className="eyebrow">Actualizaciones</p>{checkingUpdate ? <><h2>Buscando una nueva versión…</h2><p>Esta revisión se realiza cada vez que entrás a Ajustes.</p></> : availableUpdate ? <><h2>Versión {availableUpdate.versionName} disponible</h2><p>{availableUpdate.notes || "Incluye mejoras y correcciones."}</p><button className="primary" onClick={() => void onInstallUpdate()}>Descargar e instalar</button></> : updateCheckError ? <><h2>No se pudo revisar ahora</h2><p>Comprobá la conexión y volvé a entrar a Ajustes.</p></> : <><h2>La app está actualizada</h2><p>No hay una versión más reciente disponible.</p></>}</section>
       {mode === "online" && <section className="settings-card"><button className="danger" onClick={() => void onSignOut()}>Cerrar sesión</button></section>}
       {accessMessage && <p className="notice" role="status">{accessMessage}</p>}
       {message && <p className="notice">{message}</p>}
