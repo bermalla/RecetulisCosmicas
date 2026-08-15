@@ -28,6 +28,7 @@ import { mergeLocalRecipeImport, parseRecipeImport } from "./recipe-import";
 import { ingredientSuggestionQuery, rankIngredientSuggestions, rankSuggestions, replaceActiveIngredient } from "./autocomplete";
 import type { Account, Actor, AuthSession, GroupInvitation, Ingredient, Mode, Recipe } from "./types";
 import { checkForUpdate, installUpdate, type MobileRelease } from "./updater";
+import { createRecipeExportParts, recipeExportFilename } from "../../lib/recipe-export";
 
 type Status = "loading" | "signed-out" | "ready" | "error";
 type Screen = "home" | "settings";
@@ -725,16 +726,21 @@ function Settings({ account, actor, invitations, mode, recipes, message, availab
   }
 
   async function exportData() {
-    const payload = { format: "recetulis-cosmicas", formatVersion: 1, mode, exportedAt: new Date().toISOString(), recipes };
-    const contents = JSON.stringify(payload, null, 2);
-    const fileName = `recetulis-${mode}-${new Date().toISOString().slice(0, 10)}.json`;
+    const parts = createRecipeExportParts({ format: "recetulis-cosmicas", formatVersion: 1, mode, exportedAt: new Date().toISOString(), recipes });
+    const date = new Date().toISOString().slice(0, 10);
     if (Capacitor.isNativePlatform()) {
-      const saved = await Filesystem.writeFile({ path: fileName, data: contents, directory: Directory.Cache, encoding: Encoding.UTF8 });
-      await NativeShare.share({ title: "Respaldo de Recetulis", files: [saved.uri], dialogTitle: "Guardar o compartir respaldo" });
+      const files: string[] = [];
+      for (const [index, payload] of parts.entries()) {
+        const saved = await Filesystem.writeFile({ path: recipeExportFilename(`recetulis-${mode}`, date, index + 1, parts.length), data: JSON.stringify(payload, null, 2), directory: Directory.Cache, encoding: Encoding.UTF8 });
+        files.push(saved.uri);
+      }
+      await NativeShare.share({ title: "Respaldo de Recetulis", files, dialogTitle: "Guardar o compartir respaldo" });
       return;
     }
-    const href = URL.createObjectURL(new Blob([contents], { type: "application/json" }));
-    const link = document.createElement("a"); link.href = href; link.download = `recetulis-${mode}-${new Date().toISOString().slice(0, 10)}.json`; link.click(); URL.revokeObjectURL(href);
+    parts.forEach((payload, index) => {
+      const href = URL.createObjectURL(new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" }));
+      const link = document.createElement("a"); link.href = href; link.download = recipeExportFilename(`recetulis-${mode}`, date, index + 1, parts.length); link.click(); URL.revokeObjectURL(href);
+    });
   }
   async function importFile(file?: File) {
     if (!file) return;

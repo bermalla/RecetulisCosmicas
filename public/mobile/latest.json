@@ -1,7 +1,7 @@
 {
-  "versionCode": 10,
-  "versionName": "1.0.9",
-  "apkUrl": "https://mi-recetario.bermalla.chatgpt.site/mobile/recetulis-cosmicas-1.0.9.apk",
-  "sha256": "bb429224a51cc642be1bc289505c30f5893825d55002652aaccbc307dc59e8af",
-  "notes": "Permite crear una colección privada propia al iniciar sesión sin invitaciones."
+  "versionCode": 11,
+  "versionName": "1.0.10",
+  "apkUrl": "https://mi-recetario.bermalla.chatgpt.site/mobile/recetulis-cosmicas-1.0.10.apk",
+  "sha256": "4e8913a7cd5f4eb0e01367a908d84821af6fe96f9d0cf43e1c58d7e147f95a6f",
+  "notes": "Divide los respaldos grandes en archivos de hasta 500 recetas, listos para importar."
 }

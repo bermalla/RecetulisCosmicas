@@ -29,6 +29,11 @@ import {
   recipeCategoryIcon,
   recipeNameKey,
 } from "../lib/recipe-intelligence";
+import {
+  createRecipeExportParts,
+  downloadRecipeExportParts,
+  fetchRecipeExportParts,
+} from "../lib/recipe-export";
 
 type Ingredient = {
   id?: number;
@@ -347,7 +352,7 @@ function Home() {
 
   async function exportDatabase() {
     try {
-      let blob: Blob;
+      let parts;
       if (auth.mode === "offline") {
         const payload = {
           format: BACKUP_FORMAT,
@@ -356,19 +361,14 @@ function Home() {
           exportedAt: new Date().toISOString(),
           recipes,
         };
-        blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+        parts = createRecipeExportParts(payload);
       } else {
-        const response = await auth.authorizedFetch("/api/recipes/export");
-        if (!response.ok) throw new Error("No se pudo generar el respaldo.");
-        blob = await response.blob();
+        parts = await fetchRecipeExportParts((part) =>
+          auth.authorizedFetch(`/api/recipes/export?part=${part}`),
+        );
       }
-      const href = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = href;
-      link.download = `recetulis-cosmicas-${new Date().toISOString().slice(0, 10)}.json`;
-      link.click();
-      URL.revokeObjectURL(href);
-      notify("Respaldo completo descargado.");
+      const count = downloadRecipeExportParts(parts, "recetulis-cosmicas");
+      notify(count === 1 ? "Respaldo completo descargado." : `Respaldo descargado en ${count} partes.`);
     } catch (requestError) {
       notify(requestError instanceof Error ? requestError.message : "No se pudo exportar.");
     }

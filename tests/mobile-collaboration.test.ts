@@ -13,6 +13,7 @@ import {
 } from "../mobile/src/autocomplete.ts";
 import { groupScope } from "../mobile/src/storage.ts";
 import type { Recipe } from "../mobile/src/types.ts";
+import { createRecipeExportParts, recipeExportFilename } from "../lib/recipe-export.ts";
 
 const recipes: Recipe[] = [
   {
@@ -87,6 +88,28 @@ test("local JSON import adds recipes and skips duplicate names", () => {
   assert.equal(merged.recipes.length, 2);
   assert.equal(merged.recipes[1].id, "new-id");
   assert.equal(merged.recipes[1].localOnly, true);
+});
+
+test("splits exports into importable files of at most 500 recipes", () => {
+  const recipesToExport = Array.from({ length: 1001 }, (_, index) => ({ id: index + 1 }));
+  const parts = createRecipeExportParts({
+    format: "recetulis-cosmicas",
+    formatVersion: 1,
+    recipes: recipesToExport,
+  });
+
+  assert.deepEqual(parts.map((part) => part.recipes.length), [500, 500, 1]);
+  assert.deepEqual(parts.map((part) => part.exportPart), [1, 2, 3]);
+  assert.ok(parts.every((part) => part.exportParts === 3 && part.totalRecipes === 1001));
+  assert.equal(
+    recipeExportFilename("recetulis-online", "2026-08-15", 2, 3),
+    "recetulis-online-2026-08-15-parte-2-de-3.json",
+  );
+});
+
+test("keeps a single valid export file for collections up to 500 recipes", () => {
+  assert.equal(createRecipeExportParts({ recipes: [] }).length, 1);
+  assert.equal(createRecipeExportParts({ recipes: Array.from({ length: 500 }) }).length, 1);
 });
 
 test("isolates Android caches and cursors by group", () => {

@@ -9,6 +9,12 @@ import {
   readRecipes,
   replaceRecipes,
 } from "../../lib/offline-store";
+import {
+  createRecipeExportParts,
+  downloadRecipeExportParts,
+  fetchRecipeExportParts,
+  type RecipeExportPayload,
+} from "../../lib/recipe-export";
 
 type Member = {
   id: string;
@@ -94,28 +100,23 @@ function Settings() {
 
   async function exportCopy(scope: string) {
     try {
-      let payload: unknown;
+      let parts: RecipeExportPayload<unknown>[];
       if (scope === GROUP_SCOPE && auth.mode === "online") {
-        const response = await auth.authorizedFetch("/api/recipes/export");
-        if (!response.ok) throw new Error("No se pudo generar el respaldo online.");
-        payload = await response.json();
+        parts = await fetchRecipeExportParts((part) =>
+          auth.authorizedFetch(`/api/recipes/export?part=${part}`),
+        );
       } else {
-        payload = {
+        const payload = {
           format: "recetulis-cosmicas",
           formatVersion: 1,
           mode: scope === LOCAL_SCOPE ? "local" : "cached-group",
           exportedAt: new Date().toISOString(),
           recipes: await readRecipes(scope),
         };
+        parts = createRecipeExportParts(payload);
       }
-      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
-      const href = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = href;
-      link.download = `recetulis-${scope}-${new Date().toISOString().slice(0, 10)}.json`;
-      link.click();
-      URL.revokeObjectURL(href);
-      setMessage("Respaldo descargado.");
+      const count = downloadRecipeExportParts(parts, `recetulis-${scope}`);
+      setMessage(count === 1 ? "Respaldo descargado." : `${count} partes del respaldo descargadas.`);
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "No se pudo exportar.");
     }
