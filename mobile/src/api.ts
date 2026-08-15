@@ -38,6 +38,20 @@ export async function validateSession(): Promise<AuthSession> {
   return { account: data.user, actor: data.actor ?? null, invitations: data.invitations ?? [] };
 }
 
+export async function createOwnCollection(): Promise<AuthSession> {
+  const response = await authorizedFetch("/api/group", { method: "POST" });
+  const data = (await response.json()) as {
+    user?: AuthSession["account"];
+    actor?: Actor | null;
+    invitations?: GroupInvitation[];
+    error?: string;
+  };
+  if (!response.ok || !data.user || !data.actor) {
+    throw new Error(data.error || "No se pudo crear la colección.");
+  }
+  return { account: data.user, actor: data.actor, invitations: data.invitations ?? [] };
+}
+
 export async function synchronize(scope: string, full = false): Promise<Recipe[]> {
   let cursor = full ? 0 : await readCursor(scope);
   let hasMore = true;

@@ -287,8 +287,25 @@ async function readAllRecipes(groupId: string) {
       .where(and(eq(recipes.groupId, groupId), isNull(recipes.deletedAt)))
       .orderBy(desc(recipes.updatedAt), asc(recipes.name)),
     db
-      .select()
+      .select({
+        id: recipeIngredients.id,
+        recipeId: recipeIngredients.recipeId,
+        name: recipeIngredients.name,
+        normalizedName: recipeIngredients.normalizedName,
+        quantity: recipeIngredients.quantity,
+        unit: recipeIngredients.unit,
+        optional: recipeIngredients.optional,
+        sortOrder: recipeIngredients.sortOrder,
+      })
       .from(recipeIngredients)
+      .innerJoin(
+        recipes,
+        and(
+          eq(recipeIngredients.recipeId, recipes.id),
+          eq(recipes.groupId, groupId),
+          isNull(recipes.deletedAt),
+        ),
+      )
       .orderBy(asc(recipeIngredients.recipeId), asc(recipeIngredients.sortOrder)),
   ]);
 

@@ -901,6 +901,12 @@ h1::after {
 .access-card > p:not(.eyebrow):not(.form-error):not(.helper-text) { color: var(--muted); line-height: 1.6; }
 .access-actions, .settings-actions, .backup-grid { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
 .access-actions button { flex: 1 1 190px; }
+.invitation-list { display: grid; gap: 12px; margin-top: 22px; }
+.invitation-card { display: grid; gap: 14px; padding: 16px; border: 1px solid var(--line); border-radius: 16px; background: rgba(255, 255, 255, .62); text-align: left; }
+.invitation-card > div:first-child { display: grid; gap: 5px; }
+.invitation-card span { color: var(--muted); font-size: 13px; }
+.invitation-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.invitation-actions button { flex: 1 1 150px; }
 .helper-text { margin-top: 16px; color: var(--muted); font-size: 13px; }
 .mode-badge {
   display: inline-flex;

@@ -32,17 +32,32 @@ type SessionActor = {
   role: "owner" | "editor" | "reader";
 };
 
-type AuthStatus = "loading" | "signed-out" | "authorizing" | "ready" | "offline" | "error";
+type SessionAccount = Pick<SessionActor, "id" | "email" | "displayName">;
+
+type GroupInvitation = {
+  groupId: string;
+  groupName: string;
+  ownerName: string;
+  role: "editor" | "reader";
+  createdAt: string;
+};
+
+type AuthStatus = "loading" | "signed-out" | "authorizing" | "needs-collection" | "ready" | "offline" | "error";
 
 type AuthContextValue = {
   status: AuthStatus;
   firebaseUser: FirebaseUser | null;
+  account: SessionAccount | null;
   actor: SessionActor | null;
+  invitations: GroupInvitation[];
   error: string;
   configured: boolean;
   mode: "online" | "offline";
   signIn: () => Promise<void>;
   signOut: () => Promise<void>;
+  createCollection: () => Promise<void>;
+  acceptInvitation: (groupId: string) => Promise<void>;
+  declineInvitation: (groupId: string) => Promise<void>;
   useOfflineMode: () => void;
   useOnlineMode: () => void;
   authorizedFetch: (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>;
@@ -54,7 +69,9 @@ const MODE_KEY = "recetulis-cosmicas-mode";
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [status, setStatus] = useState<AuthStatus>("loading");
   const [firebaseUser, setFirebaseUser] = useState<FirebaseUser | null>(null);
+  const [account, setAccount] = useState<SessionAccount | null>(null);
   const [actor, setActor] = useState<SessionActor | null>(null);
+  const [invitations, setInvitations] = useState<GroupInvitation[]>([]);
   const [error, setError] = useState("");
   const [configured, setConfigured] = useState(true);
   const [mode, setMode] = useState<"online" | "offline">("online");
@@ -63,17 +80,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setStatus("authorizing");
     try {
       const token = await user.getIdToken();
-      const response = await fetch("/api/auth/session", {
+      const response = await fetch("/api/auth/session?includeInvites=1", {
         headers: { Authorization: `Bearer ${token}` },
         cache: "no-store",
       });
-      const data = (await response.json()) as { user?: SessionActor; error?: string };
+      const data = (await response.json()) as {
+        user?: SessionAccount | SessionActor;
+        actor?: SessionActor | null;
+        invitations?: GroupInvitation[];
+        error?: string;
+      };
       if (!response.ok || !data.user) throw new Error(data.error || "No se pudo validar el acceso.");
-      setActor(data.user);
+      setAccount({ id: data.user.id, email: data.user.email, displayName: data.user.displayName });
+      setActor(data.actor ?? null);
+      setInvitations(data.invitations ?? []);
       setError("");
-      setStatus("ready");
+      setStatus(data.actor ? "ready" : "needs-collection");
     } catch (sessionError) {
+      setAccount(null);
       setActor(null);
+      setInvitations([]);
       setError(sessionError instanceof Error ? sessionError.message : "No se pudo validar el acceso.");
       setStatus("error");
     }
@@ -118,7 +144,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           if (savedMode === "offline") return;
           if (user) void validateSession(user);
           else {
+            setAccount(null);
             setActor(null);
+            setInvitations([]);
             setStatus("signed-out");
           }
         });
@@ -159,10 +187,50 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signOut = useCallback(async () => {
     if (getApps().length > 0) await firebaseSignOut(getAuth(getApps()[0]));
     setFirebaseUser(null);
+    setAccount(null);
     setActor(null);
+    setInvitations([]);
     setError("");
     setStatus("signed-out");
   }, []);
+
+  const updateMembership = useCallback(async (path: string, method: "POST" | "DELETE", body?: object) => {
+    if (!firebaseUser) throw new Error("Iniciá sesión para continuar.");
+    setStatus("authorizing");
+    setError("");
+    try {
+      const token = await firebaseUser.getIdToken();
+      const response = await fetch(path, {
+        method,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          ...(body ? { "Content-Type": "application/json" } : {}),
+        },
+        body: body ? JSON.stringify(body) : undefined,
+      });
+      const data = (await response.json()) as { error?: string };
+      if (!response.ok) throw new Error(data.error || "No se pudo actualizar la colección.");
+      await validateSession(firebaseUser);
+    } catch (membershipError) {
+      setError(membershipError instanceof Error ? membershipError.message : "No se pudo actualizar la colección.");
+      setStatus("needs-collection");
+    }
+  }, [firebaseUser, validateSession]);
+
+  const createCollection = useCallback(
+    () => updateMembership("/api/group", "POST"),
+    [updateMembership],
+  );
+
+  const acceptInvitation = useCallback(
+    (groupId: string) => updateMembership("/api/group/invitations", "POST", { groupId }),
+    [updateMembership],
+  );
+
+  const declineInvitation = useCallback(
+    (groupId: string) => updateMembership("/api/group/invitations", "DELETE", { groupId }),
+    [updateMembership],
+  );
 
   const useOfflineMode = useCallback(() => {
     window.localStorage.setItem(MODE_KEY, "offline");
@@ -193,17 +261,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     () => ({
       status,
       firebaseUser,
+      account,
       actor,
+      invitations,
       error,
       configured,
       mode,
       signIn,
       signOut,
+      createCollection,
+      acceptInvitation,
+      declineInvitation,
       useOfflineMode,
       useOnlineMode,
       authorizedFetch,
     }),
-    [status, firebaseUser, actor, error, configured, mode, signIn, signOut, useOfflineMode, useOnlineMode, authorizedFetch],
+    [status, firebaseUser, account, actor, invitations, error, configured, mode, signIn, signOut, createCollection, acceptInvitation, declineInvitation, useOfflineMode, useOnlineMode, authorizedFetch],
   );
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
@@ -224,12 +297,54 @@ export function AccessGate({ children }: { children: ReactNode }) {
     );
   }
   if (auth.status === "ready" || auth.status === "offline") return <>{children}</>;
+  if (auth.status === "needs-collection") {
+    return (
+      <main className="access-shell">
+        <section className="access-card">
+          <p className="eyebrow">Cuenta conectada</p>
+          {auth.invitations.length > 0 ? (
+            <>
+              <h1>Tenés una invitación</h1>
+              <p>Elegí si querés sumarte a la colección que compartieron con {auth.account?.email}.</p>
+              <div className="invitation-list">
+                {auth.invitations.map((invitation) => (
+                  <article className="invitation-card" key={invitation.groupId}>
+                    <div>
+                      <strong>{invitation.groupName}</strong>
+                      <span>De {invitation.ownerName} · {invitation.role === "editor" ? "puede editar" : "sólo lectura"}</span>
+                    </div>
+                    <div className="invitation-actions">
+                      <button className="primary-button" type="button" onClick={() => void auth.acceptInvitation(invitation.groupId)}>Aceptar</button>
+                      <button className="secondary-button" type="button" onClick={() => void auth.declineInvitation(invitation.groupId)}>Rechazar</button>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </>
+          ) : (
+            <>
+              <h1>Creá tu propia colección</h1>
+              <p>No hay invitaciones para {auth.account?.email}. Podés iniciar una colección privada, vacía y separada de todas las demás.</p>
+              <button className="primary-button" type="button" onClick={() => void auth.createCollection()}>
+                Crear mi colección
+              </button>
+            </>
+          )}
+          {auth.error && <p className="form-error" role="alert">{auth.error}</p>}
+          <div className="access-actions">
+            <button className="secondary-button" type="button" onClick={auth.useOfflineMode}>Usar colección local</button>
+            <button className="secondary-button" type="button" onClick={() => void auth.signOut()}>Cerrar sesión</button>
+          </div>
+        </section>
+      </main>
+    );
+  }
   return (
     <main className="access-shell">
       <section className="access-card">
         <p className="eyebrow">Colección privada</p>
         <h1>Entrá a Recetulis Cósmicas</h1>
-        <p>Las recetas online sólo están disponibles para las cuentas invitadas al grupo.</p>
+        <p>Entrá con Google para aceptar una invitación o crear tu propia colección.</p>
         {auth.error && <p className="form-error" role="alert">{auth.error}</p>}
         <div className="access-actions">
           <button className="primary-button" type="button" onClick={() => void auth.signIn()} disabled={!auth.configured}>

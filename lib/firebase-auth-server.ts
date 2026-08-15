@@ -189,7 +189,7 @@ function bearerToken(request: Request) {
   return match[1];
 }
 
-function ownerGroupName(user: AuthenticatedUser) {
+export function ownerGroupName(user: AuthenticatedUser) {
   const displayName = user.displayName.trim();
   const ownerName = displayName && displayName !== user.email
     ? displayName

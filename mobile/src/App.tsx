@@ -6,6 +6,7 @@ import { Share as NativeShare } from "@capacitor/share";
 import { FirebaseAuthentication } from "@capacitor-firebase/authentication";
 import {
   acceptGroupInvitation,
+  createOwnCollection,
   createOnlineRecipe,
   deleteOnlineRecipe,
   declineGroupInvitation,
@@ -422,6 +423,13 @@ export default function App() {
           setInvitations(await declineGroupInvitation(groupId));
           setMessage("Invitación rechazada.");
         }}
+        onCreateCollection={async () => {
+          const session = await createOwnCollection();
+          applySession(session);
+          if (session.actor) await refreshOnline(session.actor.groupId, true);
+          setScreen("home");
+          setMessage("Tu colección privada ya está lista.");
+        }}
         onLeaveGroup={async () => {
           await leaveCurrentGroup();
           const session = await validateSession();
@@ -640,8 +648,8 @@ function SuggestionList({ suggestions, onChoose }: { suggestions: string[]; onCh
   return <div className="suggestions" role="listbox">{suggestions.slice(0, 5).map((suggestion) => <button type="button" role="option" aria-selected="false" key={suggestion} onMouseDown={(event) => event.preventDefault()} onClick={() => onChoose(suggestion)}>{suggestion}</button>)}</div>;
 }
 
-function Settings({ account, actor, invitations, mode, recipes, message, availableUpdate, checkingUpdate, updateCheckError, onBack, onMode, onSignOut, onAcceptInvitation, onDeclineInvitation, onLeaveGroup, onInstallUpdate, onImport }: {
-  account: Account | null; actor: Actor | null; invitations: GroupInvitation[]; mode: Mode; recipes: Recipe[]; message: string; availableUpdate: MobileRelease | null; checkingUpdate: boolean; updateCheckError: boolean; onBack: () => void; onMode: (mode: Mode) => Promise<void>; onSignOut: () => Promise<void>; onAcceptInvitation: (groupId: string) => Promise<void>; onDeclineInvitation: (groupId: string) => Promise<void>; onLeaveGroup: () => Promise<void>; onInstallUpdate: () => Promise<void>; onImport: (recipes: Recipe[]) => Promise<void>;
+function Settings({ account, actor, invitations, mode, recipes, message, availableUpdate, checkingUpdate, updateCheckError, onBack, onMode, onSignOut, onAcceptInvitation, onDeclineInvitation, onCreateCollection, onLeaveGroup, onInstallUpdate, onImport }: {
+  account: Account | null; actor: Actor | null; invitations: GroupInvitation[]; mode: Mode; recipes: Recipe[]; message: string; availableUpdate: MobileRelease | null; checkingUpdate: boolean; updateCheckError: boolean; onBack: () => void; onMode: (mode: Mode) => Promise<void>; onSignOut: () => Promise<void>; onAcceptInvitation: (groupId: string) => Promise<void>; onDeclineInvitation: (groupId: string) => Promise<void>; onCreateCollection: () => Promise<void>; onLeaveGroup: () => Promise<void>; onInstallUpdate: () => Promise<void>; onImport: (recipes: Recipe[]) => Promise<void>;
 }) {
   const fileInput = useRef<HTMLInputElement>(null);
   const [members, setMembers] = useState<GroupMember[]>([]);
@@ -760,7 +768,7 @@ function Settings({ account, actor, invitations, mode, recipes, message, availab
         </section>
       )}
       {mode === "online" && !actor && invitations.length === 0 && (
-        <section className="settings-card"><p className="eyebrow">Colección privada</p><h2>Todavía no pertenecés a un grupo</h2><p>Cuando alguien te invite, la propuesta aparecerá acá para que decidas si querés aceptarla.</p></section>
+        <section className="settings-card"><p className="eyebrow">Colección privada</p><h2>Creá tu propia colección</h2><p>No hay invitaciones para {account?.email}. Podés iniciar una colección vacía y separada de todas las demás.</p><button className="primary" disabled={savingAccess} onClick={() => void runMembershipAction(onCreateCollection)}>Crear mi colección</button></section>
       )}
       {mode === "online" && actor?.role === "owner" && (
         <section className="settings-card access-management">

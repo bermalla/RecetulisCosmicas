@@ -124,6 +124,56 @@ test("database invariant allows one active group per user", () => {
   }
 });
 
+test("personal collections keep ownership and recipes isolated", () => {
+  const db = new DatabaseSync(":memory:");
+  try {
+    db.exec(`
+      CREATE TABLE groups (id text PRIMARY KEY, name text NOT NULL, created_by text NOT NULL);
+      CREATE TABLE group_members (
+        group_id text NOT NULL,
+        user_id text NOT NULL UNIQUE,
+        role text NOT NULL,
+        PRIMARY KEY (group_id, user_id)
+      );
+      CREATE TABLE recipes (id text PRIMARY KEY, group_id text NOT NULL, name text NOT NULL);
+      CREATE TABLE recipe_ingredients (id integer PRIMARY KEY, recipe_id text NOT NULL, name text NOT NULL);
+    `);
+    db.prepare("INSERT INTO groups (id, name, created_by) VALUES (?, ?, ?)")
+      .run("recetulis-cosmicas", "Colección de bermalla", "bermalla");
+    db.prepare("INSERT INTO groups (id, name, created_by) VALUES (?, ?, ?)")
+      .run("personal-random-id", "Colección de otra-cuenta", "otra-cuenta");
+    db.prepare("INSERT INTO group_members (group_id, user_id, role) VALUES (?, ?, 'owner')")
+      .run("recetulis-cosmicas", "bermalla");
+    db.prepare("INSERT INTO group_members (group_id, user_id, role) VALUES (?, ?, 'owner')")
+      .run("personal-random-id", "otra-cuenta");
+    db.prepare("INSERT INTO recipes (id, group_id, name) VALUES (?, ?, ?)")
+      .run("recipe-dev", "recetulis-cosmicas", "Receta privada de desarrollo");
+    db.prepare("INSERT INTO recipes (id, group_id, name) VALUES (?, ?, ?)")
+      .run("recipe-personal", "personal-random-id", "Receta privada personal");
+    db.prepare("INSERT INTO recipe_ingredients (id, recipe_id, name) VALUES (?, ?, ?)")
+      .run(1, "recipe-dev", "ingrediente dev");
+    db.prepare("INSERT INTO recipe_ingredients (id, recipe_id, name) VALUES (?, ?, ?)")
+      .run(2, "recipe-personal", "ingrediente personal");
+
+    const personalRows = db.prepare(`
+      SELECT r.name AS recipe_name, ri.name AS ingredient_name
+      FROM recipes r
+      JOIN recipe_ingredients ri ON ri.recipe_id = r.id
+      WHERE r.group_id = ?
+    `).all("personal-random-id") as Array<{ recipe_name: string; ingredient_name: string }>;
+
+    assert.equal(personalRows.length, 1);
+    assert.equal(personalRows[0].recipe_name, "Receta privada personal");
+    assert.equal(personalRows[0].ingredient_name, "ingrediente personal");
+    assert.equal(
+      (db.prepare("SELECT COUNT(*) AS count FROM groups WHERE id = 'recetulis-cosmicas'").get() as { count: number }).count,
+      1,
+    );
+  } finally {
+    db.close();
+  }
+});
+
 test("autocomplete returns at most five nearby unique suggestions", () => {
   const suggestions = rankSuggestions("tom", [
     "Tomate",
