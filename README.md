@@ -91,6 +91,25 @@ repetidos sin distinguir mayúsculas o acentos, identificadores ya existentes y
 recetas con los mismos ingredientes e instrucciones. Si encuentra una
 coincidencia, no guarda ninguna receta del lote.
 
+## Automatización personal
+
+El comando `recipes` permite validar y publicar en la colección principal el
+mismo JSON que acepta la interfaz. `check` ejecuta todas las validaciones del
+servidor sin escribir; `publish` repite esa comprobación y exige `--confirm`
+antes de guardar.
+
+```powershell
+npm.cmd run recipes -- validate receta.json
+npm.cmd run recipes -- check receta.json
+npm.cmd run recipes -- publish receta.json --confirm
+```
+
+Para `check` y `publish`, configurar `RECETULIS_AUTOMATION_TOKEN` en
+`.env.local`. La credencial de producción se administra por separado como un
+secreto de Sites y nunca debe guardarse en Git. La automatización está limitada
+al alta de recetas en `recetulis-cosmicas`; las lecturas, modificaciones y
+eliminaciones continúan requiriendo la sesión normal de la aplicación.
+
 ## Referencias nutricionales
 
 Al guardar o leer una receta, la app relaciona sus ingredientes obligatorios

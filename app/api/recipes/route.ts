@@ -13,6 +13,7 @@ import {
   recipeNameKey,
   reviewRecipeDuplicates,
 } from "../../../lib/recipe-intelligence";
+import { requireRecipePostActor } from "../../../lib/recipe-automation-auth";
 
 type IngredientInput = {
   name?: string;
@@ -361,13 +362,14 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const actor = await requireActor(request, ["owner", "editor"]);
+    const actor = await requireRecipePostActor(request);
     assertRequestSize(request);
     const payload = (await request.json()) as {
       recipe?: RecipeInput;
       recipes?: RecipeInput[];
       preserveIds?: boolean;
       skipDuplicates?: boolean;
+      dryRun?: boolean;
     };
     const list = payload.recipes ?? (payload.recipe ? [payload.recipe] : []);
     if (list.length === 0) {
@@ -407,6 +409,21 @@ export async function POST(request: Request) {
       );
     }
 
+    const review = recipesToSave.map((recipe) => ({
+      name: recipe.name,
+      category: recipe.category,
+      nutrients: recipe.nutrients,
+    }));
+    if (payload.dryRun) {
+      return Response.json({
+        dryRun: true,
+        wouldImport: recipesToSave.length,
+        wouldSkip: cleanedRecipes.length - recipesToSave.length,
+        duplicates,
+        review,
+      });
+    }
+
     const ids: string[] = [];
     for (const recipe of recipesToSave) ids.push(await saveRecipe(recipe, actor));
     return Response.json(
@@ -415,11 +432,7 @@ export async function POST(request: Request) {
         skipped: cleanedRecipes.length - recipesToSave.length,
         duplicates,
         ids,
-        review: recipesToSave.map((recipe) => ({
-          name: recipe.name,
-          category: recipe.category,
-          nutrients: recipe.nutrients,
-        })),
+        review,
       },
       { status: 201 },
     );
